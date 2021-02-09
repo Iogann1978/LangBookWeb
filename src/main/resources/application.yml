@@ -1,0 +1,14 @@
+server:
+  port: 8443
+  ssl:
+    enabled: true
+    key-store: classpath:server.jks
+    key-password: secret
+    key-store-type: JKS
+    key-alias: server
+    key-store-password: secret
+
+spring:
+  thymeleaf:
+    reactive:
+      max-chunk-size: 8192
