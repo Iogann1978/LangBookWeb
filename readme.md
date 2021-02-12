@@ -1,3 +1,4 @@
+[Словарь](https://localhost:8443/dictionary)
 ###Генерация хранилища ключей и сертификата
 ```shell
 keytool -genkey -keyalg RSA -alias server -keystore server.jks -storepass secret -validity 360 -keysize 2048
