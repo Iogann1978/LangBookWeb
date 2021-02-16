@@ -7,9 +7,9 @@ keytool -export -alias server -file server.crt -keystore server.jks
 
 ###Доступ к приложению
 [Словарь](https://localhost:8443/dictionary)
+[Добавить слово](https://localhost:8443/word/add)
 
 ###Полезные ссылки
-[Bootstrap 4.0 docs](https://getbootstrap.com/docs/4.0)
+[Bootstrap 4.0 docs](https://getbootstrap.com/docs/4.0.getting-started/introduction/)
 [Bootstrap 5.0 docs](https://getbootstrap.com/docs/5.0/getting-started/introduction/)
-[Bootstrap 4 Tutorial](https://www.w3schools.com/bootstrap4/bootstrap_tables.asp)
-[Bootstrap 4 icons](https://icons.getbootstrap.com/icons)
+[Bootstrap 4 Tutorial](https://www.w3schools.com/bootstrap4)

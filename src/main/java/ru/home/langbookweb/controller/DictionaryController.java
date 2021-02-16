@@ -24,7 +24,7 @@ public class DictionaryController {
 
     @RolesAllowed("USER,ADMIN")
     @GetMapping
-    public String getWords(@RequestParam(defaultValue = "0") int page, Model model) {
+    public String getDicrionary(@RequestParam(defaultValue = "0") int page, Model model) {
         Flux<? super Word> words = Flux.just(
                 Word.builder().word("in").translations(Set.of(Translation.builder().description("в").build())).build(),
                 Noun.builder().word("body").plural("bodies").roundRobin(true).translations(Set.of(Translation.builder().description("тело").build())).build(),
@@ -34,6 +34,6 @@ public class DictionaryController {
                 new ReactiveDataDriverContextVariable(words, 1);
         model.addAttribute("words", reactiveDataDrivenMode);
         model.addAttribute("pages", new int[] {1, 2, 3, 4, 5, 6, 7});
-        return "dictionary.html";
+        return "dictionary";
     }
 }

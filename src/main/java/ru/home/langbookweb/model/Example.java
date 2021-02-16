@@ -3,11 +3,9 @@ package ru.home.langbookweb.model;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
 
-import java.util.Set;
-
 @Data
 @SuperBuilder
-public class Translation {
-    private String description;
-    private Set<String> examples;
+public class Example {
+    private String text1;
+    private String text2;
 }
