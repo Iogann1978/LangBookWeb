@@ -34,10 +34,10 @@
                         </li>
                     </ul>
                 </div>
-                <form class="navbar-form float-right">
+                <form class="navbar-form float-right" action="#" th:action="@{/dictionary/find}" th:object="${word}" method="POST">
                     <div class="input-group">
                         <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit">
+                        <button class="btn btn-outline-success" type="submit" th:field="*{word}">
                             <i class="glyphicon glyphicon-search"></i>
                         </button>
                     </div>
@@ -86,13 +86,27 @@
         <nav aria-label="Pages">
             <ul class="pagination">
                 <li class="page-item">
-                    <a class="page-link" href="#">Предыдущая</a>
+                    <a class="page-link" href="#">
+                        <i class="glyphicon glyphicon-fast-backward"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">
+                        <i class="glyphicon glyphicon-backward"></i>
+                    </a>
                 </li>
                 <li class="page-item" th:each="page:${pages}">
                     <a class="page-link" href="#" th:text="${page}">Страница</a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" href="#">Следующая</a>
+                    <a class="page-link" href="#">
+                        <i class="glyphicon glyphicon-forward"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">
+                        <i class="glyphicon glyphicon-fast-forward"></i>
+                    </a>
                 </li>
             </ul>
         </nav>

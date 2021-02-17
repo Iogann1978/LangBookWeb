@@ -1,6 +1,5 @@
 package ru.home.langbookweb.controller;
 
-import lombok.SneakyThrows;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,12 +19,15 @@ public class WordController {
     @RolesAllowed("USER,ADMIN")
     @GetMapping("/add")
     public String addWord(Model model) {
+        model.addAttribute("word", new Word());
+        model.addAttribute("noun", new Noun());
+        model.addAttribute("verb", new Verb());
+        model.addAttribute("adjective", new Adjective());
         return "word_add";
     }
 
     @RolesAllowed("USER,ADMIN")
     @PostMapping("/save")
-    @SneakyThrows
     public String saveWord(@ModelAttribute("word") Word word) {
         if (word instanceof Noun) {
 

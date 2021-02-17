@@ -2,9 +2,7 @@ package ru.home.langbookweb.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.spring5.context.webflux.IReactiveDataDriverContextVariable;
 import org.thymeleaf.spring5.context.webflux.ReactiveDataDriverContextVariable;
 import reactor.core.publisher.Flux;
@@ -34,6 +32,13 @@ public class DictionaryController {
                 new ReactiveDataDriverContextVariable(words, 1);
         model.addAttribute("words", reactiveDataDrivenMode);
         model.addAttribute("pages", new int[] {1, 2, 3, 4, 5, 6, 7});
+        model.addAttribute("word", new Word());
+        return "dictionary";
+    }
+
+    @RolesAllowed("USER,ADMIN")
+    @PostMapping("/find")
+    public String findWord(@ModelAttribute("word") Word word) {
         return "dictionary";
     }
 }

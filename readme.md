@@ -13,3 +13,7 @@ keytool -export -alias server -file server.crt -keystore server.jks
 [Bootstrap 4.0 docs](https://getbootstrap.com/docs/4.0.getting-started/introduction/)
 [Bootstrap 5.0 docs](https://getbootstrap.com/docs/5.0/getting-started/introduction/)
 [Bootstrap 4 Tutorial](https://www.w3schools.com/bootstrap4)
+[Bootstrap icons](https://www.bootstrapicons.com)
+
+###ToDo
+Сделать кнопку очистки фильтра на странице словаря
