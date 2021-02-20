@@ -16,6 +16,7 @@ public class Translation {
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
     private String description;
+    private String source;
     @OneToMany
     private Set<Example> examples;
 }

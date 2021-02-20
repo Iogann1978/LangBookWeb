@@ -8,6 +8,7 @@ keytool -export -alias server -file server.crt -keystore server.jks
 ###Доступ к приложению
 [Словарь](https://localhost:8443/dictionary)
 [Добавить слово](https://localhost:8443/word/add)
+[Добавить перевод](https://localhost:8443/translation/add?wordId=1)
 
 ###Полезные ссылки
 [Bootstrap 4.0 docs](https://getbootstrap.com/docs/4.0.getting-started/introduction/)
