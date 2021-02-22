@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Добавить перевод</title>
+    <meta charset="UTF-8">
+    <!-- Bootstrap and jQuery -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap-glyphicons/bdd2cbfba0/css/bootstrap-glyphicons.css}" />
+    <script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#" th:text="${translation.description}">Перевод</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="#">Словарь</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Карусель</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Статьи</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Тексты</a>
+                        </li>
+                    </ul>
+                </div>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#example_add">Добавить пример</button>
+            </div>
+        </nav>
+    </header>
+    <div class="container-fluid">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th scope="col">Пример</th>
+                <th scope="col">Перевод</th>
+                <th scope="col">Действия</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="example:${examples}">
+                <td th:text="${example.text1}">Пример</td>
+                <td th:text="${example.text2}">Перевод</td>
+                <td>
+                    <a href="#">Изменить</a>
+                    <a href="#">Удалить</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- The Modal -->
+    <div class="modal" id="example_add">
+        <div class="modal-dialog">
+            <form class="modal-content" action="#" th:action="@{/example/save}" th:object="${example}" method="POST">
+                <div class="modal-header">
+                    <h4 class="modal-title">Добавить пример</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="text1">Пример</label>
+                            <textarea class="form-control" rows="5" id="text1" th:field="*{text1}">Пример</textarea>
+                        </div>
+                        <div class="col-md-12">
+                            <label for="text2">Перевод</label>
+                            <textarea class="form-control" rows="5" id="text2" th:field="*{text2}">Перевод</textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer btn-group">
+                    <button type="submit" class="btn btn-primary">Добавить</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Закрыть</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
