@@ -11,120 +11,146 @@
     <script th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
 </head>
 <body>
-<div class="container-fluid">
-    <div class="row">
-        <div id="tabs" class="col-md-12">
-            <ul id="word-tabs" class="nav nav-tabs">
-                <li class="nav-item" role="presentation">
-                    <a href="#word-simple" class="nav-link active" data-toggle="tab">Простое слово</a>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <a href="#word-noun" class="nav-link" data-toggle="tab">Существительное</a>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <a href="#word-verb" class="nav-link" data-toggle="tab">Глагол</a>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <a href="#word-adjective" class="nav-link" data-toggle="tab">Прилагательное</a>
-                </li>
-            </ul>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Добавить слово</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="#">Словарь</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Карусель</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Статьи</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Тексты</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container-fluid">
+        <div class="row">
+            <div id="tabs" class="col-md-12">
+                <ul id="word-tabs" class="nav nav-tabs">
+                    <li class="nav-item" role="presentation">
+                        <a href="#word-simple" class="nav-link active" data-toggle="tab">Простое слово</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a href="#word-noun" class="nav-link" data-toggle="tab">Существительное</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a href="#word-verb" class="nav-link" data-toggle="tab">Глагол</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a href="#word-adjective" class="nav-link" data-toggle="tab">Прилагательное</a>
+                    </li>
+                </ul>
 
-            <div class="tab-content card">
-                <div role="tabpanel" class="tab-pane active" id="word-simple">
-                    <form class="form-horizontal" action="#" th:action="@{/word/save}" th:object="${word}" method="POST">
-                        <div class="form-group">
-                            <label class="col-md-3 col-md-offset-9 control-label" for="word">Слово</label>
-                            <div class="col-md-12">
-                                <input type="text" class="form-control" id="word" th:field="*{word}" />
+                <div class="tab-content card">
+                    <div role="tabpanel" class="tab-pane active" id="word-simple">
+                        <form class="form-horizontal" action="#" th:action="@{/word/save}" th:object="${word}" method="POST">
+                            <div class="form-group">
+                                <label class="col-md-3 col-md-offset-9 control-label" for="word">Слово</label>
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control" id="word" th:field="*{word}" />
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-md-3 col-md-offset-9">
-                                <button class="btn btn-outline-success" type="submit">
-                                    <span class="glyphicon glyphicon-edit"></span>
-                                    Сохранить
-                                </button>
+                            <div class="form-group">
+                                <div class="col-md-3 col-md-offset-9">
+                                    <button class="btn btn-outline-success" type="submit">
+                                        <span class="glyphicon glyphicon-edit"></span>
+                                        Сохранить
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    </form>
-                </div>
-                <div role="tabpanel" class="tab-pane" id="word-noun">
-                    <form class="form-horizontal" action="#" th:action="@{/word/save}" th:object="${noun}" method="POST">
-                        <div class="form-group">
-                            <label class="col-md-3 col-md-offset-9 control-label" for="single">Единственное число</label>
-                            <div class="col-md-12">
-                                <input type="text" class="form-control" id="single"  th:field="*{word}" />
+                        </form>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="word-noun">
+                        <form class="form-horizontal" action="#" th:action="@{/word/save}" th:object="${noun}" method="POST">
+                            <div class="form-group">
+                                <label class="col-md-3 col-md-offset-9 control-label" for="single">Единственное число</label>
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control" id="single"  th:field="*{word}" />
+                                </div>
+                                <label class="col-md-3 col-md-offset-9 control-label" for="plural">Множественное число</label>
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control" id="plural" th:field="*{plural}" />
+                                </div>
                             </div>
-                            <label class="col-md-3 col-md-offset-9 control-label" for="plural">Множественное число</label>
-                            <div class="col-md-12">
-                                <input type="text" class="form-control" id="plural" th:field="*{plural}" />
+                            <div class="form-group">
+                                <div class="col-md-3 col-md-offset-9">
+                                    <button class="btn btn-outline-success" type="submit">
+                                        <span class="glyphicon glyphicon-edit"></span>
+                                        Сохранить
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-md-3 col-md-offset-9">
-                                <button class="btn btn-outline-success" type="submit">
-                                    <span class="glyphicon glyphicon-edit"></span>
-                                    Сохранить
-                                </button>
+                        </form>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="word-verb">
+                        <form class="form-horizontal" action="#" th:action="@{/word/save}" th:object="${verb}" method="POST">
+                            <div class="form-group">
+                                <label class="col-md-3 col-md-offset-9 control-label" for="infinitive">Неопределенная форма</label>
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control" id="infinitive" th:field="*{word}" />
+                                </div>
+                                <label class="col-md-3 col-md-offset-9 control-label" for="past">Прошедшее время</label>
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control" id="past" th:field="*{past}" />
+                                </div>
+                                <label class="col-md-3 col-md-offset-9 control-label" for="participle">Причастие прошедшего времени</label>
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control" id="participle" th:field="*{participle}" />
+                                </div>
                             </div>
-                        </div>
-                    </form>
-                </div>
-                <div role="tabpanel" class="tab-pane" id="word-verb">
-                    <form class="form-horizontal" action="#" th:action="@{/word/save}" th:object="${verb}" method="POST">
-                        <div class="form-group">
-                            <label class="col-md-3 col-md-offset-9 control-label" for="infinitive">Неопределенная форма</label>
-                            <div class="col-md-12">
-                                <input type="text" class="form-control" id="infinitive" th:field="*{word}" />
+                            <div class="form-group">
+                                <div class="col-md-3 col-md-offset-9">
+                                    <button class="btn btn-outline-success" type="submit">
+                                        <span class="glyphicon glyphicon-edit"></span>
+                                        Сохранить
+                                    </button>
+                                </div>
                             </div>
-                            <label class="col-md-3 col-md-offset-9 control-label" for="past">Прошедшее время</label>
-                            <div class="col-md-12">
-                                <input type="text" class="form-control" id="past" th:field="*{past}" />
+                        </form>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="word-adjective">
+                        <form class="form-horizontal" action="#" th:action="@{/word/save}" th:object="${adjective}" method="POST">
+                            <div class="form-group">
+                                <label class="col-md-3 col-md-offset-9 control-label" for="positive">Положительная степень</label>
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control" id="positive" th:field="*{word}" />
+                                </div>
+                                <label class="col-md-3 col-md-offset-9 control-label" for="comparative">Сравнительная степень</label>
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control" id="comparative" th:field="*{comparative}" />
+                                </div>
+                                <label class="col-md-3 col-md-offset-9 control-label" for="superative">Превосходная степень</label>
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control" id="superative" th:field="*{superative}" />
+                                </div>
                             </div>
-                            <label class="col-md-3 col-md-offset-9 control-label" for="participle">Причастие прошедшего времени</label>
-                            <div class="col-md-12">
-                                <input type="text" class="form-control" id="participle" th:field="*{participle}" />
+                            <div class="form-group">
+                                <div class="col-md-3 col-md-offset-9">
+                                    <button class="btn btn-outline-success" type="submit">
+                                        <span class="glyphicon glyphicon-edit"></span>
+                                        Сохранить
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-md-3 col-md-offset-9">
-                                <button class="btn btn-outline-success" type="submit">
-                                    <span class="glyphicon glyphicon-edit"></span>
-                                    Сохранить
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div role="tabpanel" class="tab-pane" id="word-adjective">
-                    <form class="form-horizontal" action="#" th:action="@{/word/save}" th:object="${adjective}" method="POST">
-                        <div class="form-group">
-                            <label class="col-md-3 col-md-offset-9 control-label" for="positive">Положительная степень</label>
-                            <div class="col-md-12">
-                                <input type="text" class="form-control" id="positive" th:field="*{word}" />
-                            </div>
-                            <label class="col-md-3 col-md-offset-9 control-label" for="comparative">Сравнительная степень</label>
-                            <div class="col-md-12">
-                                <input type="text" class="form-control" id="comparative" th:field="*{comparative}" />
-                            </div>
-                            <label class="col-md-3 col-md-offset-9 control-label" for="superative">Превосходная степень</label>
-                            <div class="col-md-12">
-                                <input type="text" class="form-control" id="superative" th:field="*{superative}" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-md-3 col-md-offset-9">
-                                <button class="btn btn-outline-success" type="submit">
-                                    <span class="glyphicon glyphicon-edit"></span>
-                                    Сохранить
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </body>
 </html>

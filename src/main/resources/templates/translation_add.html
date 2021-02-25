@@ -34,7 +34,7 @@
                         </li>
                     </ul>
                 </div>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#translation_add">Добавить перевод</button>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#translation_save" onclick="fillSaveForm(null,'','')">Добавить перевод</button>
             </div>
         </nav>
     </header>
@@ -48,38 +48,80 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="translation:${translations}">
-                <td th:text="${translation.description}">Перевод</td>
-                <td th:text="${translation.source}">Источник</td>
+            <tr th:each="trans:${translations}">
+                <td th:text="${trans.description}">Перевод</td>
+                <td th:text="${trans.source}">Источник</td>
                 <td>
-                    <a href="#">Просмотреть примеры</a>
-                    <a href="#">Изменить</a>
-                    <a href="#">Удалить</a>
+                    <a href="#">Примеры</a>
+                    <a href="#" data-toggle="modal" data-target="#translation_save" th:attr="onclick=|fillSaveForm('${trans.id}','${trans.description}','${trans.source}')|">Изменить</a>
+                    <a href="#" data-toggle="modal" data-target="#translation_del" th:attr="onclick=|fillDelForm('${trans.description}','${trans.source}')|">Удалить</a>
                 </td>
             </tr>
             </tbody>
         </table>
     </div>
 
-    <!-- The Modal -->
-    <div class="modal" id="translation_add">
+    <!-- Добавить (изменить) перевод -->
+    <div class="modal" id="translation_save">
         <div class="modal-dialog">
             <form class="modal-content" action="#" th:action="@{/translation/save}" th:object="${translation}" method="POST">
                 <div class="modal-header">
-                    <h4 class="modal-title">Добавить перевод</h4>
+                    <h4 class="modal-title" id="modal-title">Заголовок</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <textarea class="form-control" rows="5" th:field="*{description}">Перевод</textarea>
+                        <input type="text" hidden="true" id="id" th:field="*{id}" />
+                        <div class="col-md-12">
+                            <label for="translation">Перевод</label>
+                            <textarea class="form-control" id="translation" rows="5" th:field="*{description}">Перевод</textarea>
+                        </div>
+                        <div class="col-md-12">
+                            <label for="source">Источник</label>
+                            <input type="text" class="form-control" id="source" th:field="*{source}" />
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer btn-group">
-                    <button type="submit" class="btn btn-primary">Добавить</button>
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Закрыть</button>
                 </div>
             </form>
         </div>
     </div>
+
+    <!-- Удалить перевод -->
+    <div class="modal" id="translation_del">
+        <div class="modal-dialog">
+            <form class="modal-content" action="#" th:action="@{/translation/del}" th:object="${translation}" method="POST">
+                <div class="modal-header">
+                    <h4 class="modal-title">Удалить перевод?</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p id="p_translation">Перевод</p>
+                    <p id="p_source">Источник</p>
+                </div>
+                <div class="modal-footer btn-group">
+                    <button type="submit" class="btn btn-primary">Удалить</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Закрыть</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        function fillSaveForm(id, translation, source) {
+            $("#id").val(id);
+            $("#translation").val(translation);
+            $("#source").val(source);
+            $("#modal-title").text(id==null ? "Добавить перевод" : "Изменить перевод");
+        }
+
+        function fillDelForm(translation, source) {
+            $("#p_translation").text(translation);
+            $("#p_source").text(source);
+        }
+    </script>
 </body>
 </html>

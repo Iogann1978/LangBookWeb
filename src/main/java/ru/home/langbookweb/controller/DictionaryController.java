@@ -29,7 +29,7 @@ public class DictionaryController {
                 Verb.builder().word("go").past("went").participle("gone").translations(Set.of(Translation.builder().description("идти").build())).build()
         );
         IReactiveDataDriverContextVariable reactiveDataDrivenMode =
-                new ReactiveDataDriverContextVariable(words, 1);
+                new ReactiveDataDriverContextVariable(words);
         model.addAttribute("words", reactiveDataDrivenMode);
         model.addAttribute("pages", new int[] {1, 2, 3, 4, 5, 6, 7});
         model.addAttribute("word", new Word());
