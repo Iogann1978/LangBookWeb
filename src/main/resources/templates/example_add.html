@@ -52,8 +52,8 @@
                 <td th:text="${examp.text1}">Пример</td>
                 <td th:text="${examp.text2}">Перевод</td>
                 <td>
-                    <a href="#" data-toggle="modal" data-target="#example_save" th:attr="onclick=|fillSaveForm('${examp.id}','${examp.text1}','${examp.text2}')|">Изменить</a>
-                    <a href="#" data-toggle="modal" data-target="#example_del" th:attr="onclick=|fillDelForm('${examp.id}','${examp.text1}','${examp.text2}')|">Удалить</a>
+                    <a href="#" data-toggle="modal" data-target="#example_save" th:attr="onclick=|fillSaveForm(${examp.id},'${examp.text1}','${examp.text2}')|">Изменить</a>
+                    <a href="#" data-toggle="modal" data-target="#example_del" th:attr="onclick=|fillDelForm(${examp.id},'${examp.text1}','${examp.text2}')|">Удалить</a>
                 </td>
             </tr>
             </tbody>
