@@ -34,7 +34,7 @@
                         </li>
                     </ul>
                 </div>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#example_add">Добавить пример</button>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#example_save" onclick="fillSaveForm(null,'','')">Добавить пример</button>
             </div>
         </nav>
     </header>
@@ -48,24 +48,24 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="example:${examples}">
-                <td th:text="${example.text1}">Пример</td>
-                <td th:text="${example.text2}">Перевод</td>
+            <tr th:each="examp:${examples}">
+                <td th:text="${examp.text1}">Пример</td>
+                <td th:text="${examp.text2}">Перевод</td>
                 <td>
-                    <a href="#">Изменить</a>
-                    <a href="#">Удалить</a>
+                    <a href="#" data-toggle="modal" data-target="#example_save" th:attr="onclick=|fillSaveForm('${examp.id}','${examp.text1}','${examp.text2}')|">Изменить</a>
+                    <a href="#"  data-toggle="modal" data-target="#example_del" th:attr="onclick=|fillDelForm('${examp.text1}','${examp.text2}')|">Удалить</a>
                 </td>
             </tr>
             </tbody>
         </table>
     </div>
 
-    <!-- The Modal -->
-    <div class="modal" id="example_add">
+    <!-- Добавить (изменить) пример -->
+    <div class="modal" id="example_save">
         <div class="modal-dialog">
             <form class="modal-content" action="#" th:action="@{/example/save}" th:object="${example}" method="POST">
                 <div class="modal-header">
-                    <h4 class="modal-title">Добавить пример</h4>
+                    <h4 class="modal-title" id="modal-title">Заголовок</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
@@ -87,5 +87,39 @@
             </form>
         </div>
     </div>
+
+    <!-- Удалить ппример -->
+    <div class="modal" id="example_del">
+        <div class="modal-dialog">
+            <form class="modal-content" action="#" th:action="@{/example/del}" th:object="${example}" method="POST">
+                <div class="modal-header">
+                    <h4 class="modal-title">Удалить пример?</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p id="p_text1">Пример</p>
+                    <p id="p_text2">Перевод</p>
+                </div>
+                <div class="modal-footer btn-group">
+                    <button type="submit" class="btn btn-primary">Удалить</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Закрыть</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        function fillSaveForm(id, text1, text2) {
+            $("#id").val(id);
+            $("#text1").val(text1);
+            $("#text2").val(text2);
+            $("#modal-title").text(id==null ? "Добавить пример" : "Изменить пример");
+        }
+
+        function fillDelForm(text1, text2) {
+            $("#p_text1").text(text1);
+            $("#p_text2").text(text2);
+        }
+    </script>
 </body>
 </html>

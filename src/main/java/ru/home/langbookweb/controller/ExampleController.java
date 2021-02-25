@@ -39,4 +39,10 @@ public class ExampleController {
     public String saveExample(@ModelAttribute("example") Example example) {
         return "redirect:add?translationId=1";
     }
+
+    @RolesAllowed("USER,ADMIN")
+    @PostMapping("/del")
+    public String deleteExample(@ModelAttribute("example") Example example) {
+        return "redirect:add?wordId=1";
+    }
 }
