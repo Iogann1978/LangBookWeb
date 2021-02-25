@@ -54,7 +54,7 @@
                 <td>
                     <a href="#">Примеры</a>
                     <a href="#" data-toggle="modal" data-target="#translation_save" th:attr="onclick=|fillSaveForm('${trans.id}','${trans.description}','${trans.source}')|">Изменить</a>
-                    <a href="#" data-toggle="modal" data-target="#translation_del" th:attr="onclick=|fillDelForm('${trans.description}','${trans.source}')|">Удалить</a>
+                    <a href="#" data-toggle="modal" data-target="#translation_del" th:attr="onclick=|fillDelForm('${trans.id}','${trans.description}','${trans.source}')|">Удалить</a>
                 </td>
             </tr>
             </tbody>
@@ -99,8 +99,9 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <p id="p_translation">Перевод</p>
-                    <p id="p_source">Источник</p>
+                    <input type="text" hidden="true" id="d_id" th:field="*{id}" />
+                    <p id="d_translation">Перевод</p>
+                    <p id="d_source">Источник</p>
                 </div>
                 <div class="modal-footer btn-group">
                     <button type="submit" class="btn btn-primary">Удалить</button>
@@ -118,9 +119,10 @@
             $("#modal-title").text(id==null ? "Добавить перевод" : "Изменить перевод");
         }
 
-        function fillDelForm(translation, source) {
-            $("#p_translation").text(translation);
-            $("#p_source").text(source);
+        function fillDelForm(id, translation, source) {
+            $("#d_id").val(id);
+            $("#d_translation").text(translation);
+            $("#d_source").text(source);
         }
     </script>
 </body>
