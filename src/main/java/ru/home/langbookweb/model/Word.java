@@ -11,6 +11,7 @@ import java.util.Set;
 @SuperBuilder
 @NoArgsConstructor
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Word {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,4 +20,5 @@ public class Word {
     @OneToMany
     protected Set<Translation> translations;
     protected boolean roundRobin;
+    protected String username;
 }

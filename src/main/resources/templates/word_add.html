@@ -27,6 +27,9 @@
                             <a class="nav-link" href="#">Карусель</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="#">Фразы</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="#">Статьи</a>
                         </li>
                         <li class="nav-item">
@@ -53,11 +56,14 @@
                     <li class="nav-item" role="presentation">
                         <a href="#word-adjective" class="nav-link" data-toggle="tab">Прилагательное</a>
                     </li>
+                    <li class="nav-item" role="presentation">
+                        <a href="#word-phrase" class="nav-link" data-toggle="tab">Фраза</a>
+                    </li>
                 </ul>
 
                 <div class="tab-content card">
                     <div role="tabpanel" class="tab-pane active" id="word-simple">
-                        <form class="form-horizontal" action="#" th:action="@{/word/save}" th:object="${word}" method="POST">
+                        <form class="form-horizontal" action="#" th:action="@{/word/save?type=word}" th:object="${word}" method="POST">
                             <div class="form-group">
                                 <label class="col-md-3 col-md-offset-9 control-label" for="word">Слово</label>
                                 <div class="col-md-12">
@@ -75,7 +81,7 @@
                         </form>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="word-noun">
-                        <form class="form-horizontal" action="#" th:action="@{/word/save}" th:object="${noun}" method="POST">
+                        <form class="form-horizontal" action="#" th:action="@{/word/save?type=noun}" th:object="${noun}" method="POST">
                             <div class="form-group">
                                 <label class="col-md-3 col-md-offset-9 control-label" for="single">Единственное число</label>
                                 <div class="col-md-12">
@@ -97,7 +103,7 @@
                         </form>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="word-verb">
-                        <form class="form-horizontal" action="#" th:action="@{/word/save}" th:object="${verb}" method="POST">
+                        <form class="form-horizontal" action="#" th:action="@{/word/save?type=verb}" th:object="${verb}" method="POST">
                             <div class="form-group">
                                 <label class="col-md-3 col-md-offset-9 control-label" for="infinitive">Неопределенная форма</label>
                                 <div class="col-md-12">
@@ -123,7 +129,7 @@
                         </form>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="word-adjective">
-                        <form class="form-horizontal" action="#" th:action="@{/word/save}" th:object="${adjective}" method="POST">
+                        <form class="form-horizontal" action="#" th:action="@{/word/save?type=adjective}" th:object="${adjective}" method="POST">
                             <div class="form-group">
                                 <label class="col-md-3 col-md-offset-9 control-label" for="positive">Положительная степень</label>
                                 <div class="col-md-12">
@@ -136,6 +142,24 @@
                                 <label class="col-md-3 col-md-offset-9 control-label" for="superative">Превосходная степень</label>
                                 <div class="col-md-12">
                                     <input type="text" class="form-control" id="superative" th:field="*{superative}" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-3 col-md-offset-9">
+                                    <button class="btn btn-outline-success" type="submit">
+                                        <span class="glyphicon glyphicon-edit"></span>
+                                        Сохранить
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="word-phrase">
+                        <form class="form-horizontal" action="#" th:action="@{/word/save?type=phrase}" th:object="${phrase}" method="POST">
+                            <div class="form-group">
+                                <label class="col-md-3 col-md-offset-9 control-label" for="phrase">Фраза</label>
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control" id="phrase" th:field="*{word}" />
                                 </div>
                             </div>
                             <div class="form-group">

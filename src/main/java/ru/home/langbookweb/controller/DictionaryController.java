@@ -1,11 +1,19 @@
 package ru.home.langbookweb.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.spring5.context.webflux.IReactiveDataDriverContextVariable;
 import org.thymeleaf.spring5.context.webflux.ReactiveDataDriverContextVariable;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.home.langbookweb.model.Noun;
 import ru.home.langbookweb.model.Translation;
 import ru.home.langbookweb.model.Verb;
@@ -17,12 +25,18 @@ import java.util.Set;
 @Controller
 @RequestMapping(value = "/dictionary")
 public class DictionaryController {
+    @Autowired
+    private MapReactiveUserDetailsService mapReactiveUserDetailsService;
     private static final int rowsOnPage = 10;
     private int currentPage = 1;
 
     @RolesAllowed("USER,ADMIN")
     @GetMapping
     public String getDicrionary(@RequestParam(defaultValue = "0") int page, Model model) {
+        Mono<String> user = ReactiveSecurityContextHolder.getContext()
+                .map(SecurityContext::getAuthentication)
+                .map(Authentication::getPrincipal)
+                .map(principal -> ((UserDetails) principal).getUsername());
         Flux<? super Word> words = Flux.just(
                 Word.builder().word("in").translations(Set.of(Translation.builder().description("в").build())).build(),
                 Noun.builder().word("body").plural("bodies").roundRobin(true).translations(Set.of(Translation.builder().description("тело").build())).build(),
@@ -33,6 +47,7 @@ public class DictionaryController {
         model.addAttribute("words", reactiveDataDrivenMode);
         model.addAttribute("pages", new int[] {1, 2, 3, 4, 5, 6, 7});
         model.addAttribute("word", new Word());
+        model.addAttribute("user", user);
         return "dictionary";
     }
 

@@ -1,20 +1,22 @@
 package ru.home.langbookweb.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Data
-@SuperBuilder
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Translation {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    protected Long id;
+    private Long id;
     private String description;
     private String source;
     @OneToMany

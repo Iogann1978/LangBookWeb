@@ -5,18 +5,12 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
 @Data
 @SuperBuilder
 @NoArgsConstructor
 @Entity
 public class Verb extends Word {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    protected Long id;
     private String past;
     private String participle;
 }

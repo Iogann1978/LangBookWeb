@@ -2,14 +2,8 @@ package ru.home.langbookweb.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import ru.home.langbookweb.model.Adjective;
-import ru.home.langbookweb.model.Noun;
-import ru.home.langbookweb.model.Verb;
-import ru.home.langbookweb.model.Word;
+import org.springframework.web.bind.annotation.*;
+import ru.home.langbookweb.model.*;
 
 import javax.annotation.security.RolesAllowed;
 
@@ -23,21 +17,27 @@ public class WordController {
         model.addAttribute("noun", new Noun());
         model.addAttribute("verb", new Verb());
         model.addAttribute("adjective", new Adjective());
+        model.addAttribute("phrase", new Phrase());
         return "word_add";
     }
 
     @RolesAllowed("USER,ADMIN")
     @PostMapping("/save")
-    public String saveWord(@ModelAttribute("word") Word word) {
-        if (word instanceof Noun) {
-
-        } else if (word instanceof Verb) {
-
-        } else if (word instanceof Adjective) {
-
-        } else {
-
+    public String saveWord(@RequestParam String type, Model model) {
+        switch (type) {
+            case "word":
+                break;
+            case "noun":
+                break;
+            case "verb":
+                break;
+            case "adjective":
+                break;
+            case "phrase":
+                break;
+            default:
+                break;
         }
-        return "add_translation";
+        return "redirect:../translation/add?wordId=1";
     }
 }

@@ -10,7 +10,5 @@ import javax.persistence.Entity;
 @SuperBuilder
 @NoArgsConstructor
 @Entity
-public class Adjective extends Word {
-    private String comparative;
-    private String superative;
+public class Phrase extends Word {
 }

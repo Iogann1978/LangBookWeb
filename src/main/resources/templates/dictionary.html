@@ -30,6 +30,9 @@
                             <a class="nav-link" href="#">Карусель</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="#">Фразы</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="#">Статьи</a>
                         </li>
                         <li class="nav-item">
@@ -51,7 +54,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <h1 class="text-center">Словарь</h1>
+                <h1 class="text-center" th:text="'Словарь: ' + ${user}">Словарь</h1>
             </div>
         </div>
         <div class="row">
@@ -85,7 +88,7 @@
             </div>
         </div>
     </div>
-    <footer>
+    <footer class="d-flex justify-content-center">
         <nav aria-label="Pages">
             <ul class="pagination">
                 <li class="page-item">
