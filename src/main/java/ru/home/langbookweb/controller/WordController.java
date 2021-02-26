@@ -40,4 +40,10 @@ public class WordController {
         }
         return "redirect:../translation/add?wordId=1";
     }
+
+    @RolesAllowed("USER,ADMIN")
+    @PostMapping("/del")
+    public String deleteWord(@ModelAttribute("word") Word word) {
+        return "dictionary";
+    }
 }
