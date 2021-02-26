@@ -19,8 +19,8 @@ public class TranslationController {
     public String addTranslation(@RequestParam Long wordId, Model model) {
         Word word = Word.builder().id(wordId).word("Body").build();
         Flux<Translation> translations = Flux.just(
-                Translation.builder().description("Перевод 1").source("Oxford dictionary").build(),
-                Translation.builder().description("Перевод 2").source("Cambridge dictionary").build()
+                Translation.builder().id(1L).description("Перевод 1").source("Oxford dictionary").build(),
+                Translation.builder().id(2L).description("Перевод 2").source("Cambridge dictionary").build()
         );
         IReactiveDataDriverContextVariable reactiveDataDrivenMode =
                 new ReactiveDataDriverContextVariable(translations);

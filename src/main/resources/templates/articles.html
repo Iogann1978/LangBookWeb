@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Словарь</title>
+    <title>Статьи</title>
     <meta charset="UTF-8">
     <!-- Bootstrap and jQuery -->
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -21,7 +21,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">Словарь</a>
+                            <a class="nav-link active" href="/dictionary">Словарь</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/word/add">Добавить слово</a>
@@ -33,28 +33,22 @@
                             <a class="nav-link" href="#">Фразы</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/article/list">Статьи</a>
+                            <a class="nav-link" aria-current="page" href="#">Статьи</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Тексты</a>
                         </li>
                     </ul>
                 </div>
-                <form class="navbar-form float-right" action="#" th:action="@{/dictionary/find}" th:object="${word}" method="POST">
-                    <div class="input-group">
-                        <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit" th:field="*{word}">
-                            <i class="glyphicon glyphicon-search"></i>
-                        </button>
-                    </div>
-                </form>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#article_save" onclick="fillSaveForm(null,'')">Добавить статью</button>
             </div>
         </nav>
     </header>
+
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <h1 class="text-center" th:text="'Словарь: ' + ${user}">Словарь</h1>
+                <h1 class="text-center">Статьи</h1>
             </div>
         </div>
         <div class="row">
@@ -62,25 +56,18 @@
                 <table class="table table-hover">
                     <thead>
                     <tr>
-                        <th scope="col">Слово</th>
-                        <th scope="col">Тип</th>
-                        <th scope="col">Включено в карусель</th>
+                        <th scope="col">Название статьи</th>
+                        <th scope="col">Имя файла</th>
                         <th scope="col">Действия</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="word:${words}">
-                        <td th:text="${word.word}">Слово</td>
-                        <td th:text="${word.class.simpleName}">Тип</td>
-                        <td>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" th:checked="${word.roundRobin}" disabled />
-                            </div>
-                        </td>
+                    <tr th:each="article:${articles}">
+                        <td th:text="${article.name}">Название</td>
+                        <td th:text="${article.filename}">Имя файла</td>
                         <td>
                             <a href="#">Просмотреть</a>
-                            <a href="#" data-toggle="modal" data-target="#word_save" th:attr="onclick=|fillSaveForm(${word.id},'${word.word}',${word.roundRobin})|">Изменить</a>
-                            <a href="#" data-toggle="modal" data-target="#word_del" th:attr="onclick=|fillDelForm(${word.id},'${word.word}','${word.class.simpleName}')|">Удалить</a>
+                            <a href="#" data-toggle="modal" data-target="#article_del" th:attr="onclick=|fillDelForm(${article.id},'${article.name}','${article.filename}')|">Удалить</a>
                         </td>
                     </tr>
                     </tbody>
@@ -88,6 +75,7 @@
             </div>
         </div>
     </div>
+
     <footer class="d-flex justify-content-center">
         <nav aria-label="Pages">
             <ul class="pagination">
@@ -118,24 +106,30 @@
         </nav>
     </footer>
 
-    <!-- Изменить слово -->
-    <div class="modal" id="word_save">
+    <!-- Добавить статью -->
+    <div class="modal" id="article_save">
         <div class="modal-dialog">
-            <form class="modal-content" action="#" th:action="@{/word/save}" th:object="${word}" method="POST">
+            <form class="modal-content" action="#" th:action="@{/article/save}" th:object="${article}" method="POST">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="modal-title">Заголовок</h4>
+                    <h4 class="modal-title" id="modal-title">Добавить статью</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
                         <input type="text" hidden="true" id="id" th:field="*{id}" />
-                        <label for="word">Слово</label>
-                        <input type="text" class="form-control" id="word" th:field="*{word}" />
+                        <input type="text" hidden="true" id="filename" th:field="*{filename}" />
+                        <label for="name">Название статьи</label>
+                        <input type="text" class="form-control" id="name" th:field="*{name}" />
                     </div>
                     <div class="form-group">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="roundRobin" th:field="*{roundRobin}" />
-                            <label class="form-check-label" for="roundRobin">Включено в карусель</label>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Загрузить файл</span>
+                            </div>
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="upload">
+                                <label class="custom-file-label" for="upload">Имя файла</label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -147,18 +141,18 @@
         </div>
     </div>
 
-    <!-- Удалить слово -->
-    <div class="modal" id="word_del">
+    <!-- Удалить статью -->
+    <div class="modal" id="article_del">
         <div class="modal-dialog">
-            <form class="modal-content" action="#" th:action="@{/word/del}" th:object="${word}" method="POST">
+            <form class="modal-content" action="#" th:action="@{/article/del}" th:object="${article}" method="POST">
                 <div class="modal-header">
-                    <h4 class="modal-title">Удалить слово?</h4>
+                    <h4 class="modal-title">Удалить статью?</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
                     <input type="text" hidden="true" id="d_id" th:field="*{id}" />
-                    <p id="d_word">Слово</p>
-                    <p id="d_type">Тип</p>
+                    <p id="d_name">Название</p>
+                    <p id="d_filename">Имя файла</p>
                 </div>
                 <div class="modal-footer btn-group">
                     <button type="submit" class="btn btn-primary">Удалить</button>
@@ -169,17 +163,21 @@
     </div>
 
     <script type="text/javascript">
-        function fillSaveForm(id, word, roundRobin) {
+        $('#upload').on('change',function(){
+            var filename = $(this).prop("files")[0]["name"];
+            $(this).next(".custom-file-label").html(filename);
+            $("#filename").val(fileName);
+        })
+
+        function fillSaveForm(id, name) {
             $("#id").val(id);
-            $("#word").val(word);
-            $("#roundRobin").prop("checked", roundRobin);
-            $("#modal-title").text("Изменить слово");
+            $("#name").val(name);
         }
 
-        function fillDelForm(id, word, type) {
+        function fillDelForm(id, name, filename) {
             $("#d_id").val(id);
-            $("#d_word").text(word);
-            $("#d_type").text(type);
+            $("#d_name").text(name);
+            $("#d_filename").text(filename);
         }
     </script>
 </body>

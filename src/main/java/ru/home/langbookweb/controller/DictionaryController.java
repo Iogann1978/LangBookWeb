@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -25,8 +24,6 @@ import java.util.Set;
 @Controller
 @RequestMapping(value = "/dictionary")
 public class DictionaryController {
-    @Autowired
-    private MapReactiveUserDetailsService mapReactiveUserDetailsService;
     private static final int rowsOnPage = 10;
     private int currentPage = 1;
 
@@ -38,9 +35,9 @@ public class DictionaryController {
                 .map(Authentication::getPrincipal)
                 .map(principal -> ((UserDetails) principal).getUsername());
         Flux<? super Word> words = Flux.just(
-                Word.builder().word("in").translations(Set.of(Translation.builder().description("в").build())).build(),
-                Noun.builder().word("body").plural("bodies").roundRobin(true).translations(Set.of(Translation.builder().description("тело").build())).build(),
-                Verb.builder().word("go").past("went").participle("gone").translations(Set.of(Translation.builder().description("идти").build())).build()
+                Word.builder().id(1L).word("in").translations(Set.of(Translation.builder().description("в").build())).build(),
+                Noun.builder().id(2L).word("body").plural("bodies").roundRobin(true).translations(Set.of(Translation.builder().description("тело").build())).build(),
+                Verb.builder().id(3L).word("go").past("went").participle("gone").translations(Set.of(Translation.builder().description("идти").build())).build()
         );
         IReactiveDataDriverContextVariable reactiveDataDrivenMode =
                 new ReactiveDataDriverContextVariable(words);
