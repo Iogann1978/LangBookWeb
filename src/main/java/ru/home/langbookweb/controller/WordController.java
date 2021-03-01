@@ -17,6 +17,8 @@ public class WordController {
         model.addAttribute("noun", new Noun());
         model.addAttribute("verb", new Verb());
         model.addAttribute("adjective", new Adjective());
+        model.addAttribute("adverb", new Adverb());
+        model.addAttribute("participle", new Participle());
         model.addAttribute("phrase", new Phrase());
         return "word_add";
     }
@@ -32,6 +34,10 @@ public class WordController {
             case "verb":
                 break;
             case "adjective":
+                break;
+            case "adverb":
+                break;
+            case "participle":
                 break;
             case "phrase":
                 break;

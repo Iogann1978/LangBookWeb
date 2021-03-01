@@ -60,6 +60,12 @@
                         <a href="#word-adjective" class="nav-link" data-toggle="tab">Прилагательное</a>
                     </li>
                     <li class="nav-item" role="presentation">
+                        <a href="#word-adverb" class="nav-link" data-toggle="tab">Наречие</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a href="#word-participle" class="nav-link" data-toggle="tab">Причастие</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
                         <a href="#word-phrase" class="nav-link" data-toggle="tab">Фраза</a>
                     </li>
                 </ul>
@@ -116,9 +122,9 @@
                                 <div class="col-md-12">
                                     <input type="text" class="form-control" id="past" th:field="*{past}" />
                                 </div>
-                                <label class="col-md-3 col-md-offset-9 control-label" for="participle">Причастие прошедшего времени</label>
+                                <label class="col-md-3 col-md-offset-9 control-label" for="participle2">Причастие прошедшего времени</label>
                                 <div class="col-md-12">
-                                    <input type="text" class="form-control" id="participle" th:field="*{participle}" />
+                                    <input type="text" class="form-control" id="participle2" th:field="*{participle}" />
                                 </div>
                             </div>
                             <div class="form-group">
@@ -145,6 +151,42 @@
                                 <label class="col-md-3 col-md-offset-9 control-label" for="superative">Превосходная степень</label>
                                 <div class="col-md-12">
                                     <input type="text" class="form-control" id="superative" th:field="*{superative}" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-3 col-md-offset-9">
+                                    <button class="btn btn-outline-success" type="submit">
+                                        <span class="glyphicon glyphicon-edit"></span>
+                                        Сохранить
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="word-adverb">
+                        <form class="form-horizontal" action="#" th:action="@{/word/save?type=adverb}" th:object="${adverb}" method="POST">
+                            <div class="form-group">
+                                <label class="col-md-3 col-md-offset-9 control-label" for="adverb">Наречие</label>
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control" id="adverb" th:field="*{word}" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-3 col-md-offset-9">
+                                    <button class="btn btn-outline-success" type="submit">
+                                        <span class="glyphicon glyphicon-edit"></span>
+                                        Сохранить
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="word-participle">
+                        <form class="form-horizontal" action="#" th:action="@{/word/save?type=participle}" th:object="${participle}" method="POST">
+                            <div class="form-group">
+                                <label class="col-md-3 col-md-offset-9 control-label" for="participle">Причастие</label>
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control" id="participle" th:field="*{word}" />
                                 </div>
                             </div>
                             <div class="form-group">

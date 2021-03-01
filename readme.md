@@ -9,7 +9,8 @@ keytool -export -alias server -file server.crt -keystore server.jks
 [Словарь](https://localhost:8443/dictionary) \
 [Добавить слово](https://localhost:8443/word/add) \
 [Добавить перевод](https://localhost:8443/translation/add?wordId=1) \
-[Добавить пример](https://localhost:8443/example/add?translationId=1)
+[Добавить пример](https://localhost:8443/example/add?translationId=1) \
+[Статьи](https://localhost:8443/article/list)
 
 ###Полезные ссылки
 [Bootstrap 4.0 docs](https://getbootstrap.com/docs/4.0/getting-started/introduction/) \
@@ -20,4 +21,4 @@ keytool -export -alias server -file server.crt -keystore server.jks
 ###ToDo
 Сделать кнопку очистки фильтра на странице словаря \
 Добавить выбор словаря (?) \
-При добавление слова сделать проверку, чтобы нельзя было добавлять такое же слово с таким же типом
+При добавление слова сделать проверку, чтобы нельзя было добавлять такое же слово с таким же типом и таким же пользователем

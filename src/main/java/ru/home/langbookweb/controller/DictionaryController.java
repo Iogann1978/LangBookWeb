@@ -36,11 +36,10 @@ public class DictionaryController {
                 .map(principal -> ((UserDetails) principal).getUsername());
         Flux<? super Word> words = Flux.just(
                 Word.builder().id(1L).word("in").translations(Set.of(Translation.builder().description("в").build())).build(),
-                Noun.builder().id(2L).word("body").plural("bodies").roundRobin(true).translations(Set.of(Translation.builder().description("тело").build())).build(),
+                Noun.builder().id(2L).word("body").plural("bodies").translations(Set.of(Translation.builder().description("тело").build())).build(),
                 Verb.builder().id(3L).word("go").past("went").participle("gone").translations(Set.of(Translation.builder().description("идти").build())).build()
         );
-        IReactiveDataDriverContextVariable reactiveDataDrivenMode =
-                new ReactiveDataDriverContextVariable(words);
+        IReactiveDataDriverContextVariable reactiveDataDrivenMode = new ReactiveDataDriverContextVariable(words);
         model.addAttribute("words", reactiveDataDrivenMode);
         model.addAttribute("pages", new int[] {1, 2, 3, 4, 5, 6, 7});
         model.addAttribute("word", new Word());

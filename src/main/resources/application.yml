@@ -13,6 +13,12 @@ spring:
     reactive:
       max-chunk-size: 8192
 
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 128KB
+      max-request-size: 128KB
+
   datasource:
     url: jdbc:hsqldb:file:./langbookweb_db;hsqldb.lob_compressed=true
     username: sa

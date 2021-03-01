@@ -1,22 +1,25 @@
 package ru.home.langbookweb.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Data
-@SuperBuilder
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-public class Word {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    protected Long id;
-    protected String word;
+    private Long id;
+    private String login;
     @OneToMany
-    protected Set<Translation> translations;
+    private Set<Word> dictionary;
+    @OneToMany
+    private Set<Article> articles;
 }
