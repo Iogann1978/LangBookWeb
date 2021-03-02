@@ -71,7 +71,7 @@
                     <tr th:each="word:${words}">
                         <td th:text="${word.word}">Слово</td>
                         <td th:text="${word.class.simpleName}">Тип</td>
-                        <td><a href="#">Просмотреть</a></td>
+                        <td><a th:href="@{/word(wordId=${word.id})}">Просмотреть</a></td>
                     </tr>
                     </tbody>
                 </table>

@@ -58,7 +58,7 @@
                 <td th:text="${trans.description}">Перевод</td>
                 <td th:text="${trans.source}">Источник</td>
                 <td>
-                    <a href="#">Примеры</a>
+                    <a th:href="@{/example/add(translationId=${trans.id})}">Примеры</a>
                     <a href="#" data-toggle="modal" data-target="#translation_save" th:attr="onclick=|fillSaveForm(${trans.id},'${trans.description}','${trans.source}')|">Изменить</a>
                     <a href="#" data-toggle="modal" data-target="#translation_del" th:attr="onclick=|fillDelForm(${trans.id},'${trans.description}','${trans.source}')|">Удалить</a>
                 </td>

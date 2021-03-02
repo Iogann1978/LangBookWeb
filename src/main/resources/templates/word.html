@@ -45,6 +45,7 @@
                 </div>
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#word_save" onclick="fillSaveForm(null,'','')">Изменить слово</button>
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#word_del" onclick="fillDelForm(null,'','')">Удалить слово</button>
+                <a th:href="@{/translation/add(wordId=${word.id})}" class="btn btn-info" role="button">Редактировать переводы</a>
             </div>
         </nav>
     </header>
@@ -85,28 +86,6 @@
                 </ul>
             </dd>
         </dl>
-
-        <div class="row">
-            <div class="col-md-12">
-                <h2 class="text-center">Редактировать переводы</h2>
-            </div>
-        </div>
-        <table class="table table-hover">
-            <thead>
-            <tr>
-                <th class="col-11" scope="col">Перевод</th>
-                <th class="col-1" scope="col">Действия</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="trans:${word.translations}">
-                <td th:text="${trans.description}">Перевод</td>
-                <td>
-                    <a href="#">Изменить</a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
     </div>
 
     <div class="modal" id="word_save">
