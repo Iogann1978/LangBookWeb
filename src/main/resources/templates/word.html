@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Добавить слово</title>
+    <meta charset="UTF-8">
+    <!-- Bootstrap and jQuery -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap-glyphicons/bdd2cbfba0/css/bootstrap-glyphicons.css}" />
+    <script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
+</head>
+<body>
+<header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Навигация:</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">Словарь</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="#">Просмотр слова</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/word/add">Добавить слово</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Карусель</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Фразы</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/article/list">Статьи</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Тексты</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12" th:switch="${word.class.simpleName}">
+                <h1 class="text-center" th:case="'Word'" th:text="${word.word}">Простое слово</h1>
+                <h1 class="text-center" th:case="'Noun'" th:text="${noun.word} + ' ' + ${noun.plural}">Существительное</h1>
+                <h1 class="text-center" th:case="'Verb'" th:text="${verb.word} + ' ' + ${verb.past} + ' ' + ${verb.participle}">Глагол</h1>
+                <h1 class="text-center" th:case="'Adjective'" th:text="${adjective.word} + ' ' + ${adjective.comparative} + ' ' + ${adjective.superative}">Прилагательное</h1>
+                <h1 class="text-center" th:case="'Adverb'" th:text="${adverb.word}">Наречие</h1>
+                <h1 class="text-center" th:case="'Participle'" th:text="${participle.word}">Причастие</h1>
+                <h1 class="text-center" th:case="'Phrase'" th:text="${phrase.word}">Фраза</h1>
+                <h1 class="text-center" th:case="*">Неизвестный тип</h1>
+            </div>
+        </div>
+        <dl class="row">
+            <dt class="col-md-6">Тип</dt>
+            <dd class="col-md-6" th:text="${word.class.simpleName}">Тип</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-md-1">Перевод</dt>
+            <dd class="col-md-11">
+                <ul class="list-group" th:each="trans:${word.translations}">
+                    <capture>
+                        <blockquote class="blockquote text-center">
+                            <p class="mb-0" th:text="${trans.description}">Перевод</p>
+                            <footer class="blockquote-footer"><cite title="Источник" th:text="${trans.source}">Источник</cite></footer>
+                        </blockquote>
+                    </capture>
+                    <li class="list-group-item" th:each="exmps:${trans.examples}">
+                        <dl class="row">
+                            <dt class="col-md-6" th:text="${exmps.text1}">Example</dt>
+                            <dd class="col-md-6" th:text="${exmps.text2}">Пример</dd>
+                        </dl>
+                    </li>
+                </ul>
+            </dd>
+        </dl>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th class="col-6" scope="col">Перевод</th>
+                <th class="col-6" scope="col">Действия</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="trans:${word.translations}">
+                <td th:text="${trans.description}">Перевод</td>
+                <td>
+                    <a href="#">Изменить</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Удалить слово -->
+    <div class="modal" id="word_del">
+        <div class="modal-dialog">
+            <form class="modal-content" action="#" th:action="@{/word/del}" th:object="${word}" method="POST">
+                <div class="modal-header">
+                    <h4 class="modal-title">Удалить слово?</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" hidden="true" id="d_id" th:field="*{id}" />
+                    <p id="d_word">Слово</p>
+                    <p id="d_type">Тип</p>
+                </div>
+                <div class="modal-footer btn-group">
+                    <button type="submit" class="btn btn-primary">Удалить</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Закрыть</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        function fillSaveForm(id, word) {
+            $("#id").val(id);
+            $("#word").val(word);
+            $("#modal-title").text("Изменить слово");
+        }
+
+        function fillDelForm(id, word, type) {
+            $("#d_id").val(id);
+            $("#d_word").text(word);
+            $("#d_type").text(type);
+        }
+    </script>
+</body>
+</html>

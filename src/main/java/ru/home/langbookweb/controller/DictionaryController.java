@@ -13,10 +13,7 @@ import org.thymeleaf.spring5.context.webflux.IReactiveDataDriverContextVariable;
 import org.thymeleaf.spring5.context.webflux.ReactiveDataDriverContextVariable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import ru.home.langbookweb.model.Noun;
-import ru.home.langbookweb.model.Translation;
-import ru.home.langbookweb.model.Verb;
-import ru.home.langbookweb.model.Word;
+import ru.home.langbookweb.model.*;
 
 import javax.annotation.security.RolesAllowed;
 import java.util.Set;
@@ -35,9 +32,13 @@ public class DictionaryController {
                 .map(Authentication::getPrincipal)
                 .map(principal -> ((UserDetails) principal).getUsername());
         Flux<? super Word> words = Flux.just(
-                Word.builder().id(1L).word("in").translations(Set.of(Translation.builder().description("в").build())).build(),
-                Noun.builder().id(2L).word("body").plural("bodies").translations(Set.of(Translation.builder().description("тело").build())).build(),
-                Verb.builder().id(3L).word("go").past("went").participle("gone").translations(Set.of(Translation.builder().description("идти").build())).build()
+                Word.builder().id(1L).word("in").build(),
+                Noun.builder().id(2L).word("body").plural("bodies").build(),
+                Verb.builder().id(3L).word("go").past("went").participle("gone").build(),
+                Adjective.builder().id(4L).word("cool").comparative("cooler").superative("coolest").build(),
+                Adverb.builder().id(5L).word("fast").build(),
+                Participle.builder().word("telling").build(),
+                Phrase.builder().word("my first phrase").build()
         );
         IReactiveDataDriverContextVariable reactiveDataDrivenMode = new ReactiveDataDriverContextVariable(words);
         model.addAttribute("words", reactiveDataDrivenMode);
