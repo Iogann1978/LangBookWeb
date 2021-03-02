@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Добавить слово</title>
+    <title>Просмотреть слово</title>
     <meta charset="UTF-8">
     <!-- Bootstrap and jQuery -->
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -43,6 +43,8 @@
                         </li>
                     </ul>
                 </div>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#word_save" onclick="fillSaveForm(null,'','')">Изменить слово</button>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#word_del" onclick="fillDelForm(null,'','')">Удалить слово</button>
             </div>
         </nav>
     </header>
@@ -83,11 +85,17 @@
                 </ul>
             </dd>
         </dl>
+
+        <div class="row">
+            <div class="col-md-12">
+                <h2 class="text-center">Редактировать переводы</h2>
+            </div>
+        </div>
         <table class="table table-hover">
             <thead>
             <tr>
-                <th class="col-6" scope="col">Перевод</th>
-                <th class="col-6" scope="col">Действия</th>
+                <th class="col-11" scope="col">Перевод</th>
+                <th class="col-1" scope="col">Действия</th>
             </tr>
             </thead>
             <tbody>
@@ -99,6 +107,163 @@
             </tr>
             </tbody>
         </table>
+    </div>
+
+    <div class="modal" id="word_save">
+        <div class="modal-dialog" th:switch="${word.class.simpleName}">
+            <!-- Изменить простое слово -->
+            <form class="modal-content" th:case="'Word'" action="#" th:action="@{/word/save?type=word}" th:object="${word}" method="POST">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="word-modal-title">Заголовок</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body" th:switch="${word.class.simpleName}">
+                    <div class="form-group">
+                        <input type="text" hidden="true" id="word-id" th:field="*{id}" />
+                        <label for="word-word">Слово</label>
+                        <input type="text" class="form-control" id="word-word" th:field="*{word}" />
+                    </div>
+                </div>
+                <div class="modal-footer btn-group">
+                    <button type="submit" class="btn btn-primary">Добавить</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Закрыть</button>
+                </div>
+            </form>
+            <!-- Изменить существительное -->
+            <form class="modal-content" th:case="'Noun'" action="#" th:action="@{/word/save?type=noun}" th:object="${noun}" method="POST">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="noun-modal-title">Заголовок</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="text" hidden="true" id="noun-id" th:field="*{id}" />
+                        <label class="col-md-3 col-md-offset-9 control-label" for="single">Единственное число</label>
+                        <div class="col-md-12">
+                            <input type="text" class="form-control" id="single"  th:field="*{word}" />
+                        </div>
+                        <label class="col-md-3 col-md-offset-9 control-label" for="plural">Множественное число</label>
+                        <div class="col-md-12">
+                            <input type="text" class="form-control" id="plural" th:field="*{plural}" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer btn-group">
+                    <button type="submit" class="btn btn-primary">Добавить</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Закрыть</button>
+                </div>
+            </form>
+            <!-- Изменить глагол -->
+            <form class="modal-content" th:case="'Verb'" action="#" th:action="@{/word/save?type=verb}" th:object="${verb}" method="POST">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="verb-modal-title">Заголовок</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="text" hidden="true" id="verb-id" th:field="*{id}" />
+                        <label class="col-md-3 col-md-offset-9 control-label" for="infinitive">Неопределенная форма</label>
+                        <div class="col-md-12">
+                            <input type="text" class="form-control" id="infinitive" th:field="*{word}" />
+                        </div>
+                        <label class="col-md-3 col-md-offset-9 control-label" for="past">Прошедшее время</label>
+                        <div class="col-md-12">
+                            <input type="text" class="form-control" id="past" th:field="*{past}" />
+                        </div>
+                        <label class="col-md-3 col-md-offset-9 control-label" for="participle2">Причастие прошедшего времени</label>
+                        <div class="col-md-12">
+                            <input type="text" class="form-control" id="participle2" th:field="*{participle}" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer btn-group">
+                    <button type="submit" class="btn btn-primary">Добавить</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Закрыть</button>
+                </div>
+            </form>
+            <!-- Изменить прилагательное -->
+            <form class="modal-content"  th:case="'Adjective'"action="#" th:action="@{/word/save?type=adjective}" th:object="${adjective}" method="POST">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="adjective-modal-title">Заголовок</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="text" hidden="true" id="adjective-id" th:field="*{id}" />
+                        <label class="col-md-3 col-md-offset-9 control-label" for="positive">Положительная степень</label>
+                        <div class="col-md-12">
+                            <input type="text" class="form-control" id="positive" th:field="*{word}" />
+                        </div>
+                        <label class="col-md-3 col-md-offset-9 control-label" for="comparative">Сравнительная степень</label>
+                        <div class="col-md-12">
+                            <input type="text" class="form-control" id="comparative" th:field="*{comparative}" />
+                        </div>
+                        <label class="col-md-3 col-md-offset-9 control-label" for="superative">Превосходная степень</label>
+                        <div class="col-md-12">
+                            <input type="text" class="form-control" id="superative" th:field="*{superative}" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer btn-group">
+                    <button type="submit" class="btn btn-primary">Добавить</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Закрыть</button>
+                </div>
+            </form>
+            <!-- Изменить наречие -->
+            <form class="modal-content" th:case="'Adverb'" action="#" th:action="@{/word/save?type=adverb}" th:object="${adverb}" method="POST">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="adverb-modal-title">Заголовок</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="text" hidden="true" id="adverb-id" th:field="*{id}" />
+                        <label for="adverb">Наречие</label>
+                        <input type="text" class="form-control" id="adverb" th:field="*{word}" />
+                    </div>
+                </div>
+                <div class="modal-footer btn-group">
+                    <button type="submit" class="btn btn-primary">Добавить</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Закрыть</button>
+                </div>
+            </form>
+            <!-- Изменить причастие -->
+            <form class="modal-content" th:case="'Participle'" action="#" th:action="@{/word/save?type=participle}" th:object="${participle}" method="POST">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="participle-modal-title">Заголовок</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="text" hidden="true" id="participle-id" th:field="*{id}" />
+                        <label for="participle">Причастие</label>
+                        <input type="text" class="form-control" id="participle" th:field="*{word}" />
+                    </div>
+                </div>
+                <div class="modal-footer btn-group">
+                    <button type="submit" class="btn btn-primary">Добавить</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Закрыть</button>
+                </div>
+            </form>
+            <!-- Изменить фразу -->
+            <form class="modal-content" th:case="'Phrase'" action="#" th:action="@{/word/save?type=phrase}" th:object="${phrase}" method="POST">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="phrase-modal-title">Заголовок</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="text" hidden="true" id="phrase-id" th:field="*{id}" />
+                        <label for="phrase">Фраза</label>
+                        <input type="text" class="form-control" id="phrase" th:field="*{word}" />
+                    </div>
+                </div>
+                <div class="modal-footer btn-group">
+                    <button type="submit" class="btn btn-primary">Добавить</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Закрыть</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- Удалить слово -->
