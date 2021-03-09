@@ -11,7 +11,8 @@ keytool -export -alias server -file server.crt -keystore server.jks
 [Добавить перевод](https://localhost:8443/translation/add?wordId=1) \
 [Добавить пример](https://localhost:8443/example/add?translationId=1) \
 [Статьи](https://localhost:8443/article/list) \
-[Просмотреть слово](https://localhost:8443/word?wordId=1)
+[Просмотреть слово](https://localhost:8443/word?wordId=1) \
+[Карусель](https://localhost:8443/roundrobin)
 
 ###Полезные ссылки
 [Bootstrap 4.0 docs](https://getbootstrap.com/docs/4.0/getting-started/introduction/) \

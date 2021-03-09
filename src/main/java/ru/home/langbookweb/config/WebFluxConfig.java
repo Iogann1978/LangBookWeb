@@ -55,7 +55,7 @@ public class WebFluxConfig implements WebFluxConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/webjars/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/");
+        registry.addResourceHandler("/webjars/**", "/images/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/", "classpath:/static/images/");
     }
 }

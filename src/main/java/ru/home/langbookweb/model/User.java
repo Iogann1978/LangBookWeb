@@ -22,4 +22,6 @@ public class User {
     private Set<Word> dictionary;
     @OneToMany
     private Set<Article> articles;
+    @OneToOne
+    private RoundRobin roundRobin;
 }

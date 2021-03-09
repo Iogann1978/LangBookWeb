@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Словарь</title>
+    <meta charset="UTF-8">
+    <!-- Bootstrap and jQuery -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap-glyphicons/bdd2cbfba0/css/bootstrap-glyphicons.css}" />
+    <script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
+    <script th:src="@{/webjars/popper.js/2.5.4/umd/popper.min.js}"></script>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Навигация:</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="#">Словарь</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/word/add">Добавить слово</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">Карусель</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Фразы</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/article/list">Статьи</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Тексты</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="text-center" th:text="${roundrobin.name}">Название карусели</h1>
+            </div>
+        </div>
+
+        <div id="carouselControls" class="carousel slide" data-ride="carousel">
+            <ol class="carousel-indicators">
+                <li data-target="#carouselControls" data-slide-to="0" class="active"></li>
+                <li th:each="num:${numbers}" data-target="#carouselControls" th:attr="data-slide-to=|'${num}'|"></li>
+            </ol>
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img class="d-block w-100" th:src="@{/images/roundrobin-bg.svg}" alt="">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h3>Карусель слов</h3>
+                        <p>Начало</p>
+                    </div>
+                </div>
+                <div class="carousel-item" th:each="word:${roundrobin.words}">
+                    <img class="d-block w-100" th:src="@{/images/roundrobin-bg.svg}" alt="">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h3 th:text="${word.word}">Слово</h3>
+                        <p th:text="${word.class.simpleName}">Тип</p>
+                    </div>
+                </div>
+            </div>
+            <a class="carousel-control-prev" href="#carouselControls" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Предыдущий</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselControls" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Следующий</span>
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>
