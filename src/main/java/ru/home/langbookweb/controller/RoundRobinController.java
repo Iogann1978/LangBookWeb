@@ -14,7 +14,6 @@ import java.util.Set;
 @Controller
 @RequestMapping(value = "/roundrobin")
 public class RoundRobinController {
-
     @RolesAllowed("USER,ADMIN")
     @GetMapping
     public String getRoundRobin(Model model) {
@@ -32,6 +31,4 @@ public class RoundRobinController {
         model.addAttribute("numbers", new int[]{1, 2, 3});
         return "roundrobin";
     }
-
-
 }

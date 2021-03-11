@@ -59,31 +59,16 @@
             </ol>
             <div class="carousel-inner">
                 <div class="carousel-item active">
-                    <img class="d-block w-100" th:src="@{/images/roundrobin-bg.svg}" alt="">
+                    <img class="d-block w-100" th:src="${@graphicService.getSrc('Карусель слов')}" alt="">
                     <div class="carousel-caption d-none d-md-block">
                         <h3>Карусель слов</h3>
                         <p>В карусель можно добавлять и удалять слова для повторения их перевода</p>
                     </div>
                 </div>
                 <div class="carousel-item" th:each="word:${roundrobin.words}">
-                    <img class="d-block w-100" th:src="@{/images/roundrobin-bg.svg}" alt="">
+                    <img class="d-block w-100" th:src="${@graphicService.getSrc(word.word + ' ' + word.class.simpleName)}" alt="">
                     <div class="carousel-caption d-none d-md-block">
                         <div id="accordion">
-                            <div class="card">
-                                <div class="card-header" id="headingWord">
-                                    <h5 class="mb-0">
-                                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseWord" aria-expanded="true" aria-controls="collapseWord">
-                                            Слово
-                                        </button>
-                                    </h5>
-                                </div>
-                                <div id="collapseWord" class="collapse show" aria-labelledby="headingWord" data-parent="#accordion">
-                                    <div class="card-body text-dark">
-                                        <p th:text="${word.word}">Слово</p>
-                                        <p th:text="${word.class.simpleName}">Тип</p>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="card">
                                 <div class="card-header" id="headingTranslation">
                                     <h5 class="mb-0">

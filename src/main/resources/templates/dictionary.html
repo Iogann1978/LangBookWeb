@@ -61,21 +61,21 @@
             <div class="col-md-12">
                 <table class="table table-hover">
                     <thead>
-                    <tr>
-                        <th class="col-8" scope="col">Слово</th>
-                        <th class="col-1" scope="col">Тип</th>
-                        <th class="col-3" scope="col">Действия</th>
-                    </tr>
+                        <tr>
+                            <th class="col-8" scope="col">Слово</th>
+                            <th class="col-1" scope="col">Тип</th>
+                            <th class="col-3" scope="col">Действия</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="word:${words}">
-                        <td th:text="${word.word}">Слово</td>
-                        <td th:text="${word.class.simpleName}">Тип</td>
-                        <td>
-                            <a th:href="@{/word(wordId=${word.id})}">Просмотреть</a>
-                            <a th:href="@{/roundrobin(wordId=${word.id})}">Добавить слово в карусель</a>
-                        </td>
-                    </tr>
+                        <tr th:each="word:${words}">
+                            <td th:text="${word.word}">Слово</td>
+                            <td th:text="${word.class.simpleName}">Тип</td>
+                            <td>
+                                <a th:href="@{/word(wordId=${word.id})}">Просмотреть</a>
+                                <a th:href="@{/roundrobin(wordId=${word.id})}">Добавить слово в карусель</a>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
