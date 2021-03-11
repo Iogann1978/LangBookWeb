@@ -73,7 +73,7 @@
                             <td th:text="${word.class.simpleName}">Тип</td>
                             <td>
                                 <a th:href="@{/word(wordId=${word.id})}">Просмотреть</a>
-                                <a th:href="@{/roundrobin(wordId=${word.id})}">Добавить слово в карусель</a>
+                                <a href="#" data-toggle="modal" data-target="#roundrobin_add" th:attr="onclick=|fillRoundrobinForm(${word.id},'${word.word}','${word.class.simpleName}')|">Добавить слово в карусель</a>
                             </td>
                         </tr>
                     </tbody>
@@ -110,5 +110,34 @@
             </ul>
         </nav>
     </footer>
+
+    <!-- Удалить слово -->
+    <div class="modal" id="roundrobin_add">
+        <div class="modal-dialog">
+            <form class="modal-content" action="#" th:action="@{/roundrobin/add}" th:object="${word}" method="POST">
+                <div class="modal-header">
+                    <h4 class="modal-title">Добавить слово в карусель?</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" hidden="true" id="d_id" th:field="*{id}" />
+                    <p id="d_word">Слово</p>
+                    <p id="d_type">Тип</p>
+                </div>
+                <div class="modal-footer btn-group">
+                    <button type="submit" class="btn btn-primary">Добавить</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Закрыть</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        function fillRoundrobinForm(id, word, type) {
+            $("#d_id").val(id);
+            $("#d_word").text(word);
+            $("#d_type").text(type);
+        }
+    </script>
 </body>
 </html>

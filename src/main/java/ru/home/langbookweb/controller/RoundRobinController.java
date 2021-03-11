@@ -3,6 +3,7 @@ package ru.home.langbookweb.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.home.langbookweb.model.RoundRobin;
 import ru.home.langbookweb.model.Translation;
@@ -30,5 +31,11 @@ public class RoundRobinController {
         model.addAttribute("roundrobin", roundRobin);
         model.addAttribute("numbers", new int[]{1, 2, 3});
         return "roundrobin";
+    }
+
+    @RolesAllowed("USER,ADMIN")
+    @PostMapping("/add")
+    public String roundrobinAdd(Word word) {
+        return null;
     }
 }
