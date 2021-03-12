@@ -30,12 +30,19 @@ public class RoundRobinController {
         RoundRobin roundRobin = RoundRobin.builder().id(1L).name("Первая карусель").words(words).build();
         model.addAttribute("roundrobin", roundRobin);
         model.addAttribute("numbers", new int[]{1, 2, 3});
+        model.addAttribute("word", new Word());
         return "roundrobin";
     }
 
     @RolesAllowed("USER,ADMIN")
     @PostMapping("/add")
     public String roundrobinAdd(Word word) {
+        return null;
+    }
+
+    @RolesAllowed("USER,ADMIN")
+    @PostMapping("/del")
+    public String roundrobinDel(Word word) {
         return null;
     }
 }

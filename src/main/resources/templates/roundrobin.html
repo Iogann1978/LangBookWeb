@@ -97,8 +97,8 @@
                                 </div>
                                 <div id="collapseAction" class="collapse" aria-labelledby="headingAction" data-parent="#accordion">
                                     <div class="card-body text-dark">
-                                        <a href="#" class="btn btn-primary">Удалить слово из карусели</a>
-                                        <a href="#" class="btn btn-primary">Просмотреть слово</a>
+                                        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#roundrobin_del" th:attr="onclick=|fillRoundrobinForm(${word.id},'${word.word}','${word.class.simpleName}')|">Удалить слово из карусели</a>
+                                        <a th:href="@{/word(wordId=${word.id})}" class="btn btn-primary">Просмотреть слово</a>
                                     </div>
                                 </div>
                             </div>
@@ -117,5 +117,34 @@
             </a>
         </div>
     </div>
+
+    <!-- Удалить слово из карусели -->
+    <div class="modal" id="roundrobin_del">
+        <div class="modal-dialog">
+            <form class="modal-content" action="#" th:action="@{/roundrobin/del}" th:object="${word}" method="POST">
+                <div class="modal-header">
+                    <h4 class="modal-title">Удалить слово из карусели?</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" hidden="true" id="d_id" th:field="*{id}" />
+                    <p id="d_word">Слово</p>
+                    <p id="d_type">Тип</p>
+                </div>
+                <div class="modal-footer btn-group">
+                    <button type="submit" class="btn btn-primary">Удалить</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Закрыть</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        function fillRoundrobinForm(id, word, type) {
+            $("#d_id").val(id);
+            $("#d_word").text(word);
+            $("#d_type").text(type);
+        }
+    </script>
 </body>
 </html>
