@@ -20,7 +20,7 @@ public class PhraseController {
         Flux<Phrase> phrases = Flux.just(
                 Phrase.builder().id(1L).word("A little bit").build(),
                 Phrase.builder().id(2L).word("To each other").build(),
-                Phrase.builder().id(3L).word("A little bit").build()
+                Phrase.builder().id(3L).word("Very difficult").build()
         );
         IReactiveDataDriverContextVariable reactiveDataDrivenMode =
                 new ReactiveDataDriverContextVariable(phrases);
