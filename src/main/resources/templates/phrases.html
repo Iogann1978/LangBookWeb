@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Словарь</title>
+    <title>Фразы</title>
     <meta charset="UTF-8">
     <!-- Bootstrap and jQuery -->
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -21,7 +21,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">Словарь</a>
+                            <a class="nav-link" href="/dictionary">Словарь</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/word/add">Добавить слово</a>
@@ -30,24 +30,16 @@
                             <a class="nav-link" href="/roundrobin">Карусель</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/phrase/list">Фразы</a>
+                            <a class="nav-link active" aria-current="page" href="#">Фразы</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/article/list">Статьи</a>
+                            <a class="nav-link" href="#">Статьи</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Тексты</a>
                         </li>
                     </ul>
                 </div>
-                <form class="navbar-form float-right" action="#" th:action="@{/dictionary/find}" th:object="${word}" method="POST">
-                    <div class="input-group">
-                        <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit" th:field="*{word}">
-                            <i class="glyphicon glyphicon-search"></i>
-                        </button>
-                    </div>
-                </form>
             </div>
         </nav>
     </header>
@@ -55,28 +47,25 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <h1 class="text-center" th:text="'Словарь: ' + ${user}">Словарь</h1>
+                <h1 class="text-center">Фразы</h1>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
                 <table class="table table-hover">
                     <thead>
-                        <tr>
-                            <th class="col-8" scope="col">Слово</th>
-                            <th class="col-1" scope="col">Тип</th>
-                            <th class="col-3" scope="col">Действия</th>
-                        </tr>
+                    <tr>
+                        <th class="col-11" scope="col">Фраза</th>
+                        <th class="col-1" scope="col">Действия</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="word:${words}">
-                            <td th:text="${word.word}">Слово</td>
-                            <td th:text="${word.class.simpleName}">Тип</td>
-                            <td>
-                                <a th:href="@{/word(wordId=${word.id})}">Просмотреть</a>
-                                <a href="#" data-toggle="modal" data-target="#roundrobin_add" th:attr="onclick=|fillRoundrobinForm(${word.id},'${word.word}','${word.class.simpleName}')|">Добавить слово в карусель</a>
-                            </td>
-                        </tr>
+                    <tr th:each="phrase:${phrases}">
+                        <td th:text="${phrase.word}">Фраза</td>
+                        <td>
+                            <a th:href="@{/word(wordId=${phrase.id})}">Просмотреть</a>
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
@@ -112,34 +101,5 @@
             </ul>
         </nav>
     </footer>
-
-    <!-- Добавить слово в карусель -->
-    <div class="modal" id="roundrobin_add">
-        <div class="modal-dialog">
-            <form class="modal-content" action="#" th:action="@{/roundrobin/add}" th:object="${word}" method="POST">
-                <div class="modal-header">
-                    <h4 class="modal-title">Добавить слово в карусель?</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <input type="text" hidden="true" id="d_id" th:field="*{id}" />
-                    <p id="d_word">Слово</p>
-                    <p id="d_type">Тип</p>
-                </div>
-                <div class="modal-footer btn-group">
-                    <button type="submit" class="btn btn-primary">Добавить</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Закрыть</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <script type="text/javascript">
-        function fillRoundrobinForm(id, word, type) {
-            $("#d_id").val(id);
-            $("#d_word").text(word);
-            $("#d_type").text(type);
-        }
-    </script>
 </body>
 </html>

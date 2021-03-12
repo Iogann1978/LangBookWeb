@@ -13,6 +13,7 @@ keytool -export -alias server -file server.crt -keystore server.jks
 [Статьи](https://localhost:8443/article/list) \
 [Просмотреть слово](https://localhost:8443/word?wordId=1) \
 [Карусель](https://localhost:8443/roundrobin)
+[Фразы](https://localhost:8443/phrase/list)
 
 ###Полезные ссылки
 [Bootstrap 4.0 docs](https://getbootstrap.com/docs/4.0/getting-started/introduction/) \
