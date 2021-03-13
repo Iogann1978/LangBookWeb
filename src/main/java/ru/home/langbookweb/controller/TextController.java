@@ -9,7 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
-import ru.home.langbookweb.model.Article;
 
 import javax.annotation.security.RolesAllowed;
 import java.io.ByteArrayOutputStream;
@@ -33,15 +32,15 @@ public class TextController {
 
     @RolesAllowed("USER,ADMIN")
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String textUpload(@RequestPart("upload") Mono<FilePart> part) {
+    public String textUpload(@RequestPart("upload") FilePart part) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        part.flatMapMany(FilePart::content).doOnNext(dataBuffer -> {
+        part.content().doOnNext(dataBuffer -> {
             byte[] bytes = new byte[dataBuffer.readableByteCount()];
             dataBuffer.read(bytes);
             DataBufferUtils.release(dataBuffer);
             baos.writeBytes(bytes);
+            log.debug("text: {}", baos.toString(StandardCharsets.UTF_8));
         }).subscribeOn(Schedulers.immediate()).subscribe();
-        log.debug("text: {}", baos.toString(StandardCharsets.UTF_8));
-        return "text";
+        return "redirect:/text/list";
     }
 }

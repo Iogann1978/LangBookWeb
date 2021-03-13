@@ -50,7 +50,7 @@ public class ArticleController {
         .subscribeOn(Schedulers.immediate()).subscribe();
         article.setText(baos.toByteArray());
         log.debug("text: {} {}", article.getFilename(), new String(article.getText(), StandardCharsets.UTF_8));
-        return "articles";
+        return "redirect:/article/list";
     }
 
     @RolesAllowed("USER,ADMIN")
