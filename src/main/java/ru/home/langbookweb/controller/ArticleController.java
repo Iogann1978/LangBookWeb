@@ -46,10 +46,10 @@ public class ArticleController {
             dataBuffer.read(bytes);
             DataBufferUtils.release(dataBuffer);
             baos.writeBytes(bytes);
-        })
-        .subscribeOn(Schedulers.immediate()).subscribe();
-        article.setText(baos.toByteArray());
-        log.debug("text: {} {}", article.getFilename(), new String(article.getText(), StandardCharsets.UTF_8));
+        }).doOnComplete(() -> {
+            article.setText(baos.toByteArray());
+            log.debug("text: {} {}", article.getFilename(), new String(article.getText(), StandardCharsets.UTF_8));
+        }).subscribeOn(Schedulers.immediate()).subscribe();
         return "redirect:/article/list";
     }
 

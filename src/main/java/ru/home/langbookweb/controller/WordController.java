@@ -1,26 +1,33 @@
 package ru.home.langbookweb.controller;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
+import reactor.core.publisher.Mono;
 import ru.home.langbookweb.model.*;
+import ru.home.langbookweb.service.UtilService;
+import ru.home.langbookweb.service.WordService;
 
 import javax.annotation.security.RolesAllowed;
-import java.util.Set;
 
 @Controller
 @RequestMapping(value = "/word")
+@Slf4j
 public class WordController {
+    @Autowired
+    private WordService wordService;
+
     @RolesAllowed("USER,ADMIN")
     @GetMapping
     public String getWord(@RequestParam Long wordId, Model model) {
-        Example example1 = Example.builder().id(7L).text1("Text 1").text2("Текст 1").build();
-        Example example2 = Example.builder().id(6L).text1("Text 2").text2("Текст 2").build();
-        Example example3 = Example.builder().id(5L).text1("Text 3").text2("Текст 3").build();
-        Example example4 = Example.builder().id(4L).text1("Text 4").text2("Текст 4").build();
-        Translation translation1 = Translation.builder().id(3L).description("Перевод 1").source("Oxford dictionary").examples(Set.of(example1, example2)).build();
-        Translation translation2 = Translation.builder().id(2L).description("Перевод 2").source("Cambridge dictionary").examples(Set.of(example3, example4)).build();
-        Word word = Word.builder().id(wordId).word("Exercise").translations(Set.of(translation1, translation2)).build();
+        Mono<String> user = UtilService.getUser();
+        Mono<Word> word = wordService.getWord(user, wordId);
         model.addAttribute("word", word);
         return "word";
     }
@@ -39,32 +46,105 @@ public class WordController {
     }
 
     @RolesAllowed("USER,ADMIN")
-    @PostMapping("/save")
-    public String saveWord(@RequestParam String type, Model model) {
-        switch (type) {
-            case "word":
-                break;
-            case "noun":
-                break;
-            case "verb":
-                break;
-            case "adjective":
-                break;
-            case "adverb":
-                break;
-            case "participle":
-                break;
-            case "phrase":
-                break;
-            default:
-                break;
-        }
-        return "redirect:../translation/add?wordId=1";
+    @PostMapping("/save/word")
+    public Mono<ResponseEntity<Void>> saveWord(@ModelAttribute("word") Word word) {
+        Mono<String> user = UtilService.getUser();
+        Mono<Long> wid = wordService.saveWord(user, word);
+        return wid.map(id -> ResponseEntity.ok().header("Location", "https://localhost:8443/dictionary").<Void>build());
+    }
+
+    @RolesAllowed("USER,ADMIN")
+    @PostMapping("/save/noun")
+    public Mono<Void> saveNoun(@ModelAttribute("noun") Noun noun, ServerHttpResponse response) {
+        Mono<String> user = UtilService.getUser();
+        Mono<Long> wid = wordService.saveWord(user, noun);
+        return wid.flatMap(id -> {
+            response.setStatusCode(HttpStatus.PERMANENT_REDIRECT);
+            response.getHeaders().setLocation(UriComponentsBuilder.fromPath("/translation/add").query("wordId={id}").build(id));
+            return response.setComplete();
+        });
+    }
+
+    @RolesAllowed("USER,ADMIN")
+    @PostMapping("/save/verb")
+    public String saveVerb(@ModelAttribute("verb") Verb verb) {
+        Mono<String> user = UtilService.getUser();
+        Mono<Long> wid = null;
+        wid = wordService.saveWord(user, verb);
+        /*
+        wid.map(id -> String.format("redirect:../translation/add?wordId=%d", id))
+                .doOnNext(id -> log.info("id: {}", id))
+                .subscribeOn(Schedulers.immediate()).subscribe();
+        Thread.sleep(1000L);
+         */
+        return "word_add";
+    }
+
+    @RolesAllowed("USER,ADMIN")
+    @PostMapping("/save/adjective")
+    public String saveAdjective(@ModelAttribute("adjective") Adjective adjective) {
+        Mono<String> user = UtilService.getUser();
+        Mono<Long> wid = null;
+        wid = wordService.saveWord(user, adjective);
+        /*
+        wid.map(id -> String.format("redirect:../translation/add?wordId=%d", id))
+                .doOnNext(id -> log.info("id: {}", id))
+                .subscribeOn(Schedulers.immediate()).subscribe();
+        Thread.sleep(1000L);
+         */
+        return "word_add";
+    }
+
+    @RolesAllowed("USER,ADMIN")
+    @PostMapping("/save/adverb")
+    public String saveAdverb(@ModelAttribute("adverb") Adverb adverb) {
+        Mono<String> user = UtilService.getUser();
+        Mono<Long> wid = null;
+        wid = wordService.saveWord(user, adverb);
+        /*
+        wid.map(id -> String.format("redirect:../translation/add?wordId=%d", id))
+                .doOnNext(id -> log.info("id: {}", id))
+                .subscribeOn(Schedulers.immediate()).subscribe();
+        Thread.sleep(1000L);
+         */
+        return "word_add";
+    }
+
+    @RolesAllowed("USER,ADMIN")
+    @PostMapping("/save/participle")
+    public String saveParticiple(@ModelAttribute("participle") Participle participle) {
+        Mono<String> user = UtilService.getUser();
+        Mono<Long> wid = null;
+        wid = wordService.saveWord(user, participle);
+        /*
+        wid.map(id -> String.format("redirect:../translation/add?wordId=%d", id))
+                .doOnNext(id -> log.info("id: {}", id))
+                .subscribeOn(Schedulers.immediate()).subscribe();
+        Thread.sleep(1000L);
+         */
+        return "word_add";
+    }
+
+    @RolesAllowed("USER,ADMIN")
+    @PostMapping("/save/phrase")
+    public String savePhrase(@ModelAttribute("phrase") Phrase phrase) {
+        Mono<String> user = UtilService.getUser();
+        Mono<Long> wid = null;
+        wid = wordService.saveWord(user, phrase);
+        /*
+        wid.map(id -> String.format("redirect:../translation/add?wordId=%d", id))
+                .doOnNext(id -> log.info("id: {}", id))
+                .subscribeOn(Schedulers.immediate()).subscribe();
+        Thread.sleep(1000L);
+         */
+        return "word_add";
     }
 
     @RolesAllowed("USER,ADMIN")
     @PostMapping("/del")
-    public String deleteWord(@ModelAttribute("word") Word word) {
+    public String delWord(@ModelAttribute("word") Word word) {
+        Mono<String> user = UtilService.getUser();
+        wordService.delWord(user, word);
         return "dictionary";
     }
 }

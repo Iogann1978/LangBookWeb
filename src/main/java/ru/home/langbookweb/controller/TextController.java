@@ -7,7 +7,6 @@ import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import javax.annotation.security.RolesAllowed;
@@ -26,7 +25,6 @@ public class TextController {
         List<String> words = new ArrayList<>();
         model.addAttribute("words", words);
         model.addAttribute("pages", new int[] {1, 2, 3, 4, 5, 6, 7});
-        model.addAttribute("filename", new String());
         return "text";
     }
 
@@ -39,8 +37,8 @@ public class TextController {
             dataBuffer.read(bytes);
             DataBufferUtils.release(dataBuffer);
             baos.writeBytes(bytes);
-            log.debug("text: {}", baos.toString(StandardCharsets.UTF_8));
-        }).subscribeOn(Schedulers.immediate()).subscribe();
+        }).doOnComplete(() -> log.debug("text: {}", baos.toString(StandardCharsets.UTF_8)))
+                .subscribeOn(Schedulers.immediate()).subscribe();
         return "redirect:/text/list";
     }
 }

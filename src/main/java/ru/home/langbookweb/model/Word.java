@@ -19,4 +19,6 @@ public class Word {
     protected String word;
     @OneToMany
     protected Set<Translation> translations;
+    @ManyToOne
+    protected User user;
 }

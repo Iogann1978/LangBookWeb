@@ -16,7 +16,7 @@ import javax.annotation.security.RolesAllowed;
 @RequestMapping(value = "/example")
 public class ExampleController {
     @RolesAllowed("USER,ADMIN")
-    @GetMapping("/add")
+    @PostMapping("/add")
     public String addExample(@RequestParam Long translationId, Model model) {
         Word word = Word.builder().word("Body").build();
         Translation translation = Translation.builder().id(translationId).description("Перевод 1").source("Oxford dictionary").build();

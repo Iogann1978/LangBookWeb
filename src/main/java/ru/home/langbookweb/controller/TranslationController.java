@@ -1,29 +1,35 @@
 package ru.home.langbookweb.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.spring5.context.webflux.IReactiveDataDriverContextVariable;
 import org.thymeleaf.spring5.context.webflux.ReactiveDataDriverContextVariable;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.home.langbookweb.model.Translation;
 import ru.home.langbookweb.model.Word;
+import ru.home.langbookweb.service.TranslationService;
+import ru.home.langbookweb.service.UtilService;
+import ru.home.langbookweb.service.WordService;
 
 import javax.annotation.security.RolesAllowed;
 
 @Controller
 @RequestMapping(value = "/translation")
 public class TranslationController {
+    @Autowired
+    private WordService wordService;
+    @Autowired
+    private TranslationService translationService;
+
     @RolesAllowed("USER,ADMIN")
-    @GetMapping("/add")
+    @PostMapping("/add")
     public String addTranslation(@RequestParam Long wordId, Model model) {
-        Word word = Word.builder().id(wordId).word("Body").build();
-        Flux<Translation> translations = Flux.just(
-                Translation.builder().id(1L).description("Перевод 1").source("Oxford dictionary").build(),
-                Translation.builder().id(2L).description("Перевод 2").source("Cambridge dictionary").build()
-        );
+        Mono<String> user = UtilService.getUser();
+        Mono<Word> word = wordService.getWord(user, wordId);
         IReactiveDataDriverContextVariable reactiveDataDrivenMode =
-                new ReactiveDataDriverContextVariable(translations);
+                new ReactiveDataDriverContextVariable(word.flatMapIterable(Word::getTranslations));
         Translation translation = new Translation();
         model.addAttribute("word", word);
         model.addAttribute("translation", translation);
