@@ -68,7 +68,7 @@
                 <div class="carousel-item" th:each="word:${roundrobin.words}">
                     <img class="d-block w-100" th:src="${@graphicService.getSrc(word.word,word.class.simpleName)}" alt="">
                     <div class="carousel-caption d-none d-md-block">
-                        <div id="accordion">
+                        <!--div id="accordion">
                             <div class="card">
                                 <div class="card-header" id="headingTranslation">
                                     <h5 class="mb-0">
@@ -102,6 +102,10 @@
                                     </div>
                                 </div>
                             </div>
+                        </div-->
+                        <div class="row text-dark">
+                            <a th:href="@{/word(wordId=${word.id})}" class="col-md-6 btn btn-primary">Перейти к слову</a>
+                            <a href="#" class="col-md-6 btn btn-primary" data-toggle="modal" data-target="#roundrobin_del" th:attr="onclick=|fillRoundrobinForm(${word.id},'${word.word}','${word.class.simpleName}')|">Удалить слово из карусели</a>
                         </div>
                     </div>
                 </div>

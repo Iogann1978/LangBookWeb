@@ -3,7 +3,6 @@ package ru.home.langbookweb.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -47,10 +46,14 @@ public class WordController {
 
     @RolesAllowed("USER,ADMIN")
     @PostMapping("/save/word")
-    public Mono<ResponseEntity<Void>> saveWord(@ModelAttribute("word") Word word) {
+    public Mono<Void> saveWord(@ModelAttribute("word") Word word, ServerHttpResponse response) {
         Mono<String> user = UtilService.getUser();
         Mono<Long> wid = wordService.saveWord(user, word);
-        return wid.map(id -> ResponseEntity.ok().header("Location", "https://localhost:8443/dictionary").<Void>build());
+        return wid.flatMap(id -> {
+            response.setStatusCode(HttpStatus.PERMANENT_REDIRECT);
+            response.getHeaders().setLocation(UriComponentsBuilder.fromPath("/translation/add").query("wordId={id}").build(id));
+            return response.setComplete();
+        });
     }
 
     @RolesAllowed("USER,ADMIN")
@@ -67,77 +70,67 @@ public class WordController {
 
     @RolesAllowed("USER,ADMIN")
     @PostMapping("/save/verb")
-    public String saveVerb(@ModelAttribute("verb") Verb verb) {
+    public Mono<Void> saveVerb(@ModelAttribute("verb") Verb verb, ServerHttpResponse response) {
         Mono<String> user = UtilService.getUser();
         Mono<Long> wid = null;
         wid = wordService.saveWord(user, verb);
-        /*
-        wid.map(id -> String.format("redirect:../translation/add?wordId=%d", id))
-                .doOnNext(id -> log.info("id: {}", id))
-                .subscribeOn(Schedulers.immediate()).subscribe();
-        Thread.sleep(1000L);
-         */
-        return "word_add";
+        return wid.flatMap(id -> {
+            response.setStatusCode(HttpStatus.PERMANENT_REDIRECT);
+            response.getHeaders().setLocation(UriComponentsBuilder.fromPath("/translation/add").query("wordId={id}").build(id));
+            return response.setComplete();
+        });
     }
 
     @RolesAllowed("USER,ADMIN")
     @PostMapping("/save/adjective")
-    public String saveAdjective(@ModelAttribute("adjective") Adjective adjective) {
+    public Mono<Void> saveAdjective(@ModelAttribute("adjective") Adjective adjective, ServerHttpResponse response) {
         Mono<String> user = UtilService.getUser();
         Mono<Long> wid = null;
         wid = wordService.saveWord(user, adjective);
-        /*
-        wid.map(id -> String.format("redirect:../translation/add?wordId=%d", id))
-                .doOnNext(id -> log.info("id: {}", id))
-                .subscribeOn(Schedulers.immediate()).subscribe();
-        Thread.sleep(1000L);
-         */
-        return "word_add";
+        return wid.flatMap(id -> {
+            response.setStatusCode(HttpStatus.PERMANENT_REDIRECT);
+            response.getHeaders().setLocation(UriComponentsBuilder.fromPath("/translation/add").query("wordId={id}").build(id));
+            return response.setComplete();
+        });
     }
 
     @RolesAllowed("USER,ADMIN")
     @PostMapping("/save/adverb")
-    public String saveAdverb(@ModelAttribute("adverb") Adverb adverb) {
+    public Mono<Void> saveAdverb(@ModelAttribute("adverb") Adverb adverb, ServerHttpResponse response) {
         Mono<String> user = UtilService.getUser();
         Mono<Long> wid = null;
         wid = wordService.saveWord(user, adverb);
-        /*
-        wid.map(id -> String.format("redirect:../translation/add?wordId=%d", id))
-                .doOnNext(id -> log.info("id: {}", id))
-                .subscribeOn(Schedulers.immediate()).subscribe();
-        Thread.sleep(1000L);
-         */
-        return "word_add";
+        return wid.flatMap(id -> {
+            response.setStatusCode(HttpStatus.PERMANENT_REDIRECT);
+            response.getHeaders().setLocation(UriComponentsBuilder.fromPath("/translation/add").query("wordId={id}").build(id));
+            return response.setComplete();
+        });
     }
 
     @RolesAllowed("USER,ADMIN")
     @PostMapping("/save/participle")
-    public String saveParticiple(@ModelAttribute("participle") Participle participle) {
+    public Mono<Void> saveParticiple(@ModelAttribute("participle") Participle participle, ServerHttpResponse response) {
         Mono<String> user = UtilService.getUser();
         Mono<Long> wid = null;
         wid = wordService.saveWord(user, participle);
-        /*
-        wid.map(id -> String.format("redirect:../translation/add?wordId=%d", id))
-                .doOnNext(id -> log.info("id: {}", id))
-                .subscribeOn(Schedulers.immediate()).subscribe();
-        Thread.sleep(1000L);
-         */
-        return "word_add";
+        return wid.flatMap(id -> {
+            response.setStatusCode(HttpStatus.PERMANENT_REDIRECT);
+            response.getHeaders().setLocation(UriComponentsBuilder.fromPath("/translation/add").query("wordId={id}").build(id));
+            return response.setComplete();
+        });
     }
 
     @RolesAllowed("USER,ADMIN")
     @PostMapping("/save/phrase")
-    public String savePhrase(@ModelAttribute("phrase") Phrase phrase) {
+    public Mono<Void> savePhrase(@ModelAttribute("phrase") Phrase phrase, ServerHttpResponse response) {
         Mono<String> user = UtilService.getUser();
         Mono<Long> wid = null;
         wid = wordService.saveWord(user, phrase);
-        /*
-        wid.map(id -> String.format("redirect:../translation/add?wordId=%d", id))
-                .doOnNext(id -> log.info("id: {}", id))
-                .subscribeOn(Schedulers.immediate()).subscribe();
-        Thread.sleep(1000L);
-         */
-        return "word_add";
+        return wid.flatMap(id -> {
+            response.setStatusCode(HttpStatus.PERMANENT_REDIRECT);
+            response.getHeaders().setLocation(UriComponentsBuilder.fromPath("/translation/add").query("wordId={id}").build(id));
+            return response.setComplete();
+        });
     }
 
     @RolesAllowed("USER,ADMIN")

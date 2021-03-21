@@ -1,5 +1,7 @@
 package ru.home.langbookweb.service;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,7 @@ import ru.home.langbookweb.repository.*;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class WordService {
     @Autowired
     private WordRepository wordRepository;
@@ -33,9 +36,9 @@ public class WordService {
     public Flux<? super Word> getWords(Mono<String> user, String findWord, Pageable pageable) {
         Flux<Word> words = user.map(username -> userRepository.findById(username))
                 .filter(u -> u.isPresent()).map(u -> u.get())
-                .flatMapIterable(u -> findWord.isEmpty() ? wordRepository.findAllByUser(u.getLogin(), pageable) :
-                        wordRepository.findAllByUserAndWord(u.getLogin(), findWord, pageable))
-                .map(word -> {
+                .flatMapIterable(u -> Strings.isEmpty(findWord) ? wordRepository.findAllByUser(u, pageable) :
+                            wordRepository.findAllByUserAndWord(u, findWord, pageable)
+                ).map(word -> {
                     Optional<Noun> noun = nounRepository.findById(word.getId());
                     if (noun.isPresent()) {
                         return noun.get();
@@ -68,7 +71,7 @@ public class WordService {
     public Mono<Word> getWord(Mono<String> user, Long wordId) {
         return user.map(username -> userRepository.findById(username))
                 .filter(u -> u.isPresent()).map(u -> u.get())
-                .map(u -> wordRepository.findWordByUserAndId(u.getLogin(), wordId));
+                .map(u -> wordRepository.findWordByUserAndId(u, wordId));
     }
 
     public <T extends Word> Mono<Long> saveWord(Mono<String> user, T word) {
@@ -106,7 +109,7 @@ public class WordService {
     public void delWord(Mono<String> user, Word word) {
         user.map(username -> userRepository.findById(username))
                 .filter(u -> u.isPresent()).map(u -> u.get())
-                .map(u -> wordRepository.findWordByUserAndId(u.getLogin(), word.getId()))
+                .map(u -> wordRepository.findWordByUserAndId(u, word.getId()))
                 .doOnNext(w -> wordRepository.delete(w))
                 .subscribeOn(Schedulers.immediate()).subscribe();;
     }
