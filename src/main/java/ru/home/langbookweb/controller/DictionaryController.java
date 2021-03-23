@@ -33,18 +33,16 @@ public class DictionaryController {
     @RolesAllowed("USER,ADMIN")
     @GetMapping
     public String getDictionary(@RequestParam(defaultValue = "0") int page, Model model) {
-        Pageable pageable = PageRequest.of(page, pagesOnPage, Sort.by("word"));
-        List<Long> pages = new ArrayList<>();
+        Pageable pageable = PageRequest.of(page, rowsOnPage, Sort.by("word"));
         Mono<String> user = UtilService.getUser();
         Flux<? super Word> words = wordService.getWords(user, null, pageable);
-        words.count().map(c -> c / rowsOnPage)
-            .doOnNext(c -> pages.addAll(LongStream.rangeClosed(1, c).boxed().collect(Collectors.toList())))
-            .doFirst(() -> model.addAttribute("pages", pages))
-            .subscribeOn(Schedulers.immediate()).subscribe();
+        Flux<Long> pages = words.count().map(c -> c / rowsOnPage)
+                .flatMapIterable(c -> LongStream.rangeClosed(1, c).boxed().collect(Collectors.toList()));
         IReactiveDataDriverContextVariable reactiveDataDrivenMode = new ReactiveDataDriverContextVariable(words);
         model.addAttribute("words", reactiveDataDrivenMode);
         model.addAttribute("word", new Word());
         model.addAttribute("user", user);
+        model.addAttribute("pages", pages);
         return "dictionary";
     }
 

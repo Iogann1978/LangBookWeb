@@ -14,6 +14,7 @@ import ru.home.langbookweb.service.UtilService;
 import ru.home.langbookweb.service.WordService;
 
 import javax.annotation.security.RolesAllowed;
+import java.util.Set;
 
 @Controller
 @RequestMapping(value = "/word")
@@ -26,7 +27,7 @@ public class WordController {
     @GetMapping
     public String getWord(@RequestParam Long wordId, Model model) {
         Mono<String> user = UtilService.getUser();
-        Mono<Word> word = wordService.getWord(user, wordId);
+        Mono<Word> word = wordService.get(user, wordId);
         model.addAttribute("word", word);
         return "word";
     }
@@ -47,10 +48,11 @@ public class WordController {
     @RolesAllowed("USER,ADMIN")
     @PostMapping("/save/word")
     public Mono<Void> saveWord(@ModelAttribute("word") Word word, ServerHttpResponse response) {
+        if (word.getTranslations() == null) word.setTranslations(Set.of(Translation.builder().description("Перевод").build()));
         Mono<String> user = UtilService.getUser();
-        Mono<Long> wid = wordService.saveWord(user, word);
+        Mono<Long> wid = wordService.save(user, word);
         return wid.flatMap(id -> {
-            response.setStatusCode(HttpStatus.PERMANENT_REDIRECT);
+            response.setStatusCode(HttpStatus.SEE_OTHER);
             response.getHeaders().setLocation(UriComponentsBuilder.fromPath("/translation/add").query("wordId={id}").build(id));
             return response.setComplete();
         });
@@ -60,9 +62,9 @@ public class WordController {
     @PostMapping("/save/noun")
     public Mono<Void> saveNoun(@ModelAttribute("noun") Noun noun, ServerHttpResponse response) {
         Mono<String> user = UtilService.getUser();
-        Mono<Long> wid = wordService.saveWord(user, noun);
+        Mono<Long> wid = wordService.save(user, noun);
         return wid.flatMap(id -> {
-            response.setStatusCode(HttpStatus.PERMANENT_REDIRECT);
+            response.setStatusCode(HttpStatus.SEE_OTHER);
             response.getHeaders().setLocation(UriComponentsBuilder.fromPath("/translation/add").query("wordId={id}").build(id));
             return response.setComplete();
         });
@@ -72,10 +74,9 @@ public class WordController {
     @PostMapping("/save/verb")
     public Mono<Void> saveVerb(@ModelAttribute("verb") Verb verb, ServerHttpResponse response) {
         Mono<String> user = UtilService.getUser();
-        Mono<Long> wid = null;
-        wid = wordService.saveWord(user, verb);
+        Mono<Long> wid = wordService.save(user, verb);
         return wid.flatMap(id -> {
-            response.setStatusCode(HttpStatus.PERMANENT_REDIRECT);
+            response.setStatusCode(HttpStatus.SEE_OTHER);
             response.getHeaders().setLocation(UriComponentsBuilder.fromPath("/translation/add").query("wordId={id}").build(id));
             return response.setComplete();
         });
@@ -85,10 +86,9 @@ public class WordController {
     @PostMapping("/save/adjective")
     public Mono<Void> saveAdjective(@ModelAttribute("adjective") Adjective adjective, ServerHttpResponse response) {
         Mono<String> user = UtilService.getUser();
-        Mono<Long> wid = null;
-        wid = wordService.saveWord(user, adjective);
+        Mono<Long> wid = wordService.save(user, adjective);
         return wid.flatMap(id -> {
-            response.setStatusCode(HttpStatus.PERMANENT_REDIRECT);
+            response.setStatusCode(HttpStatus.SEE_OTHER);
             response.getHeaders().setLocation(UriComponentsBuilder.fromPath("/translation/add").query("wordId={id}").build(id));
             return response.setComplete();
         });
@@ -98,10 +98,9 @@ public class WordController {
     @PostMapping("/save/adverb")
     public Mono<Void> saveAdverb(@ModelAttribute("adverb") Adverb adverb, ServerHttpResponse response) {
         Mono<String> user = UtilService.getUser();
-        Mono<Long> wid = null;
-        wid = wordService.saveWord(user, adverb);
+        Mono<Long> wid = wordService.save(user, adverb);
         return wid.flatMap(id -> {
-            response.setStatusCode(HttpStatus.PERMANENT_REDIRECT);
+            response.setStatusCode(HttpStatus.SEE_OTHER);
             response.getHeaders().setLocation(UriComponentsBuilder.fromPath("/translation/add").query("wordId={id}").build(id));
             return response.setComplete();
         });
@@ -111,10 +110,9 @@ public class WordController {
     @PostMapping("/save/participle")
     public Mono<Void> saveParticiple(@ModelAttribute("participle") Participle participle, ServerHttpResponse response) {
         Mono<String> user = UtilService.getUser();
-        Mono<Long> wid = null;
-        wid = wordService.saveWord(user, participle);
+        Mono<Long> wid = wordService.save(user, participle);
         return wid.flatMap(id -> {
-            response.setStatusCode(HttpStatus.PERMANENT_REDIRECT);
+            response.setStatusCode(HttpStatus.SEE_OTHER);
             response.getHeaders().setLocation(UriComponentsBuilder.fromPath("/translation/add").query("wordId={id}").build(id));
             return response.setComplete();
         });
@@ -124,10 +122,9 @@ public class WordController {
     @PostMapping("/save/phrase")
     public Mono<Void> savePhrase(@ModelAttribute("phrase") Phrase phrase, ServerHttpResponse response) {
         Mono<String> user = UtilService.getUser();
-        Mono<Long> wid = null;
-        wid = wordService.saveWord(user, phrase);
+        Mono<Long> wid = wordService.save(user, phrase);
         return wid.flatMap(id -> {
-            response.setStatusCode(HttpStatus.PERMANENT_REDIRECT);
+            response.setStatusCode(HttpStatus.SEE_OTHER);
             response.getHeaders().setLocation(UriComponentsBuilder.fromPath("/translation/add").query("wordId={id}").build(id));
             return response.setComplete();
         });
@@ -137,7 +134,7 @@ public class WordController {
     @PostMapping("/del")
     public String delWord(@ModelAttribute("word") Word word) {
         Mono<String> user = UtilService.getUser();
-        wordService.delWord(user, word);
+        wordService.del(user, word);
         return "dictionary";
     }
 }

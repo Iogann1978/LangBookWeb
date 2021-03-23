@@ -3,6 +3,7 @@ package ru.home.langbookweb.service;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -68,13 +69,13 @@ public class WordService {
         return words;
     }
 
-    public Mono<Word> getWord(Mono<String> user, Long wordId) {
+    public Mono<Word> get(Mono<String> user, Long wordId) {
         return user.map(username -> userRepository.findById(username))
                 .filter(u -> u.isPresent()).map(u -> u.get())
                 .map(u -> wordRepository.findWordByUserAndId(u, wordId));
     }
 
-    public <T extends Word> Mono<Long> saveWord(Mono<String> user, T word) {
+    public <T extends Word> Mono<Long> save(Mono<String> user, T word) {
         Mono<Long> wid = user.map(username -> userRepository.findById(username))
             .filter(u -> u.isPresent()).map(u -> u.get()).map(u -> {
                 Long id = null;
@@ -106,7 +107,7 @@ public class WordService {
         return wid;
     }
 
-    public void delWord(Mono<String> user, Word word) {
+    public void del(Mono<String> user, Word word) {
         user.map(username -> userRepository.findById(username))
                 .filter(u -> u.isPresent()).map(u -> u.get())
                 .map(u -> wordRepository.findWordByUserAndId(u, word.getId()))

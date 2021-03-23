@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Data
@@ -16,10 +17,11 @@ import java.util.Set;
 public class User {
     @Id
     private String login;
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY)
     private Set<Word> dictionary;
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY)
     private Set<Article> articles;
-    @OneToOne
+    @NotNull
+    @OneToOne(optional = false, fetch = FetchType.LAZY)
     private RoundRobin roundRobin;
 }

@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Data
@@ -16,9 +17,14 @@ public class Word {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
+    @NotNull
+    @Column(nullable = false)
     protected String word;
-    @OneToMany
+    @NotNull
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Column(nullable = false)
     protected Set<Translation> translations;
-    @ManyToOne
+    @NotNull
+    @ManyToOne(optional = false)
     protected User user;
 }

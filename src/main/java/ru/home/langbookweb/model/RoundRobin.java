@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Data
@@ -17,7 +18,9 @@ public class RoundRobin {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @NotNull
+    @Column(nullable = false)
     private String name;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Word> words;
 }
