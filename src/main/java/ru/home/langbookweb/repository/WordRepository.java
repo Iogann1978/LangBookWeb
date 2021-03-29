@@ -10,6 +10,7 @@ import java.util.List;
 
 @Repository
 public interface WordRepository extends JpaRepository<Word, Long> {
+    long countAllByUser(User user);
     List<Word> findAllByUserAndWord(User user, String word, Pageable pageable);
     List<Word> findAllByUser(User user, Pageable pageable);
     Word findWordByUserAndId(User user, Long id);

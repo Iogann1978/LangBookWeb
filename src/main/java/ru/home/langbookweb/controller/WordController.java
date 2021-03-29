@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 import ru.home.langbookweb.model.*;
-import ru.home.langbookweb.service.UtilService;
 import ru.home.langbookweb.service.WordService;
 
 import javax.annotation.security.RolesAllowed;
@@ -26,8 +25,7 @@ public class WordController {
     @RolesAllowed("USER,ADMIN")
     @GetMapping
     public String getWord(@RequestParam Long wordId, Model model) {
-        Mono<String> user = UtilService.getUser();
-        Mono<Word> word = wordService.get(user, wordId);
+        Mono<Word> word = wordService.get(wordId);
         model.addAttribute("word", word);
         return "word";
     }
@@ -48,9 +46,9 @@ public class WordController {
     @RolesAllowed("USER,ADMIN")
     @PostMapping("/save/word")
     public Mono<Void> saveWord(@ModelAttribute("word") Word word, ServerHttpResponse response) {
-        if (word.getTranslations() == null) word.setTranslations(Set.of(Translation.builder().description("Перевод").build()));
-        Mono<String> user = UtilService.getUser();
-        Mono<Long> wid = wordService.save(user, word);
+        if (word.getTranslations() == null)
+            word.setTranslations(Set.of(Translation.builder().description(word.getTooltip()).build()));
+        Mono<Long> wid = wordService.save(word);
         return wid.flatMap(id -> {
             response.setStatusCode(HttpStatus.SEE_OTHER);
             response.getHeaders().setLocation(UriComponentsBuilder.fromPath("/translation/add").query("wordId={id}").build(id));
@@ -61,8 +59,9 @@ public class WordController {
     @RolesAllowed("USER,ADMIN")
     @PostMapping("/save/noun")
     public Mono<Void> saveNoun(@ModelAttribute("noun") Noun noun, ServerHttpResponse response) {
-        Mono<String> user = UtilService.getUser();
-        Mono<Long> wid = wordService.save(user, noun);
+        if (noun.getTranslations() == null)
+            noun.setTranslations(Set.of(Translation.builder().description(noun.getTooltip()).build()));
+        Mono<Long> wid = wordService.save(noun);
         return wid.flatMap(id -> {
             response.setStatusCode(HttpStatus.SEE_OTHER);
             response.getHeaders().setLocation(UriComponentsBuilder.fromPath("/translation/add").query("wordId={id}").build(id));
@@ -73,8 +72,9 @@ public class WordController {
     @RolesAllowed("USER,ADMIN")
     @PostMapping("/save/verb")
     public Mono<Void> saveVerb(@ModelAttribute("verb") Verb verb, ServerHttpResponse response) {
-        Mono<String> user = UtilService.getUser();
-        Mono<Long> wid = wordService.save(user, verb);
+        if (verb.getTranslations() == null)
+            verb.setTranslations(Set.of(Translation.builder().description(verb.getTooltip()).build()));
+        Mono<Long> wid = wordService.save(verb);
         return wid.flatMap(id -> {
             response.setStatusCode(HttpStatus.SEE_OTHER);
             response.getHeaders().setLocation(UriComponentsBuilder.fromPath("/translation/add").query("wordId={id}").build(id));
@@ -85,8 +85,9 @@ public class WordController {
     @RolesAllowed("USER,ADMIN")
     @PostMapping("/save/adjective")
     public Mono<Void> saveAdjective(@ModelAttribute("adjective") Adjective adjective, ServerHttpResponse response) {
-        Mono<String> user = UtilService.getUser();
-        Mono<Long> wid = wordService.save(user, adjective);
+        if (adjective.getTranslations() == null)
+            adjective.setTranslations(Set.of(Translation.builder().description(adjective.getTooltip()).build()));
+        Mono<Long> wid = wordService.save(adjective);
         return wid.flatMap(id -> {
             response.setStatusCode(HttpStatus.SEE_OTHER);
             response.getHeaders().setLocation(UriComponentsBuilder.fromPath("/translation/add").query("wordId={id}").build(id));
@@ -97,8 +98,9 @@ public class WordController {
     @RolesAllowed("USER,ADMIN")
     @PostMapping("/save/adverb")
     public Mono<Void> saveAdverb(@ModelAttribute("adverb") Adverb adverb, ServerHttpResponse response) {
-        Mono<String> user = UtilService.getUser();
-        Mono<Long> wid = wordService.save(user, adverb);
+        if (adverb.getTranslations() == null)
+            adverb.setTranslations(Set.of(Translation.builder().description(adverb.getTooltip()).build()));
+        Mono<Long> wid = wordService.save(adverb);
         return wid.flatMap(id -> {
             response.setStatusCode(HttpStatus.SEE_OTHER);
             response.getHeaders().setLocation(UriComponentsBuilder.fromPath("/translation/add").query("wordId={id}").build(id));
@@ -109,8 +111,9 @@ public class WordController {
     @RolesAllowed("USER,ADMIN")
     @PostMapping("/save/participle")
     public Mono<Void> saveParticiple(@ModelAttribute("participle") Participle participle, ServerHttpResponse response) {
-        Mono<String> user = UtilService.getUser();
-        Mono<Long> wid = wordService.save(user, participle);
+        if (participle.getTranslations() == null)
+            participle.setTranslations(Set.of(Translation.builder().description(participle.getTooltip()).build()));
+        Mono<Long> wid = wordService.save(participle);
         return wid.flatMap(id -> {
             response.setStatusCode(HttpStatus.SEE_OTHER);
             response.getHeaders().setLocation(UriComponentsBuilder.fromPath("/translation/add").query("wordId={id}").build(id));
@@ -121,8 +124,9 @@ public class WordController {
     @RolesAllowed("USER,ADMIN")
     @PostMapping("/save/phrase")
     public Mono<Void> savePhrase(@ModelAttribute("phrase") Phrase phrase, ServerHttpResponse response) {
-        Mono<String> user = UtilService.getUser();
-        Mono<Long> wid = wordService.save(user, phrase);
+        if (phrase.getTranslations() == null)
+            phrase.setTranslations(Set.of(Translation.builder().description(phrase.getTooltip()).build()));
+        Mono<Long> wid = wordService.save(phrase);
         return wid.flatMap(id -> {
             response.setStatusCode(HttpStatus.SEE_OTHER);
             response.getHeaders().setLocation(UriComponentsBuilder.fromPath("/translation/add").query("wordId={id}").build(id));
@@ -133,8 +137,7 @@ public class WordController {
     @RolesAllowed("USER,ADMIN")
     @PostMapping("/del")
     public String delWord(@ModelAttribute("word") Word word) {
-        Mono<String> user = UtilService.getUser();
-        wordService.del(user, word);
+        wordService.del(word);
         return "dictionary";
     }
 }

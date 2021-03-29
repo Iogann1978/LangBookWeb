@@ -27,6 +27,7 @@ spring:
   jpa:
     hibernate.ddl-auto: update
     properties.hibernate.dialect: org.hibernate.dialect.HSQLDialect
+    open-in-view: true
 
   liquibase:
     change-log: classpath:db/changelog/changelog.yml

@@ -21,9 +21,12 @@ public class Word {
     @Column(nullable = false)
     protected String word;
     @NotNull
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @Column(nullable = false)
     protected Set<Translation> translations;
+    @NotNull
+    @Column(nullable = false)
+    protected String tooltip;
     @NotNull
     @ManyToOne(optional = false)
     protected User user;

@@ -42,9 +42,12 @@
                 </div>
                 <form class="navbar-form float-right" action="#" th:action="@{/dictionary/find}" th:object="${word}" method="POST">
                     <div class="input-group">
-                        <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit" th:field="*{word}">
+                        <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Search" th:field="*{word}">
+                        <button class="btn btn-outline-success" type="submit">
                             <i class="glyphicon glyphicon-search"></i>
+                        </button>
+                        <button class="btn btn-outline-success" type="reset">
+                            <i class="glyphicon glyphicon-fire" style="color:red"></i>
                         </button>
                     </div>
                 </form>
@@ -55,7 +58,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <h1 class="text-center" th:text="'Словарь: ' + ${user}">Словарь</h1>
+                <h1 class="text-center" th:text="'Пользователь: ' + ${user}">Пользователь</h1>
             </div>
         </div>
         <div class="row">
@@ -63,7 +66,8 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th class="col-8" scope="col">Слово</th>
+                            <th class="col-4" scope="col">Слово</th>
+                            <th class="col-4" scope="col">Перевод-подсказка</th>
                             <th class="col-1" scope="col">Тип</th>
                             <th class="col-3" scope="col">Действия</th>
                         </tr>
@@ -71,6 +75,7 @@
                     <tbody>
                         <tr th:each="word:${words}">
                             <td th:text="${word.word}">Слово</td>
+                            <td th:text="${word.tooltip}">Перевод-подсказка</td>
                             <td th:text="${word.class.simpleName}">Тип</td>
                             <td>
                                 <a th:href="@{/word(wordId=${word.id})}">Просмотреть</a>
@@ -87,25 +92,25 @@
         <nav aria-label="Pages">
             <ul class="pagination">
                 <li class="page-item">
-                    <a class="page-link" href="#">
+                    <a class="page-link" th:href="@{/dictionary/first}">
                         <i class="glyphicon glyphicon-fast-backward"></i>
                     </a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" href="#">
+                    <a class="page-link" th:href="@{/dictionary/prev}">
                         <i class="glyphicon glyphicon-backward"></i>
                     </a>
                 </li>
                 <li class="page-item" th:each="page:${pages}">
-                    <a class="page-link" href="#" th:text="${page}">Страница</a>
+                    <a class="page-link" th:href="@{/dictionary/page(p=${page})}" th:text="${page}">Страница</a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" href="#">
+                    <a class="page-link" th:href="@{/dictionary/next}">
                         <i class="glyphicon glyphicon-forward"></i>
                     </a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" href="#">
+                    <a class="page-link" th:href="@{/dictionary/last}">
                         <i class="glyphicon glyphicon-fast-forward"></i>
                     </a>
                 </li>

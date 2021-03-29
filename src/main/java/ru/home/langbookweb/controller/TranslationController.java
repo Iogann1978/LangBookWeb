@@ -1,6 +1,5 @@
 package ru.home.langbookweb.controller;
 
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -14,7 +13,6 @@ import reactor.core.publisher.Mono;
 import ru.home.langbookweb.model.Translation;
 import ru.home.langbookweb.model.Word;
 import ru.home.langbookweb.service.TranslationService;
-import ru.home.langbookweb.service.UtilService;
 import ru.home.langbookweb.service.WordService;
 
 import javax.annotation.security.RolesAllowed;
@@ -30,13 +28,9 @@ public class TranslationController {
     @RolesAllowed("USER,ADMIN")
     @GetMapping("/add")
     public String addTranslation(@RequestParam Long wordId, Model model) {
-        Mono<String> user = UtilService.getUser();
-        Mono<Word> word = wordService.get(user, wordId);
+        Mono<Word> word = wordService.get(wordId);
         IReactiveDataDriverContextVariable reactiveDataDrivenMode =
-                new ReactiveDataDriverContextVariable(word.flatMapIterable(w -> {
-                    Hibernate.initialize(w.getTranslations());
-                    return w.getTranslations();
-                }));
+                new ReactiveDataDriverContextVariable(word.flatMapIterable(w -> w.getTranslations()));
         Translation translation = new Translation();
         model.addAttribute("word", word);
         model.addAttribute("translation", translation);

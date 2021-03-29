@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -32,12 +33,11 @@ public class WordService {
     @Autowired
     private PhraseRepository phraseRepository;
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
-    public Flux<? super Word> getWords(Mono<String> user, String findWord, Pageable pageable) {
-        Flux<Word> words = user.map(username -> userRepository.findById(username))
-                .filter(u -> u.isPresent()).map(u -> u.get())
-                .flatMapIterable(u -> Strings.isEmpty(findWord) ? wordRepository.findAllByUser(u, pageable) :
+    public Flux<? super Word> getWords(String findWord, Pageable pageable) {
+        Mono<User> user = userService.getUser();
+        Flux<Word> words = user.flatMapIterable(u -> Strings.isEmpty(findWord) ? wordRepository.findAllByUser(u, pageable) :
                             wordRepository.findAllByUserAndWord(u, findWord, pageable)
                 ).map(word -> {
                     Optional<Noun> noun = nounRepository.findById(word.getId());
@@ -69,15 +69,20 @@ public class WordService {
         return words;
     }
 
-    public Mono<Word> get(Mono<String> user, Long wordId) {
-        return user.map(username -> userRepository.findById(username))
-                .filter(u -> u.isPresent()).map(u -> u.get())
-                .map(u -> wordRepository.findWordByUserAndId(u, wordId));
+    public Mono<Long> getCount() {
+        Mono<User> user = userService.getUser();
+        return user.map(u -> wordRepository.countAllByUser(u));
     }
 
-    public <T extends Word> Mono<Long> save(Mono<String> user, T word) {
-        Mono<Long> wid = user.map(username -> userRepository.findById(username))
-            .filter(u -> u.isPresent()).map(u -> u.get()).map(u -> {
+    public Mono<Word> get(Long wordId) {
+        Mono<User> user = userService.getUser();
+        return user.map(u -> wordRepository.findWordByUserAndId(u, wordId));
+    }
+
+    @Transactional
+    public <T extends Word> Mono<Long> save(T word) {
+        Mono<User> user = userService.getUser();
+        Mono<Long> wid = user.map(u -> {
                 Long id = null;
                 word.setUser(u);
                 if (word instanceof Noun) {
@@ -107,10 +112,10 @@ public class WordService {
         return wid;
     }
 
-    public void del(Mono<String> user, Word word) {
-        user.map(username -> userRepository.findById(username))
-                .filter(u -> u.isPresent()).map(u -> u.get())
-                .map(u -> wordRepository.findWordByUserAndId(u, word.getId()))
+    @Transactional
+    public void del(Word word) {
+        Mono<User> user = userService.getUser();
+        user.map(u -> wordRepository.findWordByUserAndId(u, word.getId()))
                 .doOnNext(w -> wordRepository.delete(w))
                 .subscribeOn(Schedulers.immediate()).subscribe();;
     }

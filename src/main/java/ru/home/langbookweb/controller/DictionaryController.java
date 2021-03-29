@@ -1,5 +1,6 @@
 package ru.home.langbookweb.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -7,37 +8,41 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.thymeleaf.spring5.context.webflux.IReactiveDataDriverContextVariable;
 import org.thymeleaf.spring5.context.webflux.ReactiveDataDriverContextVariable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 import ru.home.langbookweb.model.*;
-import ru.home.langbookweb.service.UtilService;
+import ru.home.langbookweb.service.UserService;
 import ru.home.langbookweb.service.WordService;
 
 import javax.annotation.security.RolesAllowed;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
 @Controller
 @RequestMapping(value = "/dictionary")
+@Slf4j
 public class DictionaryController {
     private static final int rowsOnPage = 10;
-    private static final int pagesOnPage = 5;
     @Autowired
     private WordService wordService;
+    @Autowired
+    private UserService userService;
+    private Pageable pageable = PageRequest.of(0, rowsOnPage, Sort.by("word"));
+    private int lastPage = 0;
 
     @RolesAllowed("USER,ADMIN")
     @GetMapping
-    public String getDictionary(@RequestParam(defaultValue = "0") int page, Model model) {
-        Pageable pageable = PageRequest.of(page, rowsOnPage, Sort.by("word"));
-        Mono<String> user = UtilService.getUser();
-        Flux<? super Word> words = wordService.getWords(user, null, pageable);
-        Flux<Long> pages = words.count().map(c -> c / rowsOnPage)
-                .flatMapIterable(c -> LongStream.rangeClosed(1, c).boxed().collect(Collectors.toList()));
+    public String getDictionary(@RequestParam(defaultValue = "") String findWord, Model model) {
+        Mono<String> user = userService.getUser().map(u -> u.getLogin());
+        Flux<? super Word> words = wordService.getWords(findWord, pageable);
+        Mono<Long> count = wordService.getCount();
+        Flux<Long> pages = count.map(c -> {
+            lastPage = (int) Math.ceil((double) c / (double) rowsOnPage);
+            return lastPage;
+        }).flatMapIterable(c -> LongStream.rangeClosed(1, c).boxed().collect(Collectors.toList()));
         IReactiveDataDriverContextVariable reactiveDataDrivenMode = new ReactiveDataDriverContextVariable(words);
         model.addAttribute("words", reactiveDataDrivenMode);
         model.addAttribute("word", new Word());
@@ -47,20 +52,44 @@ public class DictionaryController {
     }
 
     @RolesAllowed("USER,ADMIN")
-    @PostMapping("/find")
-    public String findWord(@RequestParam(defaultValue = "0") int page, @ModelAttribute("word") Word word, Model model) {
-        Pageable pageable = PageRequest.of(page, pagesOnPage, Sort.by("word"));
-        List<Long> pages = new ArrayList<>();
-        Mono<String> user = UtilService.getUser();
-        Flux<? super Word> words = wordService.getWords(user, word.getWord(), pageable);
-        words.count().map(c -> c / rowsOnPage)
-                .doOnNext(c -> pages.addAll(LongStream.rangeClosed(1, c).boxed().collect(Collectors.toList())))
-                .doFirst(() -> model.addAttribute("pages", pages))
-                .subscribeOn(Schedulers.immediate()).subscribe();
-        IReactiveDataDriverContextVariable reactiveDataDrivenMode = new ReactiveDataDriverContextVariable(words);
-        model.addAttribute("words", reactiveDataDrivenMode);
-        model.addAttribute("word", new Word());
-        model.addAttribute("user", user);
+    @GetMapping("/page")
+    public String getPage(@RequestParam(defaultValue = "1") int p) {
+        pageable = PageRequest.of(p - 1, rowsOnPage, Sort.by("word"));
+        return "redirect:/dictionary";
+    }
+
+    @RolesAllowed("USER,ADMIN")
+    @GetMapping("/first")
+    public String getFirstPage() {
+        pageable = pageable.first();
+        return "redirect:/dictionary";
+    }
+
+    @RolesAllowed("USER,ADMIN")
+    @GetMapping("/prev")
+    public String getPrevPage() {
+        pageable = pageable.previousOrFirst();
+        return "redirect:/dictionary";
+    }
+
+    @RolesAllowed("USER,ADMIN")
+    @GetMapping("/next")
+    public String getNextPage() {
+        pageable = pageable.next();
+        return "redirect:/dictionary";
+    }
+
+    @RolesAllowed("USER,ADMIN")
+    @GetMapping("/last")
+    public String getLastPage() {
+        pageable = PageRequest.of(lastPage - 1, rowsOnPage, Sort.by("word"));;
         return "dictionary";
+    }
+
+    @RolesAllowed("USER,ADMIN")
+    @PostMapping("/find")
+    public String findWord(@ModelAttribute("word") Word word) {
+        return "redirect:" + UriComponentsBuilder.fromPath("/dictionary").query("findWord={findWord}")
+                .build(word.getWord()).toString();
     }
 }
