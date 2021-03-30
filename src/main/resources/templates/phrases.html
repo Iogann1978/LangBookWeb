@@ -47,7 +47,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <h1 class="text-center">Фразы</h1>
+                <h1 class="text-center" th:text="'Фразы. Пользователь: ' + ${user} +', Страница: ' + ${pagePhrases.number + 1}">Фразы</h1>
             </div>
         </div>
         <div class="row">
@@ -55,13 +55,15 @@
                 <table class="table table-hover">
                     <thead>
                     <tr>
-                        <th class="col-11" scope="col">Фраза</th>
-                        <th class="col-1" scope="col">Действия</th>
+                        <th class="col-5" scope="col">Фраза</th>
+                        <th class="col-5" scope="col">Перевод-подсказка</th>
+                        <th class="col-2" scope="col">Действия</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="phrase:${phrases}">
+                    <tr th:each="phrase:${pagePhrases.content}">
                         <td th:text="${phrase.word}">Фраза</td>
+                        <td th:text="${phrase.tooltip}">Перевод-подсказка</td>
                         <td>
                             <a th:href="@{/word(wordId=${phrase.id})}">Просмотреть</a>
                         </td>
@@ -76,25 +78,25 @@
         <nav aria-label="Pages">
             <ul class="pagination">
                 <li class="page-item">
-                    <a class="page-link" href="#">
+                    <a class="page-link" th:href="@{/phrase/first}">
                         <i class="glyphicon glyphicon-fast-backward"></i>
                     </a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" href="#">
+                    <a class="page-link" th:href="@{/phrase/prev}">
                         <i class="glyphicon glyphicon-backward"></i>
                     </a>
                 </li>
                 <li class="page-item" th:each="page:${pages}">
-                    <a class="page-link" href="#" th:text="${page}">Страница</a>
+                    <a class="page-link" th:href="@{/phrase/page(p=${page})}" th:text="${page}">Страница</a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" href="#">
+                    <a class="page-link" th:href="@{/phrase/next}">
                         <i class="glyphicon glyphicon-forward"></i>
                     </a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" href="#">
+                    <a class="page-link" th:href="@{/phrase/last}">
                         <i class="glyphicon glyphicon-fast-forward"></i>
                     </a>
                 </li>

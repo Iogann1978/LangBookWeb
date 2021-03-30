@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 import ru.home.langbookweb.model.User;
 import ru.home.langbookweb.repository.UserRepository;
@@ -22,6 +23,7 @@ public class UserService {
     private Mono<User> user;
 
     @PostConstruct
+    @Transactional(readOnly = true)
     public void init() {
         user = ReactiveSecurityContextHolder.getContext()
                 .map(sc -> ((UserDetails) sc.getAuthentication().getPrincipal()).getUsername())

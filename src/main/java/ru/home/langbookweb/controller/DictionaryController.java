@@ -30,7 +30,7 @@ public class DictionaryController {
     private WordService wordService;
     @Autowired
     private UserService userService;
-    private Pageable pageable = PageRequest.of(0, rowsOnPage, Sort.by("word"));
+    private Pageable pageable = PageRequest.of(0, rowsOnPage, Sort.by("word").and(Sort.by("id")));
     private int lastPage = 0;
 
     @RolesAllowed("USER,ADMIN")
@@ -48,6 +48,7 @@ public class DictionaryController {
         model.addAttribute("word", new Word());
         model.addAttribute("user", user);
         model.addAttribute("pages", pages);
+        model.addAttribute("page", pageable.getPageNumber() + 1);
         return "dictionary";
     }
 
@@ -83,7 +84,7 @@ public class DictionaryController {
     @GetMapping("/last")
     public String getLastPage() {
         pageable = PageRequest.of(lastPage - 1, rowsOnPage, Sort.by("word"));;
-        return "dictionary";
+        return "redirect:/dictionary";
     }
 
     @RolesAllowed("USER,ADMIN")

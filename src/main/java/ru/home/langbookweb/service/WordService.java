@@ -35,6 +35,7 @@ public class WordService {
     @Autowired
     private UserService userService;
 
+    @Transactional(readOnly = true)
     public Flux<? super Word> getWords(String findWord, Pageable pageable) {
         Mono<User> user = userService.getUser();
         Flux<Word> words = user.flatMapIterable(u -> Strings.isEmpty(findWord) ? wordRepository.findAllByUser(u, pageable) :
