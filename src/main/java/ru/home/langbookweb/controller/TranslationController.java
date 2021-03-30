@@ -51,7 +51,8 @@ public class TranslationController {
 
     @RolesAllowed("USER,ADMIN")
     @PostMapping("/del")
-    public String deleteTranslation(@ModelAttribute("translation") Translation translation) {
-        return "redirect:add?wordId=1";
+    public String delTranslation(@ModelAttribute("translation") Translation translation) {
+        translationService.del(translation);
+        return null;
     }
 }
