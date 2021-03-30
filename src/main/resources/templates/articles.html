@@ -66,7 +66,7 @@
                         <td th:text="${article.name}">Название</td>
                         <td th:text="${article.filename}">Имя файла</td>
                         <td>
-                            <a href="#">Просмотреть</a>
+                            <a target="_blank" th:href="@{/article/content(articleId=${article.id})}">Просмотреть</a>
                             <a href="#" data-toggle="modal" data-target="#article_save" th:attr="onclick=|fillSaveForm(${article.id},'${article.name}')|">Изменить</a>
                             <a href="#" data-toggle="modal" data-target="#article_del" th:attr="onclick=|fillDelForm(${article.id},'${article.name}','${article.filename}')|">Удалить</a>
                         </td>

@@ -1,6 +1,7 @@
 package ru.home.langbookweb.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.data.domain.Page;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Controller;
@@ -23,6 +25,8 @@ import ru.home.langbookweb.service.ArticleService;
 import ru.home.langbookweb.service.UserService;
 
 import javax.annotation.security.RolesAllowed;
+import javax.xml.transform.stream.StreamSource;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -118,5 +122,12 @@ public class ArticleController {
     public String getLastPage() {
         pageable = PageRequest.of(lastPage - 1, rowsOnPage, Sort.by("word"));;
         return "redirect:/article/list";
+    }
+
+    @RolesAllowed("USER,ADMIN")
+    @GetMapping(value = "/content", produces = MediaType.TEXT_HTML_VALUE)
+    public Mono<ResponseEntity<String>> getArticleContents(@RequestParam Long articleId) {
+        Mono<Article> article = articleService.getArticle(articleId);
+        return article.map(a -> new String(a.getText(), StandardCharsets.UTF_8)).map((String html) -> ResponseEntity.ok().body(html));
     }
 }

@@ -25,6 +25,12 @@ public class ArticleService {
         return page;
     }
 
+    @Transactional(readOnly = true)
+    public Mono<Article> getArticle(Long id) {
+        Mono<User> user = userService.getUser();
+        return user.map(u -> articleRepository.findArticleByUserAndId(u, id));
+    }
+
     @Transactional
     public Mono<Long> save(Article article) {
         Mono<User> user = userService.getUser();
