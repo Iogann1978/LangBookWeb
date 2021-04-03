@@ -1,44 +1,101 @@
 package ru.home.langbookweb.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.data.domain.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
+import ru.home.langbookweb.model.User;
+import ru.home.langbookweb.model.WordItem;
+import ru.home.langbookweb.service.TextService;
+import ru.home.langbookweb.service.UserService;
 
 import javax.annotation.security.RolesAllowed;
 import java.io.ByteArrayOutputStream;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 @Controller
 @RequestMapping(value = "/text")
 @Slf4j
 public class TextController {
+    private static final int rowsOnPage = 10;
+    private Pageable pageable = PageRequest.of(0, rowsOnPage);
+    private int lastPage = 0;
+    @Autowired
+    private TextService textService;
+    @Autowired
+    private UserService userService;
+
     @RolesAllowed("USER,ADMIN")
     @GetMapping("/list")
     public String getTexts(Model model) {
-        List<String> words = new ArrayList<>();
-        model.addAttribute("words", words);
-        model.addAttribute("pages", new int[] {1, 2, 3, 4, 5, 6, 7});
+        Mono<String> user = userService.getUser().map(u -> u.getLogin());
+        PagedListHolder<WordItem> pageWords = textService.getPage(pageable);
+        lastPage = pageWords.getPageCount();
+        model.addAttribute("pageWords", pageWords.getPageList());
+        model.addAttribute("page", pageable.getPageNumber() + 1);
+        model.addAttribute("user", user);
         return "text";
     }
 
     @RolesAllowed("USER,ADMIN")
+    @GetMapping("/first")
+    public String getFirstPage() {
+        pageable = pageable.first();
+        return "redirect:/text/list";
+    }
+
+    @RolesAllowed("USER,ADMIN")
+    @GetMapping("/prev")
+    public String getPrevPage() {
+        pageable = pageable.previousOrFirst();
+        return "redirect:/text/list";
+    }
+
+    @RolesAllowed("USER,ADMIN")
+    @GetMapping("/next")
+    public String getNextPage() {
+        pageable = pageable.next();
+        return "redirect:/text/list";
+    }
+
+    @RolesAllowed("USER,ADMIN")
+    @GetMapping("/last")
+    public String getLastPage() {
+        pageable = PageRequest.of(lastPage - 1, rowsOnPage);
+        return "redirect:/text/list";
+    }
+
+    @RolesAllowed("USER,ADMIN")
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String textUpload(@RequestPart("upload") FilePart part) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        part.content().doOnNext(dataBuffer -> {
+    public Mono<Void> textUpload(@RequestPart("upload") FilePart part, ServerHttpResponse response) {
+        return part.content().collect(ByteArrayOutputStream::new, (baos, dataBuffer) -> {
             byte[] bytes = new byte[dataBuffer.readableByteCount()];
             dataBuffer.read(bytes);
             DataBufferUtils.release(dataBuffer);
             baos.writeBytes(bytes);
-        }).doOnComplete(() -> log.debug("text: {}", baos.toString(StandardCharsets.UTF_8)))
-                .subscribeOn(Schedulers.immediate()).subscribe();
-        return "redirect:/text/list";
+        }).map(baos -> {
+            String text = baos.toString(StandardCharsets.UTF_8);
+            log.debug("text: {}", text);
+            textService.parse(text);
+            return text;
+        }).flatMap(text -> {
+            response.setStatusCode(HttpStatus.SEE_OTHER);
+            response.getHeaders().setLocation(URI.create("/text/list"));
+            return response.setComplete();
+        });
     }
 }

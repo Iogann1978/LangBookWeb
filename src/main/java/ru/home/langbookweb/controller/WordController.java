@@ -32,13 +32,13 @@ public class WordController {
 
     @RolesAllowed("USER,ADMIN")
     @GetMapping("/add")
-    public String addWord(Model model) {
-        model.addAttribute("word", new Word());
-        model.addAttribute("noun", new Noun());
-        model.addAttribute("verb", new Verb());
-        model.addAttribute("adjective", new Adjective());
-        model.addAttribute("adverb", new Adverb());
-        model.addAttribute("participle", new Participle());
+    public String addWord(@RequestParam(required = false) String fill, Model model) {
+        model.addAttribute("word", Word.builder().word(fill).build());
+        model.addAttribute("noun", Noun.builder().word(fill).build());
+        model.addAttribute("verb", Verb.builder().word(fill).build());
+        model.addAttribute("adjective", Adjective.builder().word(fill).build());
+        model.addAttribute("adverb", Adverb.builder().word(fill).build());
+        model.addAttribute("participle", Participle.builder().word(fill).build());
         model.addAttribute("phrase", new Phrase());
         return "word_add";
     }

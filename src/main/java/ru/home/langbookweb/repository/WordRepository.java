@@ -14,4 +14,5 @@ public interface WordRepository extends JpaRepository<Word, Long> {
     List<Word> findAllByUserAndWord(User user, String word, Pageable pageable);
     List<Word> findAllByUser(User user, Pageable pageable);
     Word findWordByUserAndId(User user, Long id);
+    boolean existsWordByUserAndWord(User user, String word);
 }

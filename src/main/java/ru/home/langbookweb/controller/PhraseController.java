@@ -24,7 +24,8 @@ import java.util.stream.LongStream;
 @RequestMapping(value = "/phrase")
 public class PhraseController {
     private static final int rowsOnPage = 10;
-    private Pageable pageable = PageRequest.of(0, rowsOnPage, Sort.by("word"));
+    private static final Sort sorting = Sort.by("word");
+    private Pageable pageable = PageRequest.of(0, rowsOnPage, sorting);
     @Autowired
     private PhraseService phraseService;
     @Autowired
@@ -50,7 +51,7 @@ public class PhraseController {
     @RolesAllowed("USER,ADMIN")
     @GetMapping("/page")
     public String getPage(@RequestParam(defaultValue = "1") int p) {
-        pageable = PageRequest.of(p - 1, rowsOnPage, Sort.by("word"));
+        pageable = PageRequest.of(p - 1, rowsOnPage, sorting);
         return "redirect:/phrase/list";
     }
 
@@ -78,7 +79,7 @@ public class PhraseController {
     @RolesAllowed("USER,ADMIN")
     @GetMapping("/last")
     public String getLastPage() {
-        pageable = PageRequest.of(lastPage - 1, rowsOnPage, Sort.by("word"));;
+        pageable = PageRequest.of(lastPage - 1, rowsOnPage, sorting);
         return "redirect:/phrase/list";
     }
 }

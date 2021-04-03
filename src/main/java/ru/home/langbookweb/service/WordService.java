@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -13,6 +14,7 @@ import reactor.core.scheduler.Schedulers;
 import ru.home.langbookweb.model.*;
 import ru.home.langbookweb.repository.*;
 
+import java.time.Duration;
 import java.util.Optional;
 
 @Service
@@ -70,14 +72,22 @@ public class WordService {
         return words;
     }
 
+    @Transactional(readOnly = true)
     public Mono<Long> getCount() {
         Mono<User> user = userService.getUser();
         return user.map(u -> wordRepository.countAllByUser(u));
     }
 
+    @Transactional(readOnly = true)
     public Mono<Word> get(Long wordId) {
         Mono<User> user = userService.getUser();
         return user.map(u -> wordRepository.findWordByUserAndId(u, wordId));
+    }
+
+    @Transactional(readOnly = true)
+    public boolean isPresent(String findWord) {
+        User user = userService.getFlatUser();
+        return wordRepository.existsWordByUserAndWord(user, findWord);
     }
 
     @Transactional

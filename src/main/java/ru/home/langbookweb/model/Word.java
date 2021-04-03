@@ -30,4 +30,8 @@ public class Word {
     @NotNull
     @ManyToOne(optional = false)
     protected User user;
+
+    public void setWord(String word) {
+        this.word = word.toLowerCase();
+    }
 }

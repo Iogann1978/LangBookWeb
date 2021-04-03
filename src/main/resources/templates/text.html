@@ -21,7 +21,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">Словарь</a>
+                            <a class="nav-link" href="/dictionary">Словарь</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/word/add">Добавить слово</a>
@@ -36,7 +36,7 @@
                             <a class="nav-link" href="/article/list">Статьи</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Тексты</a>
+                            <a class="nav-link active" aria-current="page" href="#">Тексты</a>
                         </li>
                     </ul>
                 </div>
@@ -48,7 +48,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <h1 class="text-center">Слова для добавления в словарь</h1>
+                <h1 class="text-center" th:text="'Слова для добавления в словарь '  + ${user}">Слова для добавления в словарь</h1>
             </div>
         </div>
         <div class="row">
@@ -56,15 +56,17 @@
                 <table class="table table-hover">
                     <thead>
                     <tr>
-                        <th class="col-11" scope="col">Слово</th>
-                        <th class="col-1" scope="col">Действия</th>
+                        <th class="col-9" scope="col">Слово</th>
+                        <th class="col-1" scope="col">Частота</th>
+                        <th class="col-2" scope="col">Действия</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="word:${words}">
-                        <td th:text="${word}">Слово</td>
+                    <tr th:each="word:${pageWords}">
+                        <td th:text="${word.word}">Слово</td>
+                        <td th:text="${word.count}">Частота</td>
                         <td>
-                            <a th:href="@{/word/add}">Добавить в словарь</a>
+                            <a targer="_blank" th:href="@{/word/add(fill=${word.word})}">Добавить в словарь</a>
                         </td>
                     </tr>
                     </tbody>
@@ -77,25 +79,25 @@
         <nav aria-label="Pages">
             <ul class="pagination">
                 <li class="page-item">
-                    <a class="page-link" href="#">
+                    <a class="page-link" th:href="@{/text/first}">
                         <i class="glyphicon glyphicon-fast-backward"></i>
                     </a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" href="#">
+                    <a class="page-link" th:href="@{/text/prev}">
                         <i class="glyphicon glyphicon-backward"></i>
                     </a>
                 </li>
-                <li class="page-item" th:each="page:${pages}">
+                <li class="page-item disabled">
                     <a class="page-link" href="#" th:text="${page}">Страница</a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" href="#">
+                    <a class="page-link" th:href="@{/text/next}">
                         <i class="glyphicon glyphicon-forward"></i>
                     </a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" href="#">
+                    <a class="page-link" th:href="@{/text/last}">
                         <i class="glyphicon glyphicon-fast-forward"></i>
                     </a>
                 </li>

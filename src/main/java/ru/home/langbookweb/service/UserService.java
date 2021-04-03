@@ -21,6 +21,8 @@ public class UserService {
     private UserRepository userRepository;
     @Getter
     private Mono<User> user;
+    @Getter
+    private User flatUser;
 
     @PostConstruct
     @Transactional(readOnly = true)
@@ -28,6 +30,9 @@ public class UserService {
         user = ReactiveSecurityContextHolder.getContext()
                 .map(sc -> ((UserDetails) sc.getAuthentication().getPrincipal()).getUsername())
                 .map(username -> userRepository.findById(username))
-                .filter(u -> u.isPresent()).map(u -> u.get());
+                .filter(u -> u.isPresent()).map(u -> {
+                    flatUser = u.get();
+                    return u.get();
+                });
     }
 }
