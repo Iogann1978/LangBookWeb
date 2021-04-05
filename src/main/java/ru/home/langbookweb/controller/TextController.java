@@ -12,9 +12,8 @@ import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
-import ru.home.langbookweb.model.User;
 import ru.home.langbookweb.model.WordItem;
 import ru.home.langbookweb.service.TextService;
 import ru.home.langbookweb.service.UserService;
@@ -23,9 +22,6 @@ import javax.annotation.security.RolesAllowed;
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 
 @Controller
 @RequestMapping(value = "/text")
@@ -43,11 +39,12 @@ public class TextController {
     @GetMapping("/list")
     public String getTexts(Model model) {
         Mono<String> user = userService.getUser().map(u -> u.getLogin());
-        PagedListHolder<WordItem> pageWords = textService.getPage(pageable);
-        lastPage = pageWords.getPageCount();
-        model.addAttribute("pageWords", pageWords.getPageList());
+        Flux<WordItem> pageWords = textService.getPage(pageable);
+        Mono<Long> count = textService.getFlux().count().doOnSuccess(c -> lastPage = (int) Math.ceil((double) c / (double) rowsOnPage));
+        model.addAttribute("pageWords", pageWords);
         model.addAttribute("page", pageable.getPageNumber() + 1);
         model.addAttribute("user", user);
+        model.addAttribute("count", count);
         return "text";
     }
 
@@ -81,8 +78,8 @@ public class TextController {
 
     @RolesAllowed("USER,ADMIN")
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Mono<Void> textUpload(@RequestPart("upload") FilePart part, ServerHttpResponse response) {
-        return part.content().collect(ByteArrayOutputStream::new, (baos, dataBuffer) -> {
+    public Mono<Void> textUpload(@RequestPart("upload") Mono<FilePart> part, ServerHttpResponse response) {
+        return part.flatMapMany(FilePart::content).collect(ByteArrayOutputStream::new, (baos, dataBuffer) -> {
             byte[] bytes = new byte[dataBuffer.readableByteCount()];
             dataBuffer.read(bytes);
             DataBufferUtils.release(dataBuffer);
@@ -90,9 +87,8 @@ public class TextController {
         }).map(baos -> {
             String text = baos.toString(StandardCharsets.UTF_8);
             log.debug("text: {}", text);
-            textService.parse(text);
-            return text;
-        }).flatMap(text -> {
+            return textService.parse(text);
+        }).flatMap(count -> {
             response.setStatusCode(HttpStatus.SEE_OTHER);
             response.getHeaders().setLocation(URI.create("/text/list"));
             return response.setComplete();

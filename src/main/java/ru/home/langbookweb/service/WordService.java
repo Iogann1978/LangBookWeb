@@ -85,9 +85,9 @@ public class WordService {
     }
 
     @Transactional(readOnly = true)
-    public boolean isPresent(String findWord) {
-        User user = userService.getFlatUser();
-        return wordRepository.existsWordByUserAndWord(user, findWord);
+    public Mono<Boolean> isPresent(String findWord) {
+        Mono<User> user = userService.getUser();
+        return user.map(u -> wordRepository.existsWordByUserAndWord(u, findWord));
     }
 
     @Transactional
