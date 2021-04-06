@@ -79,9 +79,36 @@ public class WordService {
     }
 
     @Transactional(readOnly = true)
-    public Mono<Word> get(Long wordId) {
+    public Mono<? super Word> get(Long wordId) {
         Mono<User> user = userService.getUser();
-        return user.map(u -> wordRepository.findWordByUserAndId(u, wordId));
+        return user.map(u -> wordRepository.findWordByUserAndId(u, wordId))
+            .map(word -> {
+                Optional<Noun> noun = nounRepository.findById(word.getId());
+                if (noun.isPresent()) {
+                    return noun.get();
+                }
+                Optional<Verb> verb = verbRepository.findById(word.getId());
+                if (verb.isPresent()) {
+                    return verb.get();
+                }
+                Optional<Adjective> adjective = adjectiveRepository.findById(word.getId());
+                if (adjective.isPresent()) {
+                    return adjective.get();
+                }
+                Optional<Adverb> adverb = adverbRepository.findById(word.getId());
+                if (adverb.isPresent()) {
+                    return adverb.get();
+                }
+                Optional<Participle> participle = participleRepository.findById(word.getId());
+                if (participle.isPresent()) {
+                    return participle.get();
+                }
+                Optional<Phrase> phrase = phraseRepository.findById(word.getId());
+                if (phrase.isPresent()) {
+                    return phrase.get();
+                }
+                return word;
+            });
     }
 
     @Transactional(readOnly = true)

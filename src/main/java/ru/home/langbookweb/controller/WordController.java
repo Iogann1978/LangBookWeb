@@ -13,6 +13,7 @@ import ru.home.langbookweb.model.*;
 import ru.home.langbookweb.service.WordService;
 
 import javax.annotation.security.RolesAllowed;
+import java.lang.reflect.ParameterizedType;
 import java.util.Set;
 
 @Controller
@@ -25,7 +26,13 @@ public class WordController {
     @RolesAllowed("USER,ADMIN")
     @GetMapping
     public String getWord(@RequestParam Long wordId, Model model) {
-        Mono<Word> word = wordService.get(wordId);
+        Mono<? super Word> word = wordService.get(wordId);
+        model.addAttribute("verb", word);
+        model.addAttribute("noun", word);
+        model.addAttribute("adjective", word);
+        model.addAttribute("adverb", word);
+        model.addAttribute("participle", word);
+        model.addAttribute("phrase", word);
         model.addAttribute("word", word);
         return "word";
     }
