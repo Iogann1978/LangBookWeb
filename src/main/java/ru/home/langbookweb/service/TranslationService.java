@@ -19,13 +19,20 @@ public class TranslationService {
 
     @Transactional
     public Mono<Long> save(Translation translation) {
-        return Mono.just(translationRepository.saveAndFlush(translation))
+        Mono<User> user = userService.getUser();
+        return user.filter(u -> u.getLogin().equals(translation.getWord().getUser().getLogin()))
+                .map(u -> translationRepository.saveAndFlush(translation))
                 .map(Translation::getId);
     }
 
     @Transactional
-    public void del(Translation translation) {
-        translationRepository.delete(translation);
+    public Mono<Long> del(Translation translation) {
+        Mono<User> user = userService.getUser();
+        return user.filter(u -> u.getLogin().equals(translation.getWord().getUser().getLogin()))
+                .map(u -> {
+                    translationRepository.delete(translation);
+                    return translation.getId();
+                });
     }
 
     @Transactional(readOnly = true)

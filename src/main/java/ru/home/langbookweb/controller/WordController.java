@@ -14,6 +14,7 @@ import ru.home.langbookweb.model.*;
 import ru.home.langbookweb.service.WordService;
 
 import javax.annotation.security.RolesAllowed;
+import java.net.URI;
 import java.util.Set;
 
 @Controller
@@ -143,8 +144,11 @@ public class WordController {
 
     @RolesAllowed("USER,ADMIN")
     @PostMapping("/del")
-    public String delWord(@ModelAttribute("word") Word word) {
-        wordService.del(word);
-        return "dictionary";
+    public Mono<Void> delWord(@ModelAttribute("word") Word word, ServerHttpResponse response) {
+        return wordService.del(word).flatMap(id -> {
+            response.setStatusCode(HttpStatus.SEE_OTHER);
+            response.getHeaders().setLocation(URI.create("/dictionary"));
+            return response.setComplete();
+        });
     }
 }

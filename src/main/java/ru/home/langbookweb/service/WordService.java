@@ -151,10 +151,12 @@ public class WordService {
     }
 
     @Transactional
-    public void del(Word word) {
+    public Mono<Long> del(Word word) {
         Mono<User> user = userService.getUser();
-        user.map(u -> wordRepository.findWordByUserAndId(u, word.getId()))
-                .doOnNext(w -> wordRepository.delete(w))
-                .subscribeOn(Schedulers.immediate()).subscribe();;
+        return user.map(u -> wordRepository.findWordByUserAndId(u, word.getId()))
+                .map(w -> {
+                    wordRepository.delete(w);
+                    return w.getId();
+                });
     }
 }

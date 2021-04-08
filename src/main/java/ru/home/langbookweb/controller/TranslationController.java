@@ -16,6 +16,7 @@ import ru.home.langbookweb.service.TranslationService;
 import ru.home.langbookweb.service.WordService;
 
 import javax.annotation.security.RolesAllowed;
+import java.net.URI;
 
 @Controller
 @RequestMapping(value = "/translation")
@@ -41,8 +42,8 @@ public class TranslationController {
     @RolesAllowed("USER,ADMIN")
     @PostMapping("/save")
     public Mono<Void> saveTranslation(@ModelAttribute("translation") Translation translation, ServerHttpResponse response) {
-        Mono<Long> wid = translationService.save(translation);
-        return wid.flatMap(id -> {
+        Mono<Long> tid = translationService.save(translation);
+        return tid.flatMap(id -> {
             response.setStatusCode(HttpStatus.SEE_OTHER);
             response.getHeaders().setLocation(UriComponentsBuilder.fromPath("/example/add").query("translationId={id}").build(id));
             return response.setComplete();
@@ -51,8 +52,12 @@ public class TranslationController {
 
     @RolesAllowed("USER,ADMIN")
     @PostMapping("/del")
-    public String delTranslation(@ModelAttribute("translation") Translation translation) {
-        translationService.del(translation);
-        return null;
+    public Mono<Void> delTranslation(@ModelAttribute("translation") Translation translation, ServerHttpResponse response) {
+        Mono<Long> tid = translationService.del(translation);
+        return tid.flatMap(id -> {
+            response.setStatusCode(HttpStatus.SEE_OTHER);
+            response.getHeaders().setLocation(URI.create("/translation/add"));
+            return response.setComplete();
+        });
     }
 }

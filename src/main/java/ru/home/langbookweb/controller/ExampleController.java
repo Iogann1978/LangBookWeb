@@ -47,9 +47,13 @@ public class ExampleController {
 
     @RolesAllowed("USER,ADMIN")
     @PostMapping("/save")
-    public String saveExample(@ModelAttribute("example") Example example) {
-        Example e = exampleService.save(example);
-        return "redirect:add?translationId=" + e.getTranslation().getId();
+    public Mono<Void> saveExample(@ModelAttribute("example") Example example, ServerHttpResponse response) {
+        return exampleService.save(example)
+                .flatMap(id -> {
+                    response.setStatusCode(HttpStatus.SEE_OTHER);
+                    response.getHeaders().setLocation(UriComponentsBuilder.fromPath("/example/add").query("translationId={id}").build(id));
+                    return response.setComplete();
+                });
     }
 
     @RolesAllowed("USER,ADMIN")
