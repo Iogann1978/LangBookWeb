@@ -19,7 +19,7 @@ public class Translation {
     @Column(nullable = false)
     private String description;
     private String source;
-    @OneToMany(mappedBy = "translation", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "translation", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Example> examples;
     @ManyToOne
     @JoinColumn(name = "word_id", nullable = false)

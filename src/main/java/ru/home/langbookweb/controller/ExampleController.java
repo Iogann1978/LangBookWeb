@@ -2,9 +2,12 @@ package ru.home.langbookweb.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.thymeleaf.spring5.context.webflux.IReactiveDataDriverContextVariable;
 import org.thymeleaf.spring5.context.webflux.ReactiveDataDriverContextVariable;
 import reactor.core.publisher.Flux;
@@ -51,7 +54,12 @@ public class ExampleController {
 
     @RolesAllowed("USER,ADMIN")
     @PostMapping("/del")
-    public String deleteExample(@ModelAttribute("example") Example example) {
-        return "redirect:add?wordId=1";
+    public Mono<Void> delExample(@ModelAttribute("example") Example example, ServerHttpResponse response) {
+        return exampleService.del(example.getTranslation().getId(), example.getId())
+        .flatMap(id -> {
+            response.setStatusCode(HttpStatus.SEE_OTHER);
+            response.getHeaders().setLocation(UriComponentsBuilder.fromPath("/example/add").query("translationId={id}").build(id));
+            return response.setComplete();
+        });
     }
 }
