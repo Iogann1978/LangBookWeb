@@ -1,14 +1,8 @@
 package ru.home.langbookweb.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Data
 @Builder
@@ -21,4 +15,8 @@ public class Example {
     private Long id;
     private String text1;
     private String text2;
+    @ManyToOne
+    @JoinColumn(name = "translation_id", nullable = false)
+    @EqualsAndHashCode.Exclude
+    private Translation translation;
 }

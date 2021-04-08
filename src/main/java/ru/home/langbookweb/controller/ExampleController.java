@@ -1,35 +1,43 @@
 package ru.home.langbookweb.controller;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.spring5.context.webflux.IReactiveDataDriverContextVariable;
 import org.thymeleaf.spring5.context.webflux.ReactiveDataDriverContextVariable;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.home.langbookweb.model.Example;
 import ru.home.langbookweb.model.Translation;
 import ru.home.langbookweb.model.Word;
+import ru.home.langbookweb.service.ExampleService;
+import ru.home.langbookweb.service.TranslationService;
 
 import javax.annotation.security.RolesAllowed;
 
 @Controller
 @RequestMapping(value = "/example")
+@Slf4j
 public class ExampleController {
+    @Autowired
+    private ExampleService exampleService;
+    @Autowired
+    private TranslationService translationService;
+
     @RolesAllowed("USER,ADMIN")
-    @PostMapping("/add")
+    @GetMapping("/add")
     public String addExample(@RequestParam Long translationId, Model model) {
-        Word word = Word.builder().word("Body").build();
-        Translation translation = Translation.builder().id(translationId).description("Перевод 1").source("Oxford dictionary").build();
-        Example example = new Example();
-        Flux<Example> examples = Flux.just(
-                Example.builder().id(1L).text1("This is first example").text2("Первый пример").build(),
-                Example.builder().id(2L).text1("This is second example").text2("Второй пример").build()
-        );
+        Mono<Translation> translation = translationService.get(translationId);
+        Mono<Word> word = translation.map(t -> t.getWord());
+        Mono<Example> example = translation.map(t -> Example.builder().translation(t).build());
+        Flux<Example> examples = exampleService.getExamples(translationId);
         IReactiveDataDriverContextVariable reactiveDataDrivenMode =
                 new ReactiveDataDriverContextVariable(examples);
         model.addAttribute("word", word);
-        model.addAttribute("translation", translation);
         model.addAttribute("example", example);
+        model.addAttribute("translation", translation);
         model.addAttribute("examples", reactiveDataDrivenMode);
         return "example_add";
     }
@@ -37,7 +45,8 @@ public class ExampleController {
     @RolesAllowed("USER,ADMIN")
     @PostMapping("/save")
     public String saveExample(@ModelAttribute("example") Example example) {
-        return "redirect:add?translationId=1";
+        Example e = exampleService.save(example);
+        return "redirect:add?translationId=" + e.getTranslation().getId();
     }
 
     @RolesAllowed("USER,ADMIN")

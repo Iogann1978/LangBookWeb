@@ -1,9 +1,6 @@
 package ru.home.langbookweb.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -22,6 +19,10 @@ public class Translation {
     @Column(nullable = false)
     private String description;
     private String source;
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "translation", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Example> examples;
+    @ManyToOne
+    @JoinColumn(name = "word_id", nullable = false)
+    @EqualsAndHashCode.Exclude
+    private Word word;
 }

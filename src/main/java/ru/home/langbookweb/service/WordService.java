@@ -79,7 +79,7 @@ public class WordService {
     }
 
     @Transactional(readOnly = true)
-    public Mono<? super Word> get(Long wordId) {
+    public Mono<? extends Word> get(Long wordId) {
         Mono<User> user = userService.getUser();
         return user.map(u -> wordRepository.findWordByUserAndId(u, wordId))
             .map(word -> {

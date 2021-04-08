@@ -28,9 +28,9 @@ public class TranslationController {
     @RolesAllowed("USER,ADMIN")
     @GetMapping("/add")
     public String addTranslation(@RequestParam Long wordId, Model model) {
-        Mono<? super Word> word = wordService.get(wordId);
+        Mono<? extends Word> word = wordService.get(wordId);
         IReactiveDataDriverContextVariable reactiveDataDrivenMode =
-                new ReactiveDataDriverContextVariable(word.flatMapIterable(w -> ((Word) w).getTranslations()));
+                new ReactiveDataDriverContextVariable(word.flatMapIterable(w -> w.getTranslations()));
         Translation translation = new Translation();
         model.addAttribute("word", word);
         model.addAttribute("translation", translation);
