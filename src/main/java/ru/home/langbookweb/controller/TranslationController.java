@@ -56,7 +56,7 @@ public class TranslationController {
         Mono<Long> tid = translationService.del(translation);
         return tid.flatMap(id -> {
             response.setStatusCode(HttpStatus.SEE_OTHER);
-            response.getHeaders().setLocation(URI.create("/translation/add"));
+            response.getHeaders().setLocation(UriComponentsBuilder.fromPath("/translation/add").query("wordId={id}").build(id));
             return response.setComplete();
         });
     }

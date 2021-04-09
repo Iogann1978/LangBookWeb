@@ -21,7 +21,7 @@ public class Word {
     @Column(nullable = false)
     protected String word;
     @NotNull
-    @OneToMany(mappedBy = "word", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "word", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @Column(nullable = false)
     protected Set<Translation> translations;
     @NotNull

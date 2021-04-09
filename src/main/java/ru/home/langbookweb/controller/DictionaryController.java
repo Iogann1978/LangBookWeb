@@ -92,6 +92,6 @@ public class DictionaryController {
     @PostMapping("/find")
     public String findWord(@ModelAttribute("word") Word word) {
         return "redirect:" + UriComponentsBuilder.fromPath("/dictionary").query("findWord={findWord}")
-                .build(word.getWord()).toString();
+                .build(word.getWord());
     }
 }

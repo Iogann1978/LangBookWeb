@@ -1,5 +1,6 @@
 package ru.home.langbookweb.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +12,7 @@ import ru.home.langbookweb.repository.TranslationRepository;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class TranslationService {
     @Autowired
     private TranslationRepository translationRepository;
@@ -20,9 +22,12 @@ public class TranslationService {
     @Transactional
     public Mono<Long> save(Translation translation) {
         Mono<User> user = userService.getUser();
-        return user.filter(u -> u.getLogin().equals(translation.getWord().getUser().getLogin()))
-                .map(u -> translationRepository.saveAndFlush(translation))
-                .map(Translation::getId);
+        Translation t = translation.getId() == null ?
+                translation : translationRepository.getOne(translation.getId());
+        if (translation.getWord() == null) translation.setWord(t.getWord());
+        return user.filter(u -> u.getLogin().equals(t.getWord().getUser().getLogin()))
+                    .map(u -> translationRepository.saveAndFlush(translation))
+                    .map(Translation::getId);
     }
 
     @Transactional
@@ -31,7 +36,7 @@ public class TranslationService {
         return user.filter(u -> u.getLogin().equals(translation.getWord().getUser().getLogin()))
                 .map(u -> {
                     translationRepository.delete(translation);
-                    return translation.getId();
+                    return translation.getWord().getId();
                 });
     }
 

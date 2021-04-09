@@ -25,9 +25,12 @@ public class ExampleService {
 
     @Transactional
     public Mono<Long> save(Example example) {
+        Example e = example.getId() == null ?
+                example : exampleRepository.getOne(example.getId());
+        if (example.getTranslation() == null) example.setTranslation(e.getTranslation());
         return translationService.get(example.getTranslation().getId())
                 .map(t -> exampleRepository.saveAndFlush(example))
-                .map(e -> e.getTranslation().getId());
+                .map(exmp -> exmp.getTranslation().getId());
     }
 
     @Transactional

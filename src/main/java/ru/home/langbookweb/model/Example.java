@@ -3,6 +3,7 @@ package ru.home.langbookweb.model;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
@@ -15,6 +16,7 @@ public class Example {
     private Long id;
     private String text1;
     private String text2;
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "translation_id", nullable = false)
     @EqualsAndHashCode.Exclude

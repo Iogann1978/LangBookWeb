@@ -23,4 +23,8 @@ public class RoundRobin {
     private String name;
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Word> words;
+    @NotNull
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    protected User user;
 }

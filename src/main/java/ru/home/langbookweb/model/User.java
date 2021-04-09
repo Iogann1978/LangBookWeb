@@ -22,6 +22,6 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY)
     private Set<Article> articles;
     @NotNull
-    @OneToOne(optional = false, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user", optional = false, fetch = FetchType.LAZY)
     private RoundRobin roundRobin;
 }

@@ -1,48 +1,71 @@
 package ru.home.langbookweb.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.util.UriComponentsBuilder;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.home.langbookweb.model.RoundRobin;
 import ru.home.langbookweb.model.Translation;
 import ru.home.langbookweb.model.Word;
+import ru.home.langbookweb.service.RoundRobinService;
 
 import javax.annotation.security.RolesAllowed;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping(value = "/roundrobin")
 public class RoundRobinController {
+    @Autowired
+    private RoundRobinService roundRobinService;
+
     @RolesAllowed("USER,ADMIN")
     @GetMapping
     public String getRoundRobin(Model model) {
-        Set<Translation> trans1 = Set.of(Translation.builder().id(5L).description("Слово").build());
-        Set<Translation> trans2 = Set.of(Translation.builder().id(6L).description("Переводить").build(),
-                Translation.builder().id(7L).description("Переводить туда-сюда").build());
-        Set<Translation> trans3 = Set.of(Translation.builder().id(8L).description("Быстро").build());
-        Set<Word> words = Set.of(
-                Word.builder().id(2L).word("word").translations(trans1).build(),
-                Word.builder().id(3L).word("translate").translations(trans2).build(),
-                Word.builder().id(4L).word("quick").translations(trans3).build()
-        );
-        RoundRobin roundRobin = RoundRobin.builder().id(1L).name("Первая карусель").words(words).build();
+        Mono<RoundRobin> roundRobin = roundRobinService.get();
+        Flux<Word> words = roundRobin.flatMapIterable(rr -> {
+            List<Word> list = rr.getWords().stream().collect(Collectors.toList());
+            Collections.shuffle(list);
+            return list;
+        });
+        Flux<Integer> numbers = words.count().flatMapMany(c -> Flux.range(1, c.intValue()));
         model.addAttribute("roundrobin", roundRobin);
-        model.addAttribute("numbers", new int[]{1, 2, 3});
+        model.addAttribute("numbers", numbers);
         model.addAttribute("word", new Word());
+        model.addAttribute("words", words);
         return "roundrobin";
     }
 
     @RolesAllowed("USER,ADMIN")
     @PostMapping("/add")
-    public String roundrobinAdd(Word word) {
-        return null;
+    public Mono<Void> roundrobinAdd(@ModelAttribute("word") Word word, ServerHttpResponse response) {
+        return roundRobinService.addWord(word)
+                .flatMap(id -> {
+                    response.setStatusCode(HttpStatus.OK);
+                    return response.setComplete();
+                });
     }
 
     @RolesAllowed("USER,ADMIN")
     @PostMapping("/del")
-    public String roundrobinDel(Word word) {
-        return null;
+    public Mono<Void> roundrobinDel(@ModelAttribute("word") Word word, ServerHttpResponse response) {
+        return roundRobinService.delWord(word)
+                .flatMap(id -> {
+                    response.setStatusCode(HttpStatus.OK);
+                    return response.setComplete();
+                });
     }
 }
