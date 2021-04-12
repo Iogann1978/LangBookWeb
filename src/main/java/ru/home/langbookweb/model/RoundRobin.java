@@ -1,9 +1,6 @@
 package ru.home.langbookweb.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -22,6 +19,8 @@ public class RoundRobin {
     @Column(nullable = false)
     private String name;
     @ManyToMany(fetch = FetchType.EAGER)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Set<Word> words;
     @NotNull
     @OneToOne

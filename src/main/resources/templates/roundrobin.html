@@ -104,7 +104,7 @@
                             </div>
                         </div-->
                         <div class="row text-dark">
-                            <a th:href="@{/word(wordId=${word.id})}" class="col-md-6 btn btn-primary">Перейти к слову</a>
+                            <a targer="_blank" th:href="@{/word(wordId=${word.id})}" class="col-md-6 btn btn-primary">Перейти к слову</a>
                             <a href="#" class="col-md-6 btn btn-primary" data-toggle="modal" data-target="#roundrobin_del" th:attr="onclick=|fillRoundrobinForm(${word.id},'${word.word}','${word.class.simpleName}')|">Удалить слово из карусели</a>
                         </div>
                     </div>

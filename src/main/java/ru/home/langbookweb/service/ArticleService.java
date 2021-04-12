@@ -41,10 +41,12 @@ public class ArticleService {
     }
 
     @Transactional
-    public void del(Article article) {
+    public Mono<Long> del(Article article) {
         Mono<User> user = userService.getUser();
-        user.map(u -> articleRepository.findArticleByUserAndId(u, article.getId()))
-                .doOnNext(a -> articleRepository.delete(a))
-                .subscribeOn(Schedulers.immediate()).subscribe();;
+        return user.map(u -> articleRepository.findArticleByUserAndId(u, article.getId()))
+                .map(a -> {
+                    articleRepository.delete(a);
+                    return a.getId();
+                });
     }
 }

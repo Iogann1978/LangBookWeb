@@ -19,11 +19,12 @@ public class Translation {
     @Column(nullable = false)
     private String description;
     private String source;
-    @OneToMany(mappedBy = "translation", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "translation", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Set<Example> examples;
     @NotNull
     @ManyToOne
     @JoinColumn(name = "word_id", nullable = false)
-    @EqualsAndHashCode.Exclude
     private Word word;
 }

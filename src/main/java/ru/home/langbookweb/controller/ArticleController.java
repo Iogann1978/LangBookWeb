@@ -44,7 +44,7 @@ public class ArticleController {
     @RolesAllowed("USER,ADMIN")
     @GetMapping("/list")
     public String getArticles(Model model) {
-        Mono<String> user = userService.getUser().map(u -> u.getLogin());
+        Mono<String> user = userService.getUser().map(u -> u.getUsername());
         Mono<Page<Article>> pageArticles = articleService.getArticles(pageable);
         Flux<Long> pages = pageArticles.flatMapIterable(p -> {
                     lastPage = p.getTotalPages();
@@ -79,9 +79,13 @@ public class ArticleController {
 
     @RolesAllowed("USER,ADMIN")
     @PostMapping("/del")
-    public String deleteArticle(@ModelAttribute("article") Article article) {
-        articleService.del(article);
-        return "articles";
+    public Mono<Void> delArticle(@ModelAttribute("article") Article article, ServerHttpResponse response) {
+        return articleService.del(article)
+                .flatMap(id -> {
+                    response.setStatusCode(HttpStatus.SEE_OTHER);
+                    response.getHeaders().setLocation(URI.create("/article/list"));
+                    return response.setComplete();
+                });
     }
 
     @RolesAllowed("USER,ADMIN")

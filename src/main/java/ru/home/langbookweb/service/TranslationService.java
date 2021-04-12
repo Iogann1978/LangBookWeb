@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 import ru.home.langbookweb.model.Translation;
 import ru.home.langbookweb.model.User;
+import ru.home.langbookweb.model.Word;
 import ru.home.langbookweb.repository.TranslationRepository;
 
 import java.util.Optional;
@@ -17,6 +18,8 @@ public class TranslationService {
     @Autowired
     private TranslationRepository translationRepository;
     @Autowired
+    private WordService wordService;
+    @Autowired
     private UserService userService;
 
     @Transactional
@@ -24,20 +27,29 @@ public class TranslationService {
         Mono<User> user = userService.getUser();
         Translation t = translation.getId() == null ?
                 translation : translationRepository.getOne(translation.getId());
-        if (translation.getWord() == null) translation.setWord(t.getWord());
-        return user.filter(u -> u.getLogin().equals(t.getWord().getUser().getLogin()))
-                    .map(u -> translationRepository.saveAndFlush(translation))
-                    .map(Translation::getId);
+        return wordService.get(t.getWord().getId()).map(w -> {
+                t.setWord(w);
+                return t;
+            }).filterWhen(tr -> user.map(u -> u.getUsername().equals(tr.getWord().getUser().getUsername())))
+            .map(tr -> translationRepository.saveAndFlush(translation))
+            .map(tr -> tr.getWord().getId());
     }
 
     @Transactional
     public Mono<Long> del(Translation translation) {
-        Mono<User> user = userService.getUser();
-        return user.filter(u -> u.getLogin().equals(translation.getWord().getUser().getLogin()))
-                .map(u -> {
-                    translationRepository.delete(translation);
-                    return translation.getWord().getId();
-                });
+        Translation t = translationRepository.getOne(translation.getId());
+        return wordService.get(t.getWord().getId()).map(w -> {
+            t.setWord(w);
+            return t;
+        }).map(tr -> {
+            Word word = tr.getWord();
+            word.getTranslations().remove(tr);
+            log.info("wrd: {}", word);
+            log.info("trs: {}", word.getTranslations());
+            log.info("tr: {}", tr);
+            translationRepository.deleteById(tr.getId());
+            return word.getId();
+        });
     }
 
     @Transactional(readOnly = true)
@@ -45,7 +57,7 @@ public class TranslationService {
         Mono<User> user = userService.getUser();
         Optional<Translation> translation = translationRepository.findById(id);
         return user.filter(u1 -> !translation.map(t -> t.getWord())
-                .map(w -> w.getUser()).filter(u2 -> u1.getLogin().equals(u2.getLogin())).isEmpty())
+                .map(w -> w.getUser()).filter(u2 -> u1.getUsername().equals(u2.getUsername())).isEmpty())
                 .map(u -> translation.orElse(null));
     }
 }

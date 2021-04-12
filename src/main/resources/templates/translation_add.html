@@ -14,7 +14,7 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#" th:text="'Тип:' + ${word.word}">Тип</a>
+                <a class="navbar-brand" href="#" th:text="'Слово: ' + ${word.word} + ' Тип: ' + ${word.class.simpleName}">Тип</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -78,6 +78,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <input type="text" hidden="true" id="id" th:field="*{id}" />
+                        <input type="text" hidden="true" id="word_id" th:field="*{word.id}" />
                         <div class="col-md-12">
                             <label for="translation">Перевод</label>
                             <textarea class="form-control" id="translation" rows="5" th:field="*{description}">Перевод</textarea>
@@ -106,6 +107,7 @@
                 </div>
                 <div class="modal-body">
                     <input type="text" hidden="true" id="d_id" th:field="*{id}" />
+                    <input type="text" hidden="true" id="d_word_id" th:field="*{word.id}" />
                     <p id="d_translation">Перевод</p>
                     <p id="d_source">Источник</p>
                 </div>

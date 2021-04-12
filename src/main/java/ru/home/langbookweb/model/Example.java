@@ -19,6 +19,5 @@ public class Example {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "translation_id", nullable = false)
-    @EqualsAndHashCode.Exclude
     private Translation translation;
 }

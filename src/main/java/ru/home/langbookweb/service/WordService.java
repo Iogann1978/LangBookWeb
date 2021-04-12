@@ -120,34 +120,39 @@ public class WordService {
     @Transactional
     public <T extends Word> Mono<Long> save(T word) {
         Mono<User> user = userService.getUser();
-        Mono<Long> wid = user.map(u -> {
-                Long id = null;
-                word.setUser(u);
-                if (word instanceof Noun) {
-                    Noun nword = nounRepository.saveAndFlush((Noun) word);
-                    id = nword.getId();
-                } else if (word instanceof Verb) {
-                    Verb nword = verbRepository.saveAndFlush((Verb) word);
-                    id = nword.getId();
-                } else if (word instanceof Adjective) {
-                    Adjective nword = adjectiveRepository.saveAndFlush((Adjective) word);
-                    id = nword.getId();
-                } else if (word instanceof Adverb) {
-                    Adverb nword = adverbRepository.saveAndFlush((Adverb) word);
-                    id = nword.getId();
-                } else if (word instanceof Participle) {
-                    Participle nword = participleRepository.saveAndFlush((Participle) word);
-                    id = nword.getId();
-                } else if (word instanceof Phrase) {
-                    Phrase nword = phraseRepository.saveAndFlush((Phrase) word);
-                    id = nword.getId();
-                } else {
-                    Word nword = wordRepository.saveAndFlush((Word) word);
-                    id = nword.getId();
-                }
-                return id;
-            });
-        return wid;
+        return user.map(u -> {
+            if (word.getId() != null) {
+                Word w = wordRepository.findWordByUserAndId(u, word.getId());
+                word.setTranslations(w.getTranslations());
+            }
+            Long id = null;
+            word.setUser(u);
+            log.info("wrd save: {}", word);
+            log.info("trs save: {}", word.getTranslations());
+            if (word instanceof Noun) {
+                Noun nword = nounRepository.saveAndFlush((Noun) word);
+                id = nword.getId();
+            } else if (word instanceof Verb) {
+                Verb nword = verbRepository.saveAndFlush((Verb) word);
+                id = nword.getId();
+            } else if (word instanceof Adjective) {
+                Adjective nword = adjectiveRepository.saveAndFlush((Adjective) word);
+                id = nword.getId();
+            } else if (word instanceof Adverb) {
+                Adverb nword = adverbRepository.saveAndFlush((Adverb) word);
+                id = nword.getId();
+            } else if (word instanceof Participle) {
+                Participle nword = participleRepository.saveAndFlush((Participle) word);
+                id = nword.getId();
+            } else if (word instanceof Phrase) {
+                Phrase nword = phraseRepository.saveAndFlush((Phrase) word);
+                id = nword.getId();
+            } else {
+                Word nword = wordRepository.saveAndFlush((Word) word);
+                id = nword.getId();
+            }
+            return id;
+        });
     }
 
     @Transactional

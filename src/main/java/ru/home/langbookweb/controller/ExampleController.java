@@ -59,7 +59,7 @@ public class ExampleController {
     @RolesAllowed("USER,ADMIN")
     @PostMapping("/del")
     public Mono<Void> delExample(@ModelAttribute("example") Example example, ServerHttpResponse response) {
-        return exampleService.del(example.getTranslation().getId(), example.getId())
+        return exampleService.del(example)
         .flatMap(id -> {
             response.setStatusCode(HttpStatus.SEE_OTHER);
             response.getHeaders().setLocation(UriComponentsBuilder.fromPath("/example/add").query("translationId={id}").build(id));

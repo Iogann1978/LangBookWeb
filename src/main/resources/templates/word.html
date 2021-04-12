@@ -127,7 +127,7 @@
     <div class="modal" id="word_save">
         <div class="modal-dialog" th:switch="${word.class.simpleName}">
             <!-- Изменить простое слово -->
-            <form class="modal-content" th:case="'Word'" action="#" th:action="@{/word/save?type=word}" th:object="${word}" method="POST">
+            <form class="modal-content" th:case="'Word'" action="#" th:action="@{/word/save/word}" th:object="${word}" method="POST">
                 <div class="modal-header">
                     <h4 class="modal-title">Изменить слово?</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -135,8 +135,14 @@
                 <div class="modal-body" th:switch="${word.class.simpleName}">
                     <div class="form-group">
                         <input type="text" hidden="true" id="word-id" th:field="*{id}" />
-                        <label for="word-word">Слово</label>
+                        <label class="col-md-3 col-md-offset-9 control-label" for="word-word">Слово</label>
+                        <div class="col-md-12">
                         <input type="text" class="form-control" id="word-word" th:field="*{word}" />
+                        </div>
+                        <label class="col-md-6 col-md-offset-6 control-label" for="word-tooltip">Перевод-подсказка</label>
+                        <div class="col-md-12">
+                            <input type="text" class="form-control" id="word-tooltip" th:field="*{tooltip}" />
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer btn-group">
@@ -145,7 +151,7 @@
                 </div>
             </form>
             <!-- Изменить существительное -->
-            <form class="modal-content" th:case="'Noun'" action="#" th:action="@{/word/save?type=noun}" th:object="${noun}" method="POST">
+            <form class="modal-content" th:case="'Noun'" action="#" th:action="@{/word/save/noun}" th:object="${noun}" method="POST">
                 <div class="modal-header">
                     <h4 class="modal-title">Изменить существительное?</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -153,13 +159,17 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <input type="text" hidden="true" id="noun-id" th:field="*{id}" />
-                        <label class="col-md-3 col-md-offset-9 control-label" for="single">Единственное число</label>
+                        <label class="col-md-6 col-md-offset-6 control-label" for="single">Единственное число</label>
                         <div class="col-md-12">
                             <input type="text" class="form-control" id="single"  th:field="*{word}" />
                         </div>
                         <label class="col-md-3 col-md-offset-9 control-label" for="plural">Множественное число</label>
                         <div class="col-md-12">
                             <input type="text" class="form-control" id="plural" th:field="*{plural}" />
+                        </div>
+                        <label class="col-md-6 col-md-offset-6 control-label" for="noun-tooltip">Перевод-подсказка</label>
+                        <div class="col-md-12">
+                            <input type="text" class="form-control" id="noun-tooltip" th:field="*{tooltip}" />
                         </div>
                     </div>
                 </div>
@@ -169,7 +179,7 @@
                 </div>
             </form>
             <!-- Изменить глагол -->
-            <form class="modal-content" th:case="'Verb'" action="#" th:action="@{/word/save?type=verb}" th:object="${verb}" method="POST">
+            <form class="modal-content" th:case="'Verb'" action="#" th:action="@{/word/save/verb}" th:object="${verb}" method="POST">
                 <div class="modal-header">
                     <h4 class="modal-title">Изменить глагол?</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -189,6 +199,10 @@
                         <div class="col-md-12">
                             <input type="text" class="form-control" id="participle2" th:field="*{participle}" />
                         </div>
+                        <label class="col-md-6 col-md-offset-6 control-label" for="verb-tooltip">Перевод-подсказка</label>
+                        <div class="col-md-12">
+                            <input type="text" class="form-control" id="verb-tooltip" th:field="*{tooltip}" />
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer btn-group">
@@ -197,7 +211,7 @@
                 </div>
             </form>
             <!-- Изменить прилагательное -->
-            <form class="modal-content"  th:case="'Adjective'"action="#" th:action="@{/word/save?type=adjective}" th:object="${adjective}" method="POST">
+            <form class="modal-content"  th:case="'Adjective'"action="#" th:action="@{/word/save/adjective}" th:object="${adjective}" method="POST">
                 <div class="modal-header">
                     <h4 class="modal-title">Изменить прилагательное?</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -217,6 +231,10 @@
                         <div class="col-md-12">
                             <input type="text" class="form-control" id="superative" th:field="*{superative}" />
                         </div>
+                        <label class="col-md-6 col-md-offset-6 control-label" for="adjective-tooltip">Перевод-подсказка</label>
+                        <div class="col-md-12">
+                            <input type="text" class="form-control" id="adjective-tooltip" th:field="*{tooltip}" />
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer btn-group">
@@ -225,7 +243,7 @@
                 </div>
             </form>
             <!-- Изменить наречие -->
-            <form class="modal-content" th:case="'Adverb'" action="#" th:action="@{/word/save?type=adverb}" th:object="${adverb}" method="POST">
+            <form class="modal-content" th:case="'Adverb'" action="#" th:action="@{/word/save/adverb}" th:object="${adverb}" method="POST">
                 <div class="modal-header">
                     <h4 class="modal-title">Изменить наречие?</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -233,8 +251,14 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <input type="text" hidden="true" id="adverb-id" th:field="*{id}" />
-                        <label for="adverb">Наречие</label>
-                        <input type="text" class="form-control" id="adverb" th:field="*{word}" />
+                        <label class="col-md-3 col-md-offset-9 control-label" for="adverb">Наречие</label>
+                        <div class="col-md-12">
+                            <input type="text" class="form-control" id="adverb" th:field="*{word}" />
+                        </div>
+                        <label class="col-md-6 col-md-offset-6 control-label" for="adverb-tooltip">Перевод-подсказка</label>
+                        <div class="col-md-12">
+                            <input type="text" class="form-control" id="adverb-tooltip" th:field="*{tooltip}" />
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer btn-group">
@@ -243,7 +267,7 @@
                 </div>
             </form>
             <!-- Изменить причастие -->
-            <form class="modal-content" th:case="'Participle'" action="#" th:action="@{/word/save?type=participle}" th:object="${participle}" method="POST">
+            <form class="modal-content" th:case="'Participle'" action="#" th:action="@{/word/save/participle}" th:object="${participle}" method="POST">
                 <div class="modal-header">
                     <h4 class="modal-title" id="participle-modal-title">Изменить причастие?</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -251,8 +275,14 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <input type="text" hidden="true" id="participle-id" th:field="*{id}" />
-                        <label for="participle">Причастие</label>
-                        <input type="text" class="form-control" id="participle" th:field="*{word}" />
+                        <label class="col-md-3 col-md-offset-9 control-label" for="participle">Причастие</label>
+                        <div class="col-md-12">
+                            <input type="text" class="form-control" id="participle" th:field="*{word}" />
+                        </div>
+                        <label class="col-md-6 col-md-offset-6 control-label" for="participle-tooltip">Перевод-подсказка</label>
+                        <div class="col-md-12">
+                            <input type="text" class="form-control" id="participle-tooltip" th:field="*{tooltip}" />
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer btn-group">
@@ -261,7 +291,7 @@
                 </div>
             </form>
             <!-- Изменить фразу -->
-            <form class="modal-content" th:case="'Phrase'" action="#" th:action="@{/word/save?type=phrase}" th:object="${phrase}" method="POST">
+            <form class="modal-content" th:case="'Phrase'" action="#" th:action="@{/word/save/phrase}" th:object="${phrase}" method="POST">
                 <div class="modal-header">
                     <h4 class="modal-title" id="phrase-modal-title">Изменить фразу?</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -269,8 +299,14 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <input type="text" hidden="true" id="phrase-id" th:field="*{id}" />
-                        <label for="phrase">Фраза</label>
-                        <input type="text" class="form-control" id="phrase" th:field="*{word}" />
+                        <label class="col-md-3 col-md-offset-9 control-label" for="phrase">Фраза</label>
+                        <div class="col-md-12">
+                            <input type="text" class="form-control" id="phrase" th:field="*{word}" />
+                        </div>
+                        <label class="col-md-6 col-md-offset-6 control-label" for="phrase-tooltip">Перевод-подсказка</label>
+                        <div class="col-md-12">
+                            <input type="text" class="form-control" id="phrase-tooltip" th:field="*{tooltip}" />
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer btn-group">

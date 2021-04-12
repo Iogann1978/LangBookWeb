@@ -21,6 +21,7 @@ import ru.home.langbookweb.model.Word;
 import ru.home.langbookweb.service.RoundRobinService;
 
 import javax.annotation.security.RolesAllowed;
+import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -54,7 +55,8 @@ public class RoundRobinController {
     public Mono<Void> roundrobinAdd(@ModelAttribute("word") Word word, ServerHttpResponse response) {
         return roundRobinService.addWord(word)
                 .flatMap(id -> {
-                    response.setStatusCode(HttpStatus.OK);
+                    response.setStatusCode(HttpStatus.SEE_OTHER);
+                    response.getHeaders().setLocation(URI.create("/dictionary"));
                     return response.setComplete();
                 });
     }
@@ -64,7 +66,8 @@ public class RoundRobinController {
     public Mono<Void> roundrobinDel(@ModelAttribute("word") Word word, ServerHttpResponse response) {
         return roundRobinService.delWord(word)
                 .flatMap(id -> {
-                    response.setStatusCode(HttpStatus.OK);
+                    response.setStatusCode(HttpStatus.SEE_OTHER);
+                    response.getHeaders().setLocation(URI.create("/dictionary"));
                     return response.setComplete();
                 });
     }

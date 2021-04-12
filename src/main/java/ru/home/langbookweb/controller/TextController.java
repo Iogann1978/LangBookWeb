@@ -2,7 +2,6 @@ package ru.home.langbookweb.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.support.PagedListHolder;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
@@ -38,7 +37,7 @@ public class TextController {
     @RolesAllowed("USER,ADMIN")
     @GetMapping("/list")
     public String getTexts(Model model) {
-        Mono<String> user = userService.getUser().map(u -> u.getLogin());
+        Mono<String> user = userService.getUser().map(u -> u.getUsername());
         Flux<WordItem> pageWords = textService.getPage(pageable);
         Mono<Long> count = textService.getFlux().count().doOnSuccess(c -> lastPage = (int) Math.ceil((double) c / (double) rowsOnPage));
         model.addAttribute("pageWords", pageWords);

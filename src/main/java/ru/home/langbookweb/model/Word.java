@@ -1,7 +1,9 @@
 package ru.home.langbookweb.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
@@ -23,6 +25,8 @@ public class Word {
     @NotNull
     @OneToMany(mappedBy = "word", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @Column(nullable = false)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     protected Set<Translation> translations;
     @NotNull
     @Column(nullable = false)

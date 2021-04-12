@@ -32,7 +32,7 @@ public class TranslationController {
         Mono<? extends Word> word = wordService.get(wordId);
         IReactiveDataDriverContextVariable reactiveDataDrivenMode =
                 new ReactiveDataDriverContextVariable(word.flatMapIterable(w -> w.getTranslations()));
-        Translation translation = new Translation();
+        Mono<Translation> translation = word.map(w -> Translation.builder().word(w).build());
         model.addAttribute("word", word);
         model.addAttribute("translation", translation);
         model.addAttribute("translations", reactiveDataDrivenMode);
@@ -45,7 +45,7 @@ public class TranslationController {
         Mono<Long> tid = translationService.save(translation);
         return tid.flatMap(id -> {
             response.setStatusCode(HttpStatus.SEE_OTHER);
-            response.getHeaders().setLocation(UriComponentsBuilder.fromPath("/example/add").query("translationId={id}").build(id));
+            response.getHeaders().setLocation(UriComponentsBuilder.fromPath("/translation/add").query("wordId={id}").build(id));
             return response.setComplete();
         });
     }

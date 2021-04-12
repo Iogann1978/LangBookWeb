@@ -34,9 +34,9 @@ public class ExampleService {
     }
 
     @Transactional
-    public Mono<Long> del(Long translationId, Long exampleId) {
-        return translationService.get(translationId).flatMap(t -> {
-            List<Example> examples = t.getExamples().stream().filter(e -> e.getId().equals(exampleId)).collect(Collectors.toList());
+    public Mono<Long> del(Example example) {
+        return translationService.get(example.getTranslation().getId()).flatMap(t -> {
+            List<Example> examples = t.getExamples().stream().filter(e -> e.getId().equals(example.getId())).collect(Collectors.toList());
             t.getExamples().removeAll(examples);
             return translationService.save(t);
         });
