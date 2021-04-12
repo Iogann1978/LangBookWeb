@@ -8,9 +8,6 @@ import reactor.core.publisher.Mono;
 import ru.home.langbookweb.model.Example;
 import ru.home.langbookweb.repository.ExampleRepository;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 public class ExampleService {
     @Autowired
@@ -36,8 +33,7 @@ public class ExampleService {
     @Transactional
     public Mono<Long> del(Example example) {
         return translationService.get(example.getTranslation().getId()).flatMap(t -> {
-            List<Example> examples = t.getExamples().stream().filter(e -> e.getId().equals(example.getId())).collect(Collectors.toList());
-            t.getExamples().removeAll(examples);
+            t.getExamples().remove(example);
             return translationService.save(t);
         });
     }

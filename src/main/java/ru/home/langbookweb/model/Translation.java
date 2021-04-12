@@ -11,6 +11,10 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@NamedEntityGraph(name = "translation.examples", attributeNodes = {
+        @NamedAttributeNode("examples"),
+        @NamedAttributeNode("word")
+})
 public class Translation {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,12 +23,12 @@ public class Translation {
     @Column(nullable = false)
     private String description;
     private String source;
-    @OneToMany(mappedBy = "translation", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "translation", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Set<Example> examples;
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "word_id", nullable = false)
     private Word word;
 }

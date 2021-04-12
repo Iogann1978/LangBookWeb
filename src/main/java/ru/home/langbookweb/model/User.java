@@ -1,12 +1,10 @@
 package ru.home.langbookweb.model;
 
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.Collection;
 import java.util.Set;
 
 @Data
@@ -22,14 +20,16 @@ public class User implements UserDetails {
     private boolean accountNonLocked;
     private boolean credentialsNonExpired;
     private boolean enabled;
-    @OneToMany(fetch = FetchType.EAGER)
-    private Set<UserAuthority> authorities;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_authority", joinColumns = @JoinColumn(name = "username"),
+            inverseJoinColumns = @JoinColumn(name = "authority"))
+    private Set<Authority> authorities;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Set<Word> dictionary;
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Set<Article> articles;

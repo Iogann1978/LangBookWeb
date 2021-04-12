@@ -39,7 +39,6 @@ public class WebSecurityConfig {
         PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         UserDetails user = User.withUsername("user").password(encoder.encode("password")).roles("USER").build();
         log.info("pass: {}", user.getPassword());
-        log.info("users: {}", userService.getAll());
         return new MapReactiveUserDetailsService(userService.getAll());
     }
 }

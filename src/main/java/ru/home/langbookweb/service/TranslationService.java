@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 import ru.home.langbookweb.model.Translation;
 import ru.home.langbookweb.model.User;
-import ru.home.langbookweb.model.Word;
 import ru.home.langbookweb.repository.TranslationRepository;
 
 import java.util.Optional;
@@ -42,22 +41,14 @@ public class TranslationService {
             t.setWord(w);
             return t;
         }).map(tr -> {
-            Word word = tr.getWord();
-            word.getTranslations().remove(tr);
-            log.info("wrd: {}", word);
-            log.info("trs: {}", word.getTranslations());
-            log.info("tr: {}", tr);
             translationRepository.deleteById(tr.getId());
-            return word.getId();
+            return tr.getWord().getId();
         });
     }
 
     @Transactional(readOnly = true)
     public Mono<Translation> get(Long id) {
         Mono<User> user = userService.getUser();
-        Optional<Translation> translation = translationRepository.findById(id);
-        return user.filter(u1 -> !translation.map(t -> t.getWord())
-                .map(w -> w.getUser()).filter(u2 -> u1.getUsername().equals(u2.getUsername())).isEmpty())
-                .map(u -> translation.orElse(null));
+        return user.map(u -> translationRepository.getTranslationByUserAndId(u, id));
     }
 }

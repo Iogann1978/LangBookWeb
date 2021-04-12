@@ -24,6 +24,6 @@ public class RoundRobin {
     private Set<Word> words;
     @NotNull
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "username", nullable = false)
     protected User user;
 }

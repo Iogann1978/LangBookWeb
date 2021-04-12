@@ -28,5 +28,6 @@ public class Article {
     private byte[] text;
     @NotNull
     @ManyToOne(optional = false)
+    @JoinColumn(name = "username", nullable = false)
     protected User user;
 }

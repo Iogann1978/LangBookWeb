@@ -3,18 +3,14 @@ package ru.home.langbookweb.service;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 import ru.home.langbookweb.model.*;
 import ru.home.langbookweb.repository.*;
 
-import java.time.Duration;
 import java.util.Optional;
 
 @Service
@@ -127,8 +123,6 @@ public class WordService {
             }
             Long id = null;
             word.setUser(u);
-            log.info("wrd save: {}", word);
-            log.info("trs save: {}", word.getTranslations());
             if (word instanceof Noun) {
                 Noun nword = nounRepository.saveAndFlush((Noun) word);
                 id = nword.getId();

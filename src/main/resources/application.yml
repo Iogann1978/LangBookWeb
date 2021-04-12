@@ -23,7 +23,6 @@ spring:
     url: jdbc:hsqldb:file:./langbookweb_db;hsqldb.lob_compressed=true
     username: sa
     password:
-    driverClassName: org.hsqldb.jdbcDriver
   jpa:
     hibernate.ddl-auto: update
     properties.hibernate.dialect: org.hibernate.dialect.HSQLDialect
