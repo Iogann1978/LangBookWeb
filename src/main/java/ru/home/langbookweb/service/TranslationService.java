@@ -9,8 +9,6 @@ import ru.home.langbookweb.model.Translation;
 import ru.home.langbookweb.model.User;
 import ru.home.langbookweb.repository.TranslationRepository;
 
-import java.util.Optional;
-
 @Service
 @Slf4j
 public class TranslationService {
@@ -23,7 +21,7 @@ public class TranslationService {
 
     @Transactional
     public Mono<Long> save(Translation translation) {
-        Mono<User> user = userService.getUser();
+        Mono<User> user = userService.get();
         Translation t = translation.getId() == null ?
                 translation : translationRepository.getOne(translation.getId());
         return wordService.get(t.getWord().getId()).map(w -> {
@@ -48,7 +46,7 @@ public class TranslationService {
 
     @Transactional(readOnly = true)
     public Mono<Translation> get(Long id) {
-        Mono<User> user = userService.getUser();
+        Mono<User> user = userService.get();
         return user.map(u -> translationRepository.getTranslationByUserAndId(u, id));
     }
 }

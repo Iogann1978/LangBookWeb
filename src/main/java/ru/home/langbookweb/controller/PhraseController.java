@@ -35,8 +35,8 @@ public class PhraseController {
     @RolesAllowed("USER,ADMIN")
     @GetMapping("/list")
     public String getArticles(Model model) {
-        Mono<String> user = userService.getUser().map(u -> u.getUsername());
-        Mono<Page<Phrase>> pagePhrases = phraseService.getPhrases(pageable);
+        Mono<String> user = userService.get().map(u -> u.getUsername());
+        Mono<Page<Phrase>> pagePhrases = phraseService.getPage(pageable);
         Flux<Long> pages = pagePhrases.flatMapIterable(p -> {
             lastPage = p.getTotalPages();
             return LongStream.rangeClosed(1, p.getTotalPages()).boxed().collect(Collectors.toList());

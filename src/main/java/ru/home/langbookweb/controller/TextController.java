@@ -37,7 +37,7 @@ public class TextController {
     @RolesAllowed("USER,ADMIN")
     @GetMapping("/list")
     public String getTexts(Model model) {
-        Mono<String> user = userService.getUser().map(u -> u.getUsername());
+        Mono<String> user = userService.get().map(u -> u.getUsername());
         Flux<WordItem> pageWords = textService.getPage(pageable);
         Mono<Long> count = textService.getFlux().count().doOnSuccess(c -> lastPage = (int) Math.ceil((double) c / (double) rowsOnPage));
         model.addAttribute("pageWords", pageWords);

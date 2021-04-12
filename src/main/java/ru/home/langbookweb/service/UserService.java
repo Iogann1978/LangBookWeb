@@ -20,7 +20,7 @@ public class UserService {
     private UserRepository userRepository;
 
     @Transactional(readOnly = true)
-    public Mono<User> getUser() {
+    public Mono<User> get() {
         return ReactiveSecurityContextHolder.getContext()
                 .map(sc -> ((UserDetails) sc.getAuthentication().getPrincipal()).getUsername())
                 .map(username -> userRepository.findById(username))

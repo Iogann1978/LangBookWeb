@@ -37,8 +37,8 @@ public class DictionaryController {
     @RolesAllowed("USER,ADMIN")
     @GetMapping
     public String getDictionary(@RequestParam(defaultValue = "") String findWord, Model model) {
-        Mono<String> user = userService.getUser().map(u -> u.getUsername());
-        Flux<? super Word> words = wordService.getWords(findWord, pageable);
+        Mono<String> user = userService.get().map(u -> u.getUsername());
+        Flux<? super Word> words = wordService.getPage(findWord, pageable);
         Mono<Long> count = wordService.getCount();
         Flux<Long> pages = count.map(c -> {
             lastPage = (int) Math.ceil((double) c / (double) rowsOnPage);

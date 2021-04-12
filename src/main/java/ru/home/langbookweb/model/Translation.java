@@ -11,7 +11,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@NamedEntityGraph(name = "translation.examples", attributeNodes = {
+@NamedEntityGraph(name = "translation", attributeNodes = {
         @NamedAttributeNode("examples"),
         @NamedAttributeNode("word")
 })

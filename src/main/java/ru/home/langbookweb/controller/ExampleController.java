@@ -35,7 +35,7 @@ public class ExampleController {
         Mono<Translation> translation = translationService.get(translationId);
         Mono<Word> word = translation.map(t -> t.getWord());
         Mono<Example> example = translation.map(t -> Example.builder().translation(t).build());
-        Flux<Example> examples = exampleService.getExamples(translationId);
+        Flux<Example> examples = exampleService.get(translationId);
         IReactiveDataDriverContextVariable reactiveDataDrivenMode =
                 new ReactiveDataDriverContextVariable(examples);
         model.addAttribute("word", word);

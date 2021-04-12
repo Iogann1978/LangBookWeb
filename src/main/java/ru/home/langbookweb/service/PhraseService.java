@@ -18,8 +18,8 @@ public class PhraseService {
     private UserService userService;
 
     @Transactional(readOnly = true)
-    public Mono<Page<Phrase>> getPhrases(Pageable pageable) {
-        Mono<User> user = userService.getUser();
+    public Mono<Page<Phrase>> getPage(Pageable pageable) {
+        Mono<User> user = userService.get();
         Mono<Page<Phrase>> page = user.map(u -> phraseRepository.getAllByUser(u, pageable));
         return page;
     }

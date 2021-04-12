@@ -17,7 +17,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@NamedEntityGraph(name = "word.translations",
+@NamedEntityGraph(name = "word",
         attributeNodes = {
             @NamedAttributeNode(value = "translations", subgraph = "translations.examples"),
             @NamedAttributeNode("user")

@@ -19,12 +19,12 @@ public class RoundRobinService {
     private UserService userService;
 
     public Mono<RoundRobin> get() {
-        Mono<User> user = userService.getUser();
+        Mono<User> user = userService.get();
         return user.map(u -> roundRobinRepository.findRoundRobinByUser(u));
     }
 
     public Mono<Long> addWord(Word word) {
-        Mono<User> user = userService.getUser();
+        Mono<User> user = userService.get();
         return user.map(u -> roundRobinRepository.findRoundRobinByUser(u))
                 .map(rr -> {
                     rr.getWords().add(word);
@@ -33,7 +33,7 @@ public class RoundRobinService {
     }
 
     public Mono<Long> delWord(Word word) {
-        Mono<User> user = userService.getUser();
+        Mono<User> user = userService.get();
         return user.map(u -> roundRobinRepository.findRoundRobinByUser(u))
                 .map(rr -> {
                     List<Word> list = rr.getWords().stream().filter(w -> w.getId().equals(word.getId())).collect(Collectors.toList());

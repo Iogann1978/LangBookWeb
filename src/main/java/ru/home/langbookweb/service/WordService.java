@@ -34,24 +34,24 @@ public class WordService {
     private UserService userService;
 
     @Transactional(readOnly = true)
-    public Flux<? super Word> getWords(String findWord, Pageable pageable) {
-        Mono<User> user = userService.getUser();
+    public Flux<? super Word> getPage(String findWord, Pageable pageable) {
+        Mono<User> user = userService.get();
         Flux<Word> words = user.flatMapIterable(u -> Strings.isEmpty(findWord) ? wordRepository.findAllByUser(u, pageable) :
                             wordRepository.findAllByUserAndWord(u, findWord, pageable)
                 ).map(word -> {
-                    Optional<Noun> noun = nounRepository.findById(word.getId());
+                    Optional<Noun> noun = nounRepository.getNounById(word.getId());
                     if (noun.isPresent()) {
                         return noun.get();
                     }
-                    Optional<Verb> verb = verbRepository.findById(word.getId());
+                    Optional<Verb> verb = verbRepository.getVerbById(word.getId());
                     if (verb.isPresent()) {
                         return verb.get();
                     }
-                    Optional<Adjective> adjective = adjectiveRepository.findById(word.getId());
+                    Optional<Adjective> adjective = adjectiveRepository.getAdjectiveById(word.getId());
                     if (adjective.isPresent()) {
                         return adjective.get();
                     }
-                    Optional<Adverb> adverb = adverbRepository.findById(word.getId());
+                    Optional<Adverb> adverb = adverbRepository.getAdverbById(word.getId());
                     if (adverb.isPresent()) {
                         return adverb.get();
                     }
@@ -59,7 +59,7 @@ public class WordService {
                     if (participle.isPresent()) {
                         return participle.get();
                     }
-                    Optional<Phrase> phrase = phraseRepository.findById(word.getId());
+                    Optional<Phrase> phrase = phraseRepository.getPhraseById(word.getId());
                     if (phrase.isPresent()) {
                         return phrase.get();
                     }
@@ -70,36 +70,36 @@ public class WordService {
 
     @Transactional(readOnly = true)
     public Mono<Long> getCount() {
-        Mono<User> user = userService.getUser();
+        Mono<User> user = userService.get();
         return user.map(u -> wordRepository.countAllByUser(u));
     }
 
     @Transactional(readOnly = true)
     public Mono<? extends Word> get(Long wordId) {
-        Mono<User> user = userService.getUser();
+        Mono<User> user = userService.get();
         return user.map(u -> wordRepository.findWordByUserAndId(u, wordId))
             .map(word -> {
-                Optional<Noun> noun = nounRepository.findById(word.getId());
+                Optional<Noun> noun = nounRepository.getNounById(word.getId());
                 if (noun.isPresent()) {
                     return noun.get();
                 }
-                Optional<Verb> verb = verbRepository.findById(word.getId());
+                Optional<Verb> verb = verbRepository.getVerbById(word.getId());
                 if (verb.isPresent()) {
                     return verb.get();
                 }
-                Optional<Adjective> adjective = adjectiveRepository.findById(word.getId());
+                Optional<Adjective> adjective = adjectiveRepository.getAdjectiveById(word.getId());
                 if (adjective.isPresent()) {
                     return adjective.get();
                 }
-                Optional<Adverb> adverb = adverbRepository.findById(word.getId());
+                Optional<Adverb> adverb = adverbRepository.getAdverbById(word.getId());
                 if (adverb.isPresent()) {
                     return adverb.get();
                 }
-                Optional<Participle> participle = participleRepository.findById(word.getId());
+                Optional<Participle> participle = participleRepository.getParticipleById(word.getId());
                 if (participle.isPresent()) {
                     return participle.get();
                 }
-                Optional<Phrase> phrase = phraseRepository.findById(word.getId());
+                Optional<Phrase> phrase = phraseRepository.getPhraseById(word.getId());
                 if (phrase.isPresent()) {
                     return phrase.get();
                 }
@@ -109,13 +109,13 @@ public class WordService {
 
     @Transactional(readOnly = true)
     public Mono<Boolean> isPresent(String findWord) {
-        Mono<User> user = userService.getUser();
+        Mono<User> user = userService.get();
         return user.map(u -> wordRepository.existsWordByUserAndWord(u, findWord));
     }
 
     @Transactional
     public <T extends Word> Mono<Long> save(T word) {
-        Mono<User> user = userService.getUser();
+        Mono<User> user = userService.get();
         return user.map(u -> {
             if (word.getId() != null) {
                 Word w = wordRepository.findWordByUserAndId(u, word.getId());
@@ -151,7 +151,7 @@ public class WordService {
 
     @Transactional
     public Mono<Long> del(Word word) {
-        Mono<User> user = userService.getUser();
+        Mono<User> user = userService.get();
         return user.map(u -> wordRepository.findWordByUserAndId(u, word.getId()))
                 .map(w -> {
                     wordRepository.delete(w);

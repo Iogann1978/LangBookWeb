@@ -9,7 +9,7 @@ import ru.home.langbookweb.model.User;
 
 @Repository
 public interface TranslationRepository extends JpaRepository<Translation, Long> {
-    @EntityGraph("translation.examples")
+    @EntityGraph("translation")
     @Query("select t from Translation t join Word w on t.word = w join User u on w.user = u where u = ?1 and t.id = ?2")
     Translation getTranslationByUserAndId(User user, Long id);
 }

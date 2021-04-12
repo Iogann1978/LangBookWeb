@@ -12,11 +12,11 @@ import java.util.List;
 @Repository
 public interface WordRepository extends JpaRepository<Word, Long> {
     long countAllByUser(User user);
-    @EntityGraph("word.translations")
+    @EntityGraph("word")
     List<Word> findAllByUserAndWord(User user, String word, Pageable pageable);
-    @EntityGraph("word.translations")
+    @EntityGraph("word")
     List<Word> findAllByUser(User user, Pageable pageable);
-    @EntityGraph("word.translations")
+    @EntityGraph("word")
     Word findWordByUserAndId(User user, Long id);
     boolean existsWordByUserAndWord(User user, String word);
 }

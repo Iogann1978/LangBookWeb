@@ -11,6 +11,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@NamedEntityGraph(name = "roundrobin", attributeNodes = @NamedAttributeNode("user"))
 public class RoundRobin {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,7 +24,7 @@ public class RoundRobin {
     @ToString.Exclude
     private Set<Word> words;
     @NotNull
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "username", nullable = false)
     protected User user;
 }

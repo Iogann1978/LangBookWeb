@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@NamedEntityGraph(name = "example", attributeNodes = @NamedAttributeNode("translation"))
 public class Example {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -44,8 +44,8 @@ public class ArticleController {
     @RolesAllowed("USER,ADMIN")
     @GetMapping("/list")
     public String getArticles(Model model) {
-        Mono<String> user = userService.getUser().map(u -> u.getUsername());
-        Mono<Page<Article>> pageArticles = articleService.getArticles(pageable);
+        Mono<String> user = userService.get().map(u -> u.getUsername());
+        Mono<Page<Article>> pageArticles = articleService.getPage(pageable);
         Flux<Long> pages = pageArticles.flatMapIterable(p -> {
                     lastPage = p.getTotalPages();
                     return LongStream.rangeClosed(1, p.getTotalPages()).boxed().collect(Collectors.toList());
@@ -126,7 +126,7 @@ public class ArticleController {
     @RolesAllowed("USER,ADMIN")
     @GetMapping(value = "/content", produces = MediaType.TEXT_HTML_VALUE)
     public Mono<ResponseEntity<String>> getArticleContents(@RequestParam Long articleId) {
-        Mono<Article> article = articleService.getArticle(articleId);
+        Mono<Article> article = articleService.get(articleId);
         return article.map(a -> new String(a.getText(), StandardCharsets.UTF_8)).map((String html) -> ResponseEntity.ok().body(html));
     }
 }
