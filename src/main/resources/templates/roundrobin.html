@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Словарь</title>
+    <title>Карусель</title>
     <meta charset="UTF-8">
     <!-- Bootstrap and jQuery -->
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -65,50 +65,23 @@
                         <p>В карусель можно добавлять и удалять слова для повторения их перевода</p>
                     </div>
                 </div>
-                <div class="carousel-item" th:each="word:${words}">
-                    <img class="d-block w-100" th:src="${@graphicService.getSrc(word.word,word.class.simpleName)}" alt="">
-                    <div class="carousel-caption d-none d-md-block">
-                        <!--div id="accordion">
-                            <div class="card">
-                                <div class="card-header" id="headingTranslation">
-                                    <h5 class="mb-0">
-                                        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTranslation" aria-expanded="false" aria-controls="collapseTranslation">
-                                            Переводы
-                                        </button>
-                                    </h5>
-                                </div>
-                                <div id="collapseTranslation" class="collapse" aria-labelledby="headingTranslation" data-parent="#accordion">
-                                    <div class="card-body text-dark">
-                                        <h5 class="card-title" th:text="${word.word}">Слово в заголовке перевода</h5>
-                                        <h6 class="card-subtitle mb-2 text-muted" th:text="${word.class.simpleName}">Тип слова в заголовке перевода</h6>
-                                        <ul class="list-group card-text">
-                                            <li class="list-group-item" th:each="trans:${word.translations}" th:text="${trans.description}">Перевод</li>
-                                        </ul>
-                                    </div>
-                                </div>
+                <th:block th:each="word:${words}">
+                    <div class="carousel-item">
+                        <img class="d-block w-100" th:src="${@graphicService.getSrc(word.word,word.class.simpleName)}" alt="">
+                        <div class="carousel-caption d-none d-md-block">
+                            <div class="row text-dark">
+                                <a th:target="_blank" th:href="@{/word(wordId=${word.id})}" class="col-md-6 btn btn-primary">Перейти к слову</a>
+                                <a href="#" class="col-md-6 btn btn-primary" data-toggle="modal" data-target="#roundrobin_del" th:attr="onclick=|fillRoundrobinForm(${word.id},'${word.word}','${word.class.simpleName}')|">Удалить слово из карусели</a>
                             </div>
-                            <div class="card">
-                                <div class="card-header" id="headingAction">
-                                    <h5 class="mb-0">
-                                        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseAction" aria-expanded="false" aria-controls="collapseAction">
-                                            Действия
-                                        </button>
-                                    </h5>
-                                </div>
-                                <div id="collapseAction" class="collapse" aria-labelledby="headingAction" data-parent="#accordion">
-                                    <div class="card-body text-dark">
-                                        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#roundrobin_del" th:attr="onclick=|fillRoundrobinForm(${word.id},'${word.word}','${word.class.simpleName}')|">Удалить слово из карусели</a>
-                                        <a th:href="@{/word(wordId=${word.id})}" class="btn btn-primary">Просмотреть слово</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div-->
-                        <div class="row text-dark">
-                            <a targer="_blank" th:href="@{/word(wordId=${word.id})}" class="col-md-6 btn btn-primary">Перейти к слову</a>
-                            <a href="#" class="col-md-6 btn btn-primary" data-toggle="modal" data-target="#roundrobin_del" th:attr="onclick=|fillRoundrobinForm(${word.id},'${word.word}','${word.class.simpleName}')|">Удалить слово из карусели</a>
                         </div>
                     </div>
-                </div>
+                    <div class="carousel-item">
+                        <img class="d-block w-100" th:src="${@graphicService.getSrc(word.word,word.class.simpleName)}" alt="">
+                        <div class="carousel-caption d-none d-md-block">
+                            <h3 th:text="${word.tooltip}">Быстрый перевод</h3>
+                        </div>
+                    </div>
+                </th:block>
             </div>
 
             <a class="carousel-control-prev" href="#carouselControls" role="button" data-slide="prev">

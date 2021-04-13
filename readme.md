@@ -20,7 +20,8 @@ keytool -export -alias server -file server.crt -keystore server.jks
 [Bootstrap 4.0 docs](https://getbootstrap.com/docs/4.0/getting-started/introduction/) \
 [Bootstrap 5.0 docs](https://getbootstrap.com/docs/5.0/getting-started/introduction/) \
 [Bootstrap 4 Tutorial](https://www.w3schools.com/bootstrap4) \
-[Bootstrap icons](https://www.bootstrapicons.com)
+[Bootstrap icons](https://www.bootstrapicons.com) \
+[PDF to Text](https://www.baeldung.com/pdf-conversions-java)
 
 ###Поведение клиентов при различных перенаправлениях описано в таблице:
 | Статус ответа | Кэширование | Если метод не GET или HEAD |
@@ -33,10 +34,10 @@ keytool -export -alias server -file server.crt -keystore server.jks
 
 ###ToDo
 Сделать кнопку очистки фильтра на странице словаря \
-Добавить выбор словаря (?) \
-При добавление слова сделать проверку, чтобы нельзя было добавлять такое же слово с таким же типом и таким же пользователем \
+При добавлении слова сделать проверку, чтобы нельзя было добавлять такое же слово с таким же типом и таким же пользователем \
 Сделать возможность создавать несколько каруселей для одного пользователя \
-Валтдация в thymeleaf
+Вынести навигацию в template \
+Валидация в thymeleaf
 
 ###Таблица тестирования
 | Функционал | Результат тестирования |
@@ -57,7 +58,7 @@ keytool -export -alias server -file server.crt -keystore server.jks
 | Фраза | да |
 | [Карусель](https://localhost:8443/roundrobin) | **1(3)** |
 | Отображение слова с переводом ||
-| Перейти к слову ||
+| Перейти к слову | да |
 | Удалить слово из карусели |  |
 | [Фразы](https://localhost:8443/phrase/list) | **1(2)** |
 | Просмотреть | да |

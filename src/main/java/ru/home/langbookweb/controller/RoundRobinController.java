@@ -42,7 +42,7 @@ public class RoundRobinController {
             Collections.shuffle(list);
             return list;
         });
-        Flux<Integer> numbers = words.count().flatMapMany(c -> Flux.range(1, c.intValue()));
+        Flux<Integer> numbers = words.count().flatMapMany(c -> Flux.range(1, c.intValue() * 2));
         model.addAttribute("roundrobin", roundRobin);
         model.addAttribute("numbers", numbers);
         model.addAttribute("word", new Word());
@@ -67,7 +67,7 @@ public class RoundRobinController {
         return roundRobinService.delWord(word)
                 .flatMap(id -> {
                     response.setStatusCode(HttpStatus.SEE_OTHER);
-                    response.getHeaders().setLocation(URI.create("/dictionary"));
+                    response.getHeaders().setLocation(URI.create("/roundrobin"));
                     return response.setComplete();
                 });
     }
