@@ -23,7 +23,7 @@ public class TranslationService {
     public Mono<Long> save(Translation translation) {
         Mono<User> user = userService.get();
         Translation t = translation.getId() == null ?
-                translation : translationRepository.getOne(translation.getId());
+                translation : translationRepository.getTranslationById(translation.getId());
         return wordService.get(t.getWord().getId()).map(w -> {
                 t.setWord(w);
                 return t;

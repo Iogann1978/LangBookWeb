@@ -72,7 +72,7 @@ public class PhraseController {
     @RolesAllowed("USER,ADMIN")
     @GetMapping("/next")
     public String getNextPage() {
-        pageable = pageable.next();
+        if (pageable.getPageNumber() != lastPage - 1) pageable = pageable.next();
         return "redirect:/phrase/list";
     }
 

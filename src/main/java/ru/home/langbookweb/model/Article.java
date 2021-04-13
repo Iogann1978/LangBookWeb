@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Data
@@ -19,9 +20,11 @@ public class Article {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @NotNull
+    @NotBlank
     @Column(nullable = false)
     private String name;
     @NotNull
+    @NotBlank
     @Column(nullable = false)
     private String filename;
     @Lob

@@ -11,7 +11,10 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@NamedEntityGraph(name = "roundrobin", attributeNodes = @NamedAttributeNode("user"))
+@NamedEntityGraph(name = "roundrobin", attributeNodes = {
+        @NamedAttributeNode("words"),
+        @NamedAttributeNode("user")
+})
 public class RoundRobin {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,7 +22,7 @@ public class RoundRobin {
     @NotNull
     @Column(nullable = false)
     private String name;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Set<Word> words;

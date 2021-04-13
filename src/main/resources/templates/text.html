@@ -66,7 +66,7 @@
                         <td th:text="${word.word}">Слово</td>
                         <td th:text="${word.count}">Частота</td>
                         <td>
-                            <a targer="_blank" th:href="@{/word/add(fill=${word.word})}">Добавить в словарь</a>
+                            <a th:href="@{/word/add(fill=${word.word})}">Добавить в словарь</a>
                         </td>
                     </tr>
                     </tbody>

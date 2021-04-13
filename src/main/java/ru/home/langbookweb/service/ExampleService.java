@@ -26,27 +26,29 @@ public class ExampleService {
     @Transactional
     public Mono<Long> save(Example example) {
         Example e = example.getId() == null ?
-                example : exampleRepository.getOne(example.getId());
+                example : exampleRepository.getExampleById(example.getId());
         if (example.getTranslation() == null) example.setTranslation(e.getTranslation());
         Mono<User> user = userService.get();
-        return user.map(u -> exampleRepository.getExampleByUserAndId(u, example.getId()))
-                .map(ee -> exampleRepository.saveAndFlush(example))
-                .map(ee -> ee.getTranslation().getId());
+        return translationService.get(example.getTranslation().getId()).map(t -> {
+            e.setTranslation(t);
+            return t;
+        }).filterWhen(tr -> user.map(u -> u.getUsername().equals(tr.getWord().getUser().getUsername())))
+        .map(tr -> {
+            exampleRepository.saveAndFlush(example);
+            return e.getTranslation().getId();
+        });
     }
 
     @Transactional
     public Mono<Long> del(Example example) {
-        /*
-        return translationService.get(example.getTranslation().getId()).flatMap(t -> {
-            t.getExamples().remove(example);
-            return translationService.save(t);
-        });
-         */
         Mono<User> user = userService.get();
-        return user.map(u -> exampleRepository.getExampleByUserAndId(u, example.getId()))
-                .map(e -> {
-                    exampleRepository.deleteById(e.getId());
-                    return e.getTranslation().getId();
-                });
+        return translationService.get(example.getTranslation().getId()).map(t -> {
+            example.setTranslation(t);
+            return t;
+        }).filterWhen(tr -> user.map(u -> u.getUsername().equals(tr.getWord().getUser().getUsername())))
+        .map(tr -> {
+            exampleRepository.deleteById(example.getId());
+            return example.getTranslation().getId();
+        });
     }
 }

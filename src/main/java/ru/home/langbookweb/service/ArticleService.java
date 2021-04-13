@@ -1,6 +1,7 @@
 package ru.home.langbookweb.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,11 @@ public class ArticleService {
     public Mono<Long> save(Article article) {
         Mono<User> user = userService.get();
         return user.map(u -> {
+            if (article.getText() == null || article.getText().length == 0) {
+                Article a = articleRepository.findArticleByUserAndId(u, article.getId());
+                article.setFilename(a.getFilename());
+                article.setText(a.getText());
+            }
             article.setUser(u);
             return articleRepository.saveAndFlush(article);
         }).map(Article::getId);

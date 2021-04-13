@@ -67,7 +67,6 @@ public class ArticleController {
             DataBufferUtils.release(dataBuffer);
             baos.writeBytes(bytes);
         }).flatMap(baos -> {
-            log.info("text: {} {}", article.getFilename(), new String(baos.toByteArray(), StandardCharsets.UTF_8));
             article.setText(baos.toByteArray());
             return articleService.save(article);
         }).flatMap(id -> {

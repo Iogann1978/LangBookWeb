@@ -39,7 +39,10 @@ public class TextController {
     public String getTexts(Model model) {
         Mono<String> user = userService.get().map(u -> u.getUsername());
         Flux<WordItem> pageWords = textService.getPage(pageable);
-        Mono<Long> count = textService.getFlux().count().doOnSuccess(c -> lastPage = (int) Math.ceil((double) c / (double) rowsOnPage));
+        Mono<Long> count = textService.getFlux().count().map(c -> {
+            lastPage = (int) Math.ceil((double) c / (double) rowsOnPage);
+            return c;
+        });
         model.addAttribute("pageWords", pageWords);
         model.addAttribute("page", pageable.getPageNumber() + 1);
         model.addAttribute("user", user);
@@ -64,7 +67,7 @@ public class TextController {
     @RolesAllowed("USER,ADMIN")
     @GetMapping("/next")
     public String getNextPage() {
-        pageable = pageable.next();
+        if (pageable.getPageNumber() != lastPage - 1) pageable = pageable.next();
         return "redirect:/text/list";
     }
 
