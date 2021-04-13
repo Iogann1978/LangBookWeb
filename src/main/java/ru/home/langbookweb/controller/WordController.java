@@ -55,7 +55,7 @@ public class WordController {
     @PostMapping("/save/word")
     public Mono<Void> saveWord(@ModelAttribute("word") Word word, ServerHttpResponse response) {
         if (word.getTranslations() == null)
-            word.setTranslations(Set.of(Translation.builder().description(word.getTooltip()).word(word).build()));
+            word.setTranslations(Set.of(Translation.builder().description(word.getTooltip()).source("общий").word(word).build()));
         Mono<Long> wid = wordService.save(word);
         return wid.flatMap(id -> {
             response.setStatusCode(HttpStatus.SEE_OTHER);
@@ -68,7 +68,7 @@ public class WordController {
     @PostMapping("/save/noun")
     public Mono<Void> saveNoun(@ModelAttribute("noun") Noun noun, ServerHttpResponse response) {
         if (noun.getTranslations() == null)
-            noun.setTranslations(Set.of(Translation.builder().description(noun.getTooltip()).word(noun).build()));
+            noun.setTranslations(Set.of(Translation.builder().description(noun.getTooltip()).source("общий").word(noun).build()));
         Mono<Long> wid = wordService.save(noun);
         return wid.flatMap(id -> {
             response.setStatusCode(HttpStatus.SEE_OTHER);
@@ -81,7 +81,7 @@ public class WordController {
     @PostMapping("/save/verb")
     public Mono<Void> saveVerb(@ModelAttribute("verb") Verb verb, ServerHttpResponse response) {
         if (verb.getTranslations() == null)
-            verb.setTranslations(Set.of(Translation.builder().description(verb.getTooltip()).word(verb).build()));
+            verb.setTranslations(Set.of(Translation.builder().description(verb.getTooltip()).source("общий").word(verb).build()));
         Mono<Long> wid = wordService.save(verb);
         return wid.flatMap(id -> {
             response.setStatusCode(HttpStatus.SEE_OTHER);
@@ -94,7 +94,7 @@ public class WordController {
     @PostMapping("/save/adjective")
     public Mono<Void> saveAdjective(@ModelAttribute("adjective") Adjective adjective, ServerHttpResponse response) {
         if (adjective.getTranslations() == null)
-            adjective.setTranslations(Set.of(Translation.builder().description(adjective.getTooltip()).word(adjective).build()));
+            adjective.setTranslations(Set.of(Translation.builder().description(adjective.getTooltip()).source("общий").word(adjective).build()));
         Mono<Long> wid = wordService.save(adjective);
         return wid.flatMap(id -> {
             response.setStatusCode(HttpStatus.SEE_OTHER);
@@ -107,7 +107,7 @@ public class WordController {
     @PostMapping("/save/adverb")
     public Mono<Void> saveAdverb(@ModelAttribute("adverb") Adverb adverb, ServerHttpResponse response) {
         if (adverb.getTranslations() == null)
-            adverb.setTranslations(Set.of(Translation.builder().description(adverb.getTooltip()).word(adverb).build()));
+            adverb.setTranslations(Set.of(Translation.builder().description(adverb.getTooltip()).source("общий").word(adverb).build()));
         Mono<Long> wid = wordService.save(adverb);
         return wid.flatMap(id -> {
             response.setStatusCode(HttpStatus.SEE_OTHER);
@@ -120,7 +120,7 @@ public class WordController {
     @PostMapping("/save/participle")
     public Mono<Void> saveParticiple(@ModelAttribute("participle") Participle participle, ServerHttpResponse response) {
         if (participle.getTranslations() == null)
-            participle.setTranslations(Set.of(Translation.builder().description(participle.getTooltip()).word(participle).build()));
+            participle.setTranslations(Set.of(Translation.builder().description(participle.getTooltip()).source("общий").word(participle).build()));
         Mono<Long> wid = wordService.save(participle);
         return wid.flatMap(id -> {
             response.setStatusCode(HttpStatus.SEE_OTHER);
@@ -133,7 +133,7 @@ public class WordController {
     @PostMapping("/save/phrase")
     public Mono<Void> savePhrase(@ModelAttribute("phrase") Phrase phrase, ServerHttpResponse response) {
         if (phrase.getTranslations() == null)
-            phrase.setTranslations(Set.of(Translation.builder().description(phrase.getTooltip()).word(phrase).build()));
+            phrase.setTranslations(Set.of(Translation.builder().description(phrase.getTooltip()).source("общий").word(phrase).build()));
         Mono<Long> wid = wordService.save(phrase);
         return wid.flatMap(id -> {
             response.setStatusCode(HttpStatus.SEE_OTHER);

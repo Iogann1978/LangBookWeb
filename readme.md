@@ -64,11 +64,11 @@ keytool -export -alias server -file server.crt -keystore server.jks
 | [Фразы](https://localhost:8443/phrase/list) | **1(2)** |
 | Просмотреть | да |
 | Паджинация | |
-| [Статьи](https://localhost:8443/article/list) | **4(6)** |
+| [Статьи](https://localhost:8443/article/list) | **3(6)** |
 | Добавить статью | да |
 | Добавить статью с пустым названием |  |
 | Просмотреть | да |
-| Изменить | да |
+| Изменить |  |
 | Удалить | да |
 | Паджинация | |
 | [Тексты](https://localhost:8443/text/list) | **3(3)** |
