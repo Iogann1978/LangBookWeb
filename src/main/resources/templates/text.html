@@ -12,37 +12,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="#">Навигация:</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/dictionary">Словарь</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/word/add">Добавить слово</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/roundrobin">Карусель</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/phrase/list">Фразы</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/article/list">Статьи</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">Тексты</a>
-                        </li>
-                    </ul>
-                </div>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#text_upload">Загрузить текст</button>
-            </div>
-        </nav>
+        <div th:insert="menu::links (text)" />
     </header>
 
     <div class="container-fluid">
@@ -76,33 +46,7 @@
     </div>
 
     <footer class="d-flex justify-content-center">
-        <nav aria-label="Pages">
-            <ul class="pagination">
-                <li class="page-item">
-                    <a class="page-link" th:href="@{/text/first}">
-                        <i class="glyphicon glyphicon-fast-backward"></i>
-                    </a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" th:href="@{/text/prev}">
-                        <i class="glyphicon glyphicon-backward"></i>
-                    </a>
-                </li>
-                <li class="page-item disabled">
-                    <a class="page-link" href="#" th:text="${page}">Страница</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" th:href="@{/text/next}">
-                        <i class="glyphicon glyphicon-forward"></i>
-                    </a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" th:href="@{/text/last}">
-                        <i class="glyphicon glyphicon-fast-forward"></i>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+        <div th:insert="menu::pages (text)" />
     </footer>
 
     <!-- Загрузить текст -->

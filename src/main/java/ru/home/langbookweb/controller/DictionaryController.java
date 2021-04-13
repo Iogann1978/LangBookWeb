@@ -84,7 +84,7 @@ public class DictionaryController {
     @RolesAllowed("USER,ADMIN")
     @GetMapping("/last")
     public String getLastPage() {
-        pageable = PageRequest.of(lastPage - 1, rowsOnPage, sorting);
+        if (lastPage != 0) pageable = PageRequest.of(lastPage - 1, rowsOnPage, sorting);
         return "redirect:/dictionary";
     }
 

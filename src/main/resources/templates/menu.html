@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <th:block th:fragment="links (active_link)">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Навигация:</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <div th:if="${active_link == 'dictionary'}">
+                                <a class="nav-link active" aria-current="page" href="#">Словарь</a>
+                            </div>
+                            <div th:unless="${active_link == 'dictionary'}">
+                                <a class="nav-link" href="/dictionary">Словарь</a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <div th:if="${active_link == 'word_add'}">
+                                <a class="nav-link active" aria-current="page" href="#">Добавить слово</a>
+                            </div>
+                            <div th:unless="${active_link == 'word_add'}">
+                                <a class="nav-link" href="/word/add">Добавить слово</a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <div th:if="${active_link == 'roundrobin'}">
+                                <a class="nav-link active" aria-current="page" href="#">Карусель</a>
+                            </div>
+                            <div th:unless="${active_link == 'roundrobin'}">
+                                <a class="nav-link" href="/roundrobin">Карусель</a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <div th:if="${active_link == 'phrase'}">
+                                <a class="nav-link active" aria-current="page" href="#">Фразы</a>
+                            </div>
+                            <div th:unless="${active_link == 'phrase'}">
+                                <a class="nav-link" href="/phrase/list">Фразы</a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <div th:if="${active_link == 'article'}">
+                                <a class="nav-link active" aria-current="page" href="#">Статьи</a>
+                            </div>
+                            <div th:unless="${active_link == 'article'}">
+                                <a class="nav-link" href="/article/list">Статьи</a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <div th:if="${active_link == 'text'}">
+                                <a class="nav-link active" aria-current="page" href="#">Тексты</a>
+                            </div>
+                            <div th:unless="${active_link == 'text'}">
+                                <a class="nav-link" href="/text/list">Тексты</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <th:block th:if="${active_link == 'dictionary'}">
+                    <form class="navbar-form float-right" action="#" th:action="@{/dictionary/find}" th:object="${word}" method="POST">
+                        <div class="input-group">
+                            <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Search" th:field="*{word}">
+                            <button class="btn btn-outline-success" type="submit">
+                                <i class="glyphicon glyphicon-search"></i>
+                            </button>
+                            <button class="btn btn-outline-success" type="reset">
+                                <i class="glyphicon glyphicon-fire" style="color:red"></i>
+                            </button>
+                        </div>
+                    </form>
+                </th:block>
+                <th:block th:if="${active_link == 'article'}">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#article_save" onclick="fillSaveForm(null,'')">Добавить статью</button>
+                </th:block>
+                <th:block th:if="${active_link == 'example'}">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#example_save" onclick="fillSaveForm(null,'','')">Добавить пример</button>
+                </th:block>
+                <th:block th:if="${active_link == 'text'}">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#text_upload">Загрузить текст</button>
+                </th:block>
+                <th:block th:if="${active_link == 'translation'}">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#translation_save" onclick="fillSaveForm(null,'','')">Добавить перевод</button>
+                </th:block>
+                <th:block th:if="${active_link == 'word'}">
+                    <div th:switch="${word.class.simpleName}">
+                        <div th:case="'Word'">
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#word_save" th:attr="onclick=|fillSaveWordForm(${word.id},'${word.word}')|">Изменить слово</button>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#word_del" th:attr="onclick=|fillDelForm(${word.id},'${word.word}','Word')|">Удалить слово</button>
+                            <a th:href="@{/translation/add(wordId=${word.id})}" class="btn btn-info" role="button">Редактировать переводы</a>
+                        </div>
+                        <div th:case="'Noun'">
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#word_save" th:attr="onclick=|fillSaveWordForm(${noun.id},'${noun.word}')|">Изменить слово</button>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#word_del" th:attr="onclick=|fillDelForm(${noun.id},'${noun.word}','Noun')|">Удалить слово</button>
+                            <a th:href="@{/translation/add(wordId=${noun.id})}" class="btn btn-info" role="button">Редактировать переводы</a>
+                        </div>
+                        <div th:case="'Verb'">
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#word_save" th:attr="onclick=|fillSaveWordForm(${verb.id},'${verb.word}')|">Изменить слово</button>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#word_del" th:attr="onclick=|fillDelForm(${verb.id},'${verb.word}','Verb')|">Удалить слово</button>
+                            <a th:href="@{/translation/add(wordId=${verb.id})}" class="btn btn-info" role="button">Редактировать переводы</a>
+                        </div>
+                        <div th:case="'Adjective'">
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#word_save" th:attr="onclick=|fillSaveWordForm(${adjective.id},'${adjective.word}')|">Изменить слово</button>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#word_del" th:attr="onclick=|fillDelForm(${adjective.id},'${adjective.word}','Adjective')|">Удалить слово</button>
+                            <a th:href="@{/translation/add(wordId=${adjective.id})}" class="btn btn-info" role="button">Редактировать переводы</a>
+                        </div>
+                        <div th:case="'Adverb'">
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#word_save" th:attr="onclick=|fillSaveWordForm(${adverb.id},'${adverb.word}')|">Изменить слово</button>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#word_del" th:attr="onclick=|fillDelForm(${adverb.id},'${adverb.word}','Adverb')|">Удалить слово</button>
+                            <a th:href="@{/translation/add(wordId=${adjective.id})}" class="btn btn-info" role="button">Редактировать переводы</a>
+                        </div>
+                        <div th:case="'Participle'">
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#word_save" th:attr="onclick=|fillSaveWordForm(${participle.id},'${participle.word}')|">Изменить слово</button>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#word_del" th:attr="onclick=|fillDelForm(${participle.id},'${participle.word}','Participle')|">Удалить слово</button>
+                            <a th:href="@{/translation/add(wordId=${participle.id})}" class="btn btn-info" role="button">Редактировать переводы</a>
+                        </div>
+                        <div th:case="'Phrase'">
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#word_save" th:attr="onclick=|fillSaveWordForm(${phrase.id},'${phrase.word}')|">Изменить слово</button>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#word_del" th:attr="onclick=|fillDelForm(${phrase.id},'${phrase.word}','Phrase')|">Удалить слово</button>
+                            <a th:href="@{/translation/add(wordId=${participle.id})}" class="btn btn-info" role="button">Редактировать переводы</a>
+                        </div>
+                        <div th:case="*">
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+        </nav>
+    </th:block>
+
+    <th:block th:fragment="pages (link)">
+        <nav aria-label="Pages">
+            <ul class="pagination">
+                <li class="page-item">
+                    <a class="page-link" th:href="@{/{link}/first(link=${link})}">
+                        <i class="glyphicon glyphicon-fast-backward"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" th:href="@{/{link}/prev(link=${link})}">
+                        <i class="glyphicon glyphicon-backward"></i>
+                    </a>
+                </li>
+                <th:block th:if="${link == 'text'}">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" th:text="${page}">Страница</a>
+                    </li>
+                </th:block>
+                <th:block th:unless="${link == 'text'}">
+                    <li class="page-item" th:each="page:${pages}">
+                        <a class="page-link" th:href="@{/{link}/page(link=${link},p=${page})}" th:text="${page}">Страница</a>
+                    </li>
+                </th:block>
+                <li class="page-item">
+                    <a class="page-link" th:href="@{/{link}/next(link=${link})}">
+                        <i class="glyphicon glyphicon-forward"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" th:href="@{/{link}/last(link=${link})}">
+                        <i class="glyphicon glyphicon-fast-forward"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </th:block>
+</body>
+</html>

@@ -12,59 +12,37 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="#" th:text="'Слово: ' + ${word.word} + ' Тип: ' + ${word.class.simpleName}">Тип</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/dictionary">Словарь</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/word/add">Добавить слово</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/roundrobin">Карусель</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/phrase/list">Фразы</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/article/list">Статьи</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/text/list">Тексты</a>
-                        </li>
-                    </ul>
-                </div>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#translation_save" onclick="fillSaveForm(null,'','')">Добавить перевод</button>
-            </div>
-        </nav>
+        <div th:insert="menu::links (translation)" />
     </header>
     <div class="container-fluid">
-        <table class="table table-hover">
-            <thead>
-            <tr>
-                <th class="col-7" scope="col">Перевод</th>
-                <th class="col-2" scope="col">Источник</th>
-                <th class="col-3" scope="col">Действия</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="trans:${translations}">
-                <td th:text="${trans.description}">Перевод</td>
-                <td th:text="${trans.source}">Источник</td>
-                <td>
-                    <a th:href="@{/example/add(translationId=${trans.id})}">Примеры</a>
-                    <a href="#" data-toggle="modal" data-target="#translation_save" th:attr="onclick=|fillSaveForm(${trans.id},'${trans.description}','${trans.source}')|">Изменить</a>
-                    <a href="#" data-toggle="modal" data-target="#translation_del" th:attr="onclick=|fillDelForm(${trans.id},'${trans.description}','${trans.source}')|">Удалить</a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="text-center" th:text="'Слово: ' + ${word.word} + ' Тип: ' + ${word.class.simpleName}">Тип</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th class="col-7" scope="col">Перевод</th>
+                        <th class="col-2" scope="col">Источник</th>
+                        <th class="col-3" scope="col">Действия</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="trans:${translations}">
+                        <td th:text="${trans.description}">Перевод</td>
+                        <td th:text="${trans.source}">Источник</td>
+                        <td>
+                            <a th:href="@{/example/add(translationId=${trans.id})}">Примеры</a>
+                            <a href="#" data-toggle="modal" data-target="#translation_save" th:attr="onclick=|fillSaveForm(${trans.id},'${trans.description}','${trans.source}')|">Изменить</a>
+                            <a href="#" data-toggle="modal" data-target="#translation_del" th:attr="onclick=|fillDelForm(${trans.id},'${trans.description}','${trans.source}')|">Удалить</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
     </div>
 
     <!-- Добавить (изменить) перевод -->

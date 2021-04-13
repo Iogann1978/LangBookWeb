@@ -74,7 +74,7 @@ public class TextController {
     @RolesAllowed("USER,ADMIN")
     @GetMapping("/last")
     public String getLastPage() {
-        pageable = PageRequest.of(lastPage - 1, rowsOnPage);
+        if (lastPage != 0) pageable = PageRequest.of(lastPage - 1, rowsOnPage);
         return "redirect:/text/list";
     }
 

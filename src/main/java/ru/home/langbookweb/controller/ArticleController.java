@@ -49,8 +49,7 @@ public class ArticleController {
         Flux<Long> pages = pageArticles.flatMapIterable(p -> {
                     lastPage = p.getTotalPages();
                     return LongStream.rangeClosed(1, p.getTotalPages()).boxed().collect(Collectors.toList());
-                }
-        );
+                });
         model.addAttribute("user", user);
         model.addAttribute("pages", pages);
         model.addAttribute("pageArticles", pageArticles);
@@ -111,14 +110,14 @@ public class ArticleController {
     @RolesAllowed("USER,ADMIN")
     @GetMapping("/next")
     public String getNextPage() {
-        pageable = pageable.next();
+        if (pageable.getPageNumber() != lastPage - 1) pageable = pageable.next();
         return "redirect:/article/list";
     }
 
     @RolesAllowed("USER,ADMIN")
     @GetMapping("/last")
     public String getLastPage() {
-        pageable = PageRequest.of(lastPage - 1, rowsOnPage, sorting);
+        if (lastPage != 0) pageable = PageRequest.of(lastPage - 1, rowsOnPage, sorting);
         return "redirect:/article/list";
     }
 

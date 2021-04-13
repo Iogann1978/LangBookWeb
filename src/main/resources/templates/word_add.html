@@ -12,36 +12,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="#">Добавить слово</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/dictionary">Словарь</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="/word/add">Добавить слово</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/roundrobin">Карусель</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/phrase/list">Фразы</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/article/list">Статьи</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/text/list">Тексты</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
+        <div th:insert="menu::links (word_add)" />
     </header>
     <div class="container-fluid">
         <div class="row">
