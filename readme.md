@@ -71,8 +71,9 @@ keytool -export -alias server -file server.crt -keystore server.jks
 | Изменить |  |
 | Удалить | да |
 | Паджинация | |
-| [Тексты](https://localhost:8443/text/list) | **3(3)** |
-| Загрузить текст | да |
+| [Тексты](https://localhost:8443/text/list) | **3(4)** |
+| Загрузить текст txt | да |
+| Загрузить текст pdf | |
 | Добавить в словарь | да |
 | Паджинация | да |
 | [Просмотреть слово](https://localhost:8443/word?wordId=1) | **3(3)** |

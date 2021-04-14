@@ -2,6 +2,12 @@ package ru.home.langbookweb.service;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.pdfbox.cos.COSDocument;
+import org.apache.pdfbox.io.RandomAccessBuffer;
+import org.apache.pdfbox.io.RandomAccessRead;
+import org.apache.pdfbox.pdfparser.PDFParser;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -9,6 +15,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.home.langbookweb.model.WordItem;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -49,5 +57,22 @@ public class TextService {
         return flux.collectList().flatMapMany(list -> Flux.fromIterable(
                 list.stream().skip(pageable.getPageNumber() * pageable.getPageSize())
         .limit(pageable.getPageSize()).collect(Collectors.toList())));
+    }
+
+    public byte[] textFromPdf(byte[] pdf) {
+        byte[] result = null;
+        try {
+            RandomAccessRead rar = new RandomAccessBuffer(pdf);
+            PDFParser parser = new PDFParser(rar);
+            parser.parse();
+            COSDocument cosDoc = parser.getDocument();
+            PDFTextStripper pdfStripper = new PDFTextStripper();
+            PDDocument pdDoc = new PDDocument(cosDoc);
+            String parsedText = pdfStripper.getText(pdDoc);
+            result = parsedText.getBytes(StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            log.error("error parsing pdf: {}", e.getMessage());
+        }
+        return result;
     }
 }

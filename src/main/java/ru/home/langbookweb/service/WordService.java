@@ -1,7 +1,7 @@
 package ru.home.langbookweb.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.Strings;
+import org.hsqldb.lib.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -36,7 +36,7 @@ public class WordService {
     @Transactional(readOnly = true)
     public Flux<? super Word> getPage(String findWord, Pageable pageable) {
         Mono<User> user = userService.get();
-        Flux<Word> words = user.flatMapIterable(u -> Strings.isEmpty(findWord) ? wordRepository.findAllByUser(u, pageable) :
+        Flux<Word> words = user.flatMapIterable(u -> StringUtil.isEmpty(findWord) ? wordRepository.findAllByUser(u, pageable) :
                             wordRepository.findAllByUserAndWord(u, findWord, pageable)
                 ).map(word -> {
                     Optional<Noun> noun = nounRepository.getNounById(word.getId());
