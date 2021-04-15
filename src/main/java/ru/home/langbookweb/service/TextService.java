@@ -16,7 +16,6 @@ import reactor.core.publisher.Mono;
 import ru.home.langbookweb.model.WordItem;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -59,17 +58,18 @@ public class TextService {
         .limit(pageable.getPageSize()).collect(Collectors.toList())));
     }
 
-    public byte[] textFromPdf(byte[] pdf) {
-        byte[] result = null;
-        try {
-            RandomAccessRead rar = new RandomAccessBuffer(pdf);
+    public String textFromPdf(byte[] pdf) {
+        String result = "";
+        try(RandomAccessRead rar = new RandomAccessBuffer(pdf)) {
             PDFParser parser = new PDFParser(rar);
             parser.parse();
             COSDocument cosDoc = parser.getDocument();
             PDFTextStripper pdfStripper = new PDFTextStripper();
-            PDDocument pdDoc = new PDDocument(cosDoc);
-            String parsedText = pdfStripper.getText(pdDoc);
-            result = parsedText.getBytes(StandardCharsets.UTF_8);
+            try(PDDocument pdDoc = new PDDocument(cosDoc)) {
+                result = pdfStripper.getText(pdDoc);
+            } catch (IOException e) {
+                log.error("error reading text from pdf: {}", e.getMessage());
+            }
         } catch (IOException e) {
             log.error("error parsing pdf: {}", e.getMessage());
         }

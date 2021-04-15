@@ -49,6 +49,7 @@ public class DictionaryController {
         model.addAttribute("word", new Word());
         model.addAttribute("user", user);
         model.addAttribute("pages", pages);
+        model.addAttribute("count", count);
         model.addAttribute("page", pageable.getPageNumber() + 1);
         return "dictionary";
     }

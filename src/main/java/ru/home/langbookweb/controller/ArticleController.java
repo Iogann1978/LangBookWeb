@@ -19,7 +19,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.home.langbookweb.model.Article;
 import ru.home.langbookweb.service.ArticleService;
-import ru.home.langbookweb.service.TextService;
 import ru.home.langbookweb.service.UserService;
 
 import javax.annotation.security.RolesAllowed;
@@ -38,8 +37,6 @@ public class ArticleController {
     private Pageable pageable = PageRequest.of(0, rowsOnPage, sorting);
     @Autowired
     private ArticleService articleService;
-    @Autowired
-    private TextService textService;
     @Autowired
     private UserService userService;
     private int lastPage = 0;
@@ -69,9 +66,7 @@ public class ArticleController {
             DataBufferUtils.release(dataBuffer);
             baos.writeBytes(bytes);
         }).flatMap(baos -> {
-            byte[] content = article.getFilename().endsWith(".pdf") ?
-                    textService.textFromPdf(baos.toByteArray()) : baos.toByteArray();
-            article.setText(content);
+            article.setText(baos.toByteArray());
             return articleService.save(article);
         }).flatMap(id -> {
             response.setStatusCode(HttpStatus.SEE_OTHER);

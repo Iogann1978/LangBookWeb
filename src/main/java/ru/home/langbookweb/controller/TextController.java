@@ -81,16 +81,16 @@ public class TextController {
     @RolesAllowed("USER,ADMIN")
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Mono<Void> textUpload(@RequestPart("upload") Mono<FilePart> part, ServerHttpResponse response) {
-        return part.flatMapMany(FilePart::content).collect(ByteArrayOutputStream::new, (baos, dataBuffer) -> {
+        return part.flatMap(fp -> fp.content().collect(ByteArrayOutputStream::new, (baos, dataBuffer) -> {
             byte[] bytes = new byte[dataBuffer.readableByteCount()];
             dataBuffer.read(bytes);
             DataBufferUtils.release(dataBuffer);
             baos.writeBytes(bytes);
-        }).map(baos -> {
+        }).flatMap(baos -> {
             String text = baos.toString(StandardCharsets.UTF_8);
-            log.debug("text: {}", text);
-            return textService.parse(text);
-        }).flatMap(count -> {
+            String content = fp.filename().endsWith(".pdf") ? textService.textFromPdf(baos.toByteArray()) : text;
+            return textService.parse(content);
+        })).flatMap(count -> {
             response.setStatusCode(HttpStatus.SEE_OTHER);
             response.getHeaders().setLocation(URI.create("/text/list"));
             return response.setComplete();
