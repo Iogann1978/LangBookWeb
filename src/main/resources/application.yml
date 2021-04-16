@@ -15,6 +15,7 @@ spring:
 
   freemarker:
     content-type: image/svg+xml
+    suffix: .ftlh
 
   servlet:
     multipart:
