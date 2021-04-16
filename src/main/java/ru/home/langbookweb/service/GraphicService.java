@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -20,11 +19,6 @@ public class GraphicService {
     private static final Integer WIDTH = 800, HEIGHT = 400;
     @Autowired
     private Configuration freemarkerConfig;
-
-    @PostConstruct
-    public void init() {
-        log.info("freemarker: {}", freemarkerConfig);
-    }
 
     public String getSrc(String text1, String text2) {
         String xmlSvg = getSvg(text1, text2);
