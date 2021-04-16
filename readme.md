@@ -21,7 +21,8 @@ keytool -export -alias server -file server.crt -keystore server.jks
 [Bootstrap 5.0 docs](https://getbootstrap.com/docs/5.0/getting-started/introduction/) \
 [Bootstrap 4 Tutorial](https://www.w3schools.com/bootstrap4) \
 [Bootstrap icons](https://www.bootstrapicons.com) \
-[PDF to Text](https://www.baeldung.com/pdf-conversions-java)
+[PDF to Text](https://www.baeldung.com/pdf-conversions-java) \
+[XDXF format](https://github.com/soshial/xdxf_makedict/blob/master/format_standard/xdxf_description.md)
 
 ###Поведение клиентов при различных перенаправлениях описано в таблице:
 | Статус ответа | Кэширование | Если метод не GET или HEAD |

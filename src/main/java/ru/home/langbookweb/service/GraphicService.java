@@ -1,13 +1,21 @@
 package ru.home.langbookweb.service;
 
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import freemarker.template.Version;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
+@Slf4j
 public class GraphicService {
     private static final Integer WIDTH = 800, HEIGHT = 400;
 
@@ -20,37 +28,30 @@ public class GraphicService {
     }
 
     private static String getSvg(String text1, String text2) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(String.format("<svg width=%s height=%s xmlns=%s viewBox=%s preserveAspectRatio=%s>",
-                StringUtils.quote(WIDTH.toString()),
-                StringUtils.quote(HEIGHT.toString()),
-                StringUtils.quote("http://www.w3.org/2000/svg"),
-                StringUtils.quote(StringUtils.collectionToDelimitedString(List.of("0","0",WIDTH.toString(),HEIGHT.toString()), " ")),
-                StringUtils.quote("none")));
-        sb.append("<g>");
-        sb.append(String.format("<rect width=%s height=%s fill=%s>",
-                StringUtils.quote(WIDTH.toString()),
-                StringUtils.quote(HEIGHT.toString()),
-                StringUtils.quote("#777")));
-        sb.append("</rect>");
-        sb.append("<g>");
-        sb.append(String.format("<text x=%s y=%s text-anchor=%s style=%s>",
-                StringUtils.quote(String.valueOf(WIDTH / 2)),
-                StringUtils.quote(String.valueOf(HEIGHT / 2)),
-                StringUtils.quote("middle"),
-                StringUtils.quote("fill:#555;font-weight:normal;font-family:Helvetica, monospace;font-size:40pt")));
-        sb.append(text1);
-        sb.append("</text>");
-        sb.append(String.format("<text x=%s y=%s text-anchor=%s style=%s>",
-                StringUtils.quote(String.valueOf(WIDTH / 2)),
-                StringUtils.quote(String.valueOf(HEIGHT / 2 + 40)),
-                StringUtils.quote("middle"),
-                StringUtils.quote("fill:#555;font-weight:normal;font-family:Helvetica, monospace;font-size:30pt")));
-        sb.append(text2);
-        sb.append("</text>");
-        sb.append("</g>");
-        sb.append("</g>");
-        sb.append("</svg>");
-        return sb.toString();
+        String result = "";
+        try(StringWriter sw = new StringWriter()) {
+            Configuration cfg = new Configuration(new Version("2.3.0"));
+            cfg.setClassLoaderForTemplateLoading(GraphicService.class.getClassLoader(),"/templates/");
+            Template template = cfg.getTemplate("roundrobin.ftlh");
+            Map<String, Object> templateData = new HashMap<>(){
+                {
+                    put("width", WIDTH);
+                    put("height", HEIGHT);
+                    put("x1", WIDTH / 2);
+                    put("y1", HEIGHT / 2);
+                    put("x2", WIDTH / 2);
+                    put("y2", HEIGHT / 2 + 40);
+                    put("word", text1);
+                    put("type", text2);
+                }
+            };
+            template.process(templateData, sw);
+            result = sw.toString();
+            log.info("svg: {}", result);
+        } catch (IOException | TemplateException e) {
+            log.error("error svg template reading: {}", e.getMessage());
+            e.printStackTrace();
+        }
+        return result;
     }
 }

@@ -23,6 +23,7 @@ import ru.home.langbookweb.service.UserService;
 
 import javax.annotation.security.RolesAllowed;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
@@ -66,7 +67,13 @@ public class ArticleController {
             DataBufferUtils.release(dataBuffer);
             baos.writeBytes(bytes);
         }).flatMap(baos -> {
-            article.setText(baos.toByteArray());
+            try {
+                article.setText(baos.toByteArray());
+                baos.close();
+            } catch (IOException e) {
+                log.error("error reading article file: {}", e.getMessage());
+                e.printStackTrace();
+            }
             return articleService.save(article);
         }).flatMap(id -> {
             response.setStatusCode(HttpStatus.SEE_OTHER);

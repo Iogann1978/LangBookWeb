@@ -19,6 +19,7 @@ import ru.home.langbookweb.service.UserService;
 
 import javax.annotation.security.RolesAllowed;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 
@@ -87,8 +88,16 @@ public class TextController {
             DataBufferUtils.release(dataBuffer);
             baos.writeBytes(bytes);
         }).flatMap(baos -> {
-            String text = baos.toString(StandardCharsets.UTF_8);
-            String content = fp.filename().endsWith(".pdf") ? textService.textFromPdf(baos.toByteArray()) : text;
+            String content = "";
+            try {
+                String text = baos.toString(StandardCharsets.UTF_8);
+                content = fp.filename().endsWith(".pdf") ?
+                        textService.textFromPdf(baos.toByteArray()) : text;
+                baos.close();
+            } catch (IOException e) {
+                log.error("error reading text(pdf) file: {}", e.getMessage());
+                e.printStackTrace();
+            }
             return textService.parse(content);
         })).flatMap(count -> {
             response.setStatusCode(HttpStatus.SEE_OTHER);

@@ -13,6 +13,9 @@ spring:
     reactive:
       max-chunk-size: 8192
 
+  freemarker:
+    content-type: image/svg+xml
+
   servlet:
     multipart:
       enabled: true

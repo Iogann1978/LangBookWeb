@@ -58,7 +58,7 @@ public class TextService {
         .limit(pageable.getPageSize()).collect(Collectors.toList())));
     }
 
-    public String textFromPdf(byte[] pdf) {
+    public String textFromPdf(byte[] pdf) throws IOException {
         String result = "";
         try(RandomAccessRead rar = new RandomAccessBuffer(pdf)) {
             PDFParser parser = new PDFParser(rar);
@@ -67,11 +67,7 @@ public class TextService {
             PDFTextStripper pdfStripper = new PDFTextStripper();
             try(PDDocument pdDoc = new PDDocument(cosDoc)) {
                 result = pdfStripper.getText(pdDoc);
-            } catch (IOException e) {
-                log.error("error reading text from pdf: {}", e.getMessage());
             }
-        } catch (IOException e) {
-            log.error("error parsing pdf: {}", e.getMessage());
         }
         return result;
     }
