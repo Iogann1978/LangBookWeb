@@ -149,8 +149,8 @@
                     </li>
                 </th:block>
                 <th:block th:unless="${link == 'text'}">
-                    <li class="page-item" th:each="page:${pages}">
-                        <a class="page-link" th:href="@{/{link}/page(link=${link},p=${page})}" th:text="${page}">Страница</a>
+                    <li class="page-item" th:classappend="${p == page} ? 'disabled'" th:each="p:${pages}">
+                        <a class="page-link" th:href="@{/{link}/page(link=${link},p=${p})}" th:text="${p}">Страница</a>
                     </li>
                 </th:block>
                 <li class="page-item">

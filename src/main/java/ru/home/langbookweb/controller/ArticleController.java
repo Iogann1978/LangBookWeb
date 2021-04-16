@@ -55,6 +55,7 @@ public class ArticleController {
         model.addAttribute("pages", pages);
         model.addAttribute("pageArticles", pageArticles);
         model.addAttribute("article", new Article());
+        model.addAttribute("page", pageable.getPageNumber() + 1);
         return "articles";
     }
 

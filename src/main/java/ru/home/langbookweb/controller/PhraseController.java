@@ -45,6 +45,7 @@ public class PhraseController {
         model.addAttribute("user", user);
         model.addAttribute("pages", pages);
         model.addAttribute("pagePhrases", pagePhrases);
+        model.addAttribute("page", pageable.getPageNumber() + 1);
         return "phrases";
     }
 

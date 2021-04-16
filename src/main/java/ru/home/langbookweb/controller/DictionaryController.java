@@ -43,7 +43,7 @@ public class DictionaryController {
         Flux<Long> pages = count.map(c -> {
             lastPage = (int) Math.ceil((double) c / (double) rowsOnPage);
             return lastPage;
-        }).flatMapIterable(c -> LongStream.rangeClosed(1, c).boxed().collect(Collectors.toList()));
+        }).flatMapIterable(lp -> LongStream.rangeClosed(1, lp).boxed().collect(Collectors.toList()));
         IReactiveDataDriverContextVariable reactiveDataDrivenMode = new ReactiveDataDriverContextVariable(words);
         model.addAttribute("words", reactiveDataDrivenMode);
         model.addAttribute("word", new Word());
