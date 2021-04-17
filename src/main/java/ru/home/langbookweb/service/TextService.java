@@ -24,14 +24,13 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class TextService {
-    private Map<String, Integer> mapWords = new HashMap<>();
     @Autowired
     private WordService wordService;
     @Getter
     private Flux<WordItem> flux = Flux.empty();
 
     public Mono<Long> parse(String text) {
-        mapWords.clear();
+        Map<String, Integer> mapWords = new HashMap<>();
         Pattern p = Pattern.compile("\\d+");
         for (String s : text.split("\\W+")) {
             if (!s.isEmpty()) {

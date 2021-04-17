@@ -26,6 +26,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
@@ -35,27 +36,24 @@ import java.util.stream.LongStream;
 public class ArticleController {
     private static final int rowsOnPage = 10;
     private static final Sort sorting = Sort.by("name").and(Sort.by("filename"));
-    private Pageable pageable = PageRequest.of(0, rowsOnPage, sorting);
     @Autowired
     private ArticleService articleService;
     @Autowired
     private UserService userService;
-    private int lastPage = 0;
 
     @RolesAllowed("USER,ADMIN")
-    @GetMapping("/list")
-    public String getArticles(Model model) {
+    @GetMapping
+    public String getArticles(@RequestParam Optional<Integer> page, Model model) {
         Mono<String> user = userService.get().map(u -> u.getUsername());
+        Pageable pageable = PageRequest.of(page.map(p -> p - 1).orElse(0), rowsOnPage, sorting);
         Mono<Page<Article>> pageArticles = articleService.getPage(pageable);
-        Flux<Long> pages = pageArticles.flatMapIterable(p -> {
-                    lastPage = p.getTotalPages();
-                    return LongStream.rangeClosed(1, p.getTotalPages()).boxed().collect(Collectors.toList());
-                });
+        Flux<Long> pages = pageArticles.flatMapIterable(p -> LongStream.rangeClosed(1, p.getTotalPages()).boxed().collect(Collectors.toList()));
         model.addAttribute("user", user);
         model.addAttribute("pages", pages);
         model.addAttribute("pageArticles", pageArticles);
         model.addAttribute("article", new Article());
-        model.addAttribute("page", pageable.getPageNumber() + 1);
+        model.addAttribute("page", page.orElse(1));
+        model.addAttribute("lastPage", pages.count());
         return "articles";
     }
 
@@ -78,7 +76,7 @@ public class ArticleController {
             return articleService.save(article);
         }).flatMap(id -> {
             response.setStatusCode(HttpStatus.SEE_OTHER);
-            response.getHeaders().setLocation(URI.create("/article/list"));
+            response.getHeaders().setLocation(URI.create("/article"));
             return response.setComplete();
         });
     }
@@ -89,44 +87,9 @@ public class ArticleController {
         return articleService.del(article)
                 .flatMap(id -> {
                     response.setStatusCode(HttpStatus.SEE_OTHER);
-                    response.getHeaders().setLocation(URI.create("/article/list"));
+                    response.getHeaders().setLocation(URI.create("/article"));
                     return response.setComplete();
                 });
-    }
-
-    @RolesAllowed("USER,ADMIN")
-    @GetMapping("/page")
-    public String getPage(@RequestParam(defaultValue = "1") int p) {
-        pageable = PageRequest.of(p - 1, rowsOnPage, sorting);
-        return "redirect:/article/list";
-    }
-
-    @RolesAllowed("USER,ADMIN")
-    @GetMapping("/first")
-    public String getFirstPage() {
-        pageable = pageable.first();
-        return "redirect:/article/list";
-    }
-
-    @RolesAllowed("USER,ADMIN")
-    @GetMapping("/prev")
-    public String getPrevPage() {
-        pageable = pageable.previousOrFirst();
-        return "redirect:/article/list";
-    }
-
-    @RolesAllowed("USER,ADMIN")
-    @GetMapping("/next")
-    public String getNextPage() {
-        if (pageable.getPageNumber() != lastPage - 1) pageable = pageable.next();
-        return "redirect:/article/list";
-    }
-
-    @RolesAllowed("USER,ADMIN")
-    @GetMapping("/last")
-    public String getLastPage() {
-        if (lastPage != 0) pageable = PageRequest.of(lastPage - 1, rowsOnPage, sorting);
-        return "redirect:/article/list";
     }
 
     @RolesAllowed("USER,ADMIN")

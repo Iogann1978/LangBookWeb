@@ -22,61 +22,32 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 @Controller
 @RequestMapping(value = "/text")
 @Slf4j
 public class TextController {
     private static final int rowsOnPage = 10;
-    private Pageable pageable = PageRequest.of(0, rowsOnPage);
-    private int lastPage = 0;
     @Autowired
     private TextService textService;
     @Autowired
     private UserService userService;
 
     @RolesAllowed("USER,ADMIN")
-    @GetMapping("/list")
-    public String getTexts(Model model) {
+    @GetMapping
+    public String getTexts(@RequestParam Optional<Integer> page, Model model) {
         Mono<String> user = userService.get().map(u -> u.getUsername());
+        Pageable pageable = PageRequest.of(page.map(p -> p - 1).orElse(0), rowsOnPage);
         Flux<WordItem> pageWords = textService.getPage(pageable);
-        Mono<Long> count = textService.getFlux().count().map(c -> {
-            lastPage = (int) Math.ceil((double) c / (double) rowsOnPage);
-            return c;
-        });
+        Mono<Long> count = textService.getFlux().count();
+        Mono<Integer> lastPage = count.map(c -> (int) Math.ceil((double) c / (double) rowsOnPage));
         model.addAttribute("pageWords", pageWords);
         model.addAttribute("page", pageable.getPageNumber() + 1);
         model.addAttribute("user", user);
         model.addAttribute("count", count);
+        model.addAttribute("lastPage", lastPage);
         return "text";
-    }
-
-    @RolesAllowed("USER,ADMIN")
-    @GetMapping("/first")
-    public String getFirstPage() {
-        pageable = pageable.first();
-        return "redirect:/text/list";
-    }
-
-    @RolesAllowed("USER,ADMIN")
-    @GetMapping("/prev")
-    public String getPrevPage() {
-        pageable = pageable.previousOrFirst();
-        return "redirect:/text/list";
-    }
-
-    @RolesAllowed("USER,ADMIN")
-    @GetMapping("/next")
-    public String getNextPage() {
-        if (pageable.getPageNumber() != lastPage - 1) pageable = pageable.next();
-        return "redirect:/text/list";
-    }
-
-    @RolesAllowed("USER,ADMIN")
-    @GetMapping("/last")
-    public String getLastPage() {
-        if (lastPage != 0) pageable = PageRequest.of(lastPage - 1, rowsOnPage);
-        return "redirect:/text/list";
     }
 
     @RolesAllowed("USER,ADMIN")
@@ -101,7 +72,7 @@ public class TextController {
             return textService.parse(content);
         })).flatMap(count -> {
             response.setStatusCode(HttpStatus.SEE_OTHER);
-            response.getHeaders().setLocation(URI.create("/text/list"));
+            response.getHeaders().setLocation(URI.create("/text"));
             return response.setComplete();
         });
     }

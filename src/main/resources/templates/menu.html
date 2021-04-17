@@ -39,7 +39,7 @@
                                 <a class="nav-link active" aria-current="page" href="#">Фразы</a>
                             </div>
                             <div th:unless="${active_link == 'phrase'}">
-                                <a class="nav-link" href="/phrase/list">Фразы</a>
+                                <a class="nav-link" href="/phrase">Фразы</a>
                             </div>
                         </li>
                         <li class="nav-item">
@@ -47,7 +47,7 @@
                                 <a class="nav-link active" aria-current="page" href="#">Статьи</a>
                             </div>
                             <div th:unless="${active_link == 'article'}">
-                                <a class="nav-link" href="/article/list">Статьи</a>
+                                <a class="nav-link" href="/article">Статьи</a>
                             </div>
                         </li>
                         <li class="nav-item">
@@ -55,7 +55,7 @@
                                 <a class="nav-link active" aria-current="page" href="#">Тексты</a>
                             </div>
                             <div th:unless="${active_link == 'text'}">
-                                <a class="nav-link" href="/text/list">Тексты</a>
+                                <a class="nav-link" href="/text">Тексты</a>
                             </div>
                         </li>
                     </ul>
@@ -133,13 +133,13 @@
     <th:block th:fragment="pages (link)">
         <nav aria-label="Pages">
             <ul class="pagination">
-                <li class="page-item">
-                    <a class="page-link" th:href="@{/{link}/first(link=${link})}">
+                <li class="page-item" th:classappend="${page == 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/{link}(link=${link},page=1)}">
                         <i class="glyphicon glyphicon-fast-backward"></i>
                     </a>
                 </li>
-                <li class="page-item">
-                    <a class="page-link" th:href="@{/{link}/prev(link=${link})}">
+                <li class="page-item" th:classappend="${page == 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/{link}(link=${link},page=${page - 1})}">
                         <i class="glyphicon glyphicon-backward"></i>
                     </a>
                 </li>
@@ -150,16 +150,16 @@
                 </th:block>
                 <th:block th:unless="${link == 'text'}">
                     <li class="page-item" th:classappend="${p == page} ? 'disabled'" th:each="p:${pages}">
-                        <a class="page-link" th:href="@{/{link}/page(link=${link},p=${p})}" th:text="${p}">Страница</a>
+                        <a class="page-link" th:href="@{/{link}(link=${link},page=${p})}" th:text="${p}">Страница</a>
                     </li>
                 </th:block>
-                <li class="page-item">
-                    <a class="page-link" th:href="@{/{link}/next(link=${link})}">
+                <li class="page-item" th:classappend="${page == lastPage} ? 'disabled'">
+                    <a class="page-link" th:href="@{/{link}(link=${link},page=${page + 1})}">
                         <i class="glyphicon glyphicon-forward"></i>
                     </a>
                 </li>
-                <li class="page-item">
-                    <a class="page-link" th:href="@{/{link}/last(link=${link})}">
+                <li class="page-item" th:classappend="${page == lastPage} ? 'disabled'">
+                    <a class="page-link" th:href="@{/{link}(link=${link},page=${lastPage})}">
                         <i class="glyphicon glyphicon-fast-forward"></i>
                     </a>
                 </li>
