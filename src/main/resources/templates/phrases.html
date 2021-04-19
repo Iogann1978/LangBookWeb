@@ -1,24 +1,19 @@
 <!DOCTYPE html>
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Фразы</title>
-    <meta charset="UTF-8">
-    <!-- Bootstrap and jQuery -->
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap-glyphicons/bdd2cbfba0/css/bootstrap-glyphicons.css}" />
-    <script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
-    <script th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
+<head th:insert="fragments::libs (phrases)">
+    <title th:fragment="title">Фразы</title>
 </head>
 <body>
     <header>
-        <div th:insert="menu::links (phrase)" />
+        <div th:insert="fragments::links (phrases)">
+            <th:block th:fragment="addons" />
+        </div>
     </header>
 
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <h1 class="text-center" th:text="'Фразы. Пользователь: ' + ${user}">Фразы</h1>
+                <h1 class="text-center" th:text="'Пользователь: ' + ${user}">Фразы</h1>
             </div>
         </div>
         <div class="row">
@@ -46,7 +41,7 @@
     </div>
 
     <footer class="d-flex justify-content-center">
-        <div th:insert="menu::pages (phrase)" />
+        <div th:insert="fragments::pages (phrases)" />
     </footer>
 </body>
 </html>

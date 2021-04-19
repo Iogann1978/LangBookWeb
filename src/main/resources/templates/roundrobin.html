@@ -1,19 +1,15 @@
 <!DOCTYPE html>
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Карусель</title>
-    <meta charset="UTF-8">
-    <!-- Bootstrap and jQuery -->
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap-glyphicons/bdd2cbfba0/css/bootstrap-glyphicons.css}" />
-    <script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
-    <script th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
-    <script th:src="@{/webjars/popper.js/2.5.4/umd/popper.min.js}"></script>
+<head th:insert="fragments::libs (roundrobin)">
+    <title th:fragment="title">Карусель</title>
 </head>
 <body>
     <header>
-        <div th:insert="menu::links (roundrobin)" />
+        <div th:insert="fragments::links (roundrobin)">
+            <th:block th:fragment="addons">
+                <th:block th:fragment="addons" />
+            </th:block>
+        </div>
     </header>
 
     <div class="container-fluid">

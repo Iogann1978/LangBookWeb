@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
 @Controller
-@RequestMapping(value = "/phrase")
+@RequestMapping(value = "/phrases")
 public class PhraseController {
     private static final int rowsOnPage = 10;
     private static final Sort sorting = Sort.by("word");

@@ -1,23 +1,20 @@
 <!DOCTYPE html>
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Добавить перевод</title>
-    <meta charset="UTF-8">
-    <!-- Bootstrap and jQuery -->
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap-glyphicons/bdd2cbfba0/css/bootstrap-glyphicons.css}" />
-    <script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
-    <script th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
+<head th:insert="fragments::libs (translation_add)">
+    <title th:fragment="title">Добавить перевод</title>
 </head>
 <body>
     <header>
-        <div th:insert="menu::links (translation)" />
+        <div th:insert="fragments::links (translation_add)">
+            <th:block th:fragment="addons">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#translation_save" onclick="fillSaveForm(null,'','')">Добавить перевод</button>
+            </th:block>
+        </div>
     </header>
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <h1 class="text-center" th:text="'Слово: ' + ${word.word} + ' Тип: ' + ${word.class.simpleName}">Тип</h1>
+                <h1 class="text-center" th:text="'Слово: ' + ${word.word} + ', Тип: ' + ${word.class.simpleName}">Тип</h1>
             </div>
         </div>
         <div class="row">

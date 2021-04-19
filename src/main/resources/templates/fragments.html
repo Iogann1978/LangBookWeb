@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="libs (link)">
+    <title th:replace="~{${link}::title}">Страница</title>
+    <meta charset="UTF-8">
+    <!-- Bootstrap and jQuery -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap-glyphicons/bdd2cbfba0/css/bootstrap-glyphicons.css}" />
+    <script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
+    <script th:src="@{/webjars/popper.js/2.5.4/umd/popper.min.js}" th:if="${link == 'roundrobin'}"></script>
+</head>
+<body>
+    <th:block th:fragment="links (active_link)">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Навигация:</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <div th:if="${active_link == 'dictionary'}">
+                                <a class="nav-link active" aria-current="page" href="#">Словарь</a>
+                            </div>
+                            <div th:unless="${active_link == 'dictionary'}">
+                                <a class="nav-link" href="/dictionary">Словарь</a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <div th:if="${active_link == 'word_add'}">
+                                <a class="nav-link active" aria-current="page" href="#">Добавить слово</a>
+                            </div>
+                            <div th:unless="${active_link == 'word_add'}">
+                                <a class="nav-link" href="/word/add">Добавить слово</a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <div th:if="${active_link == 'roundrobin'}">
+                                <a class="nav-link active" aria-current="page" href="#">Карусель</a>
+                            </div>
+                            <div th:unless="${active_link == 'roundrobin'}">
+                                <a class="nav-link" href="/roundrobin">Карусель</a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <div th:if="${active_link == 'phrases'}">
+                                <a class="nav-link active" aria-current="page" href="#">Фразы</a>
+                            </div>
+                            <div th:unless="${active_link == 'phrases'}">
+                                <a class="nav-link" href="/phrases">Фразы</a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <div th:if="${active_link == 'article'}">
+                                <a class="nav-link active" aria-current="page" href="#">Статьи</a>
+                            </div>
+                            <div th:unless="${active_link == 'articles'}">
+                                <a class="nav-link" href="/articles">Статьи</a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <div th:if="${active_link == 'text'}">
+                                <a class="nav-link active" aria-current="page" href="#">Тексты</a>
+                            </div>
+                            <div th:unless="${active_link == 'text'}">
+                                <a class="nav-link" href="/text">Тексты</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <th:block th:replace="~{${active_link}::addons}">Дополнительные функции</th:block>
+            </div>
+        </nav>
+    </th:block>
+
+    <th:block th:fragment="pages (link)">
+        <nav aria-label="Pages">
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${page == 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/{link}(link=${link},page=1)}">
+                        <i class="glyphicon glyphicon-fast-backward"></i>
+                    </a>
+                </li>
+                <li class="page-item" th:classappend="${page == 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/{link}(link=${link},page=${page - 1})}">
+                        <i class="glyphicon glyphicon-backward"></i>
+                    </a>
+                </li>
+                <th:block th:if="${link == 'text'}">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" th:text="${page}">Страница</a>
+                    </li>
+                </th:block>
+                <th:block th:unless="${link == 'text'}">
+                    <li class="page-item" th:classappend="${p == page} ? 'disabled'" th:each="p:${pages}">
+                        <a class="page-link" th:href="@{/{link}(link=${link},page=${p})}" th:text="${p}">Страница</a>
+                    </li>
+                </th:block>
+                <li class="page-item" th:classappend="${page == lastPage} ? 'disabled'">
+                    <a class="page-link" th:href="@{/{link}(link=${link},page=${page + 1})}">
+                        <i class="glyphicon glyphicon-forward"></i>
+                    </a>
+                </li>
+                <li class="page-item" th:classappend="${page == lastPage} ? 'disabled'">
+                    <a class="page-link" th:href="@{/{link}(link=${link},page=${lastPage})}">
+                        <i class="glyphicon glyphicon-fast-forward"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </th:block>
+</body>
+</html>

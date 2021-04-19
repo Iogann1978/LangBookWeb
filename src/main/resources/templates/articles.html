@@ -1,24 +1,21 @@
 <!DOCTYPE html>
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Статьи</title>
-    <meta charset="UTF-8">
-    <!-- Bootstrap and jQuery -->
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap-glyphicons/bdd2cbfba0/css/bootstrap-glyphicons.css}" />
-    <script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
-    <script th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
+<head th:insert="fragments::libs (articles)">
+    <title th:fragment="title">Статьи</title>
 </head>
 <body>
     <header>
-        <div th:insert="menu::links (article)" />
+        <div th:insert="fragments::links (articles)">
+            <th:block th:fragment="addons">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#article_save" onclick="fillSaveForm(null,'')">Добавить статью</button>
+            </th:block>
+        </div>
     </header>
 
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <h1 class="text-center" th:text="'Статьи. Пользователь: ' + ${user}">Статьи</h1>
+                <h1 class="text-center" th:text="'Пользователь: ' + ${user}">Статьи</h1>
             </div>
         </div>
         <div class="row">
@@ -36,7 +33,7 @@
                         <td th:text="${article.name}">Название</td>
                         <td th:text="${article.filename}">Имя файла</td>
                         <td>
-                            <a target="_blank" th:href="@{/article/content(articleId=${article.id})}">Просмотреть</a>
+                            <a target="_blank" th:href="@{/articles/content(articleId=${article.id})}">Просмотреть</a>
                             <a href="#" data-toggle="modal" data-target="#article_save" th:attr="onclick=|fillSaveForm(${article.id},'${article.name}')|">Изменить</a>
                             <a href="#" data-toggle="modal" data-target="#article_del" th:attr="onclick=|fillDelForm(${article.id},'${article.name}','${article.filename}')|">Удалить</a>
                         </td>
@@ -48,13 +45,13 @@
     </div>
 
     <footer class="d-flex justify-content-center">
-        <div th:insert="menu::pages (article)" />
+        <div th:insert="fragments::pages (articles)" />
     </footer>
 
     <!-- Добавить(изменить) статью -->
     <div class="modal" id="article_save">
         <div class="modal-dialog">
-            <form class="modal-content" action="#" th:action="@{/article/save}" th:object="${article}" method="POST" enctype="multipart/form-data">
+            <form class="modal-content" action="#" th:action="@{/articles/save}" th:object="${article}" method="POST" enctype="multipart/form-data">
                 <div class="modal-header">
                     <h4 class="modal-title" id="modal-title">Заголовок</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -89,7 +86,7 @@
     <!-- Удалить статью -->
     <div class="modal" id="article_del">
         <div class="modal-dialog">
-            <form class="modal-content" action="#" th:action="@{/article/del}" th:object="${article}" method="POST">
+            <form class="modal-content" action="#" th:action="@{/articles/del}" th:object="${article}" method="POST">
                 <div class="modal-header">
                     <h4 class="modal-title">Удалить статью?</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>

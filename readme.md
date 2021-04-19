@@ -10,10 +10,10 @@ keytool -export -alias server -file server.crt -keystore server.jks
 [Добавить слово](https://localhost:8443/word/add) \
 [Добавить перевод](https://localhost:8443/translation/add?wordId=1) \
 [Добавить пример](https://localhost:8443/example/add?translationId=1) \
-[Статьи](https://localhost:8443/article) \
+[Статьи](https://localhost:8443/articles) \
 [Просмотреть слово](https://localhost:8443/word?wordId=1) \
 [Карусель](https://localhost:8443/roundrobin)
-[Фразы](https://localhost:8443/phrase)
+[Фразы](https://localhost:8443/phrases)
 [Тексты](https://localhost:8443/text)
 
 ###Полезные ссылки
@@ -37,8 +37,8 @@ keytool -export -alias server -file server.crt -keystore server.jks
 Сделать кнопку очистки фильтра на странице словаря \
 При добавлении слова сделать проверку, чтобы нельзя было добавлять такое же слово с таким же типом и таким же пользователем \
 Сделать возможность создавать несколько каруселей для одного пользователя \
-Вынести навигацию в template \
-Валидация в thymeleaf
+Валидация в thymeleaf \
+Настроить webjars-locator
 
 ###Таблица тестирования
 | Функционал | Результат тестирования |
@@ -62,17 +62,17 @@ keytool -export -alias server -file server.crt -keystore server.jks
 | Отображение слова с переводом | да |
 | Перейти к слову | да |
 | Удалить слово из карусели | да |
-| [Фразы](https://localhost:8443/phrase/list) | **1(2)** |
+| [Фразы](https://localhost:8443/phrases) | **1(2)** |
 | Просмотреть | да |
 | Паджинация | |
-| [Статьи](https://localhost:8443/article/list) | **3(6)** |
+| [Статьи](https://localhost:8443/articles) | **3(6)** |
 | Добавить статью | да |
 | Добавить статью с пустым названием |  |
 | Просмотреть | да |
 | Изменить |  |
 | Удалить | да |
 | Паджинация | |
-| [Тексты](https://localhost:8443/text/list) | **3(4)** |
+| [Тексты](https://localhost:8443/text) | **3(4)** |
 | Загрузить текст txt | да |
 | Загрузить текст pdf | |
 | Добавить в словарь | да |

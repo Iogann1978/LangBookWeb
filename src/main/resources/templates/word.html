@@ -1,18 +1,53 @@
 <!DOCTYPE html>
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Просмотреть слово</title>
-    <meta charset="UTF-8">
-    <!-- Bootstrap and jQuery -->
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap-glyphicons/bdd2cbfba0/css/bootstrap-glyphicons.css}" />
-    <script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
-    <script th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
+<head th:insert="fragments::libs (word)">
+    <title th:fragment="title">Просмотр слова</title>
 </head>
 <body>
     <header>
-        <div th:insert="menu::links (word)" />
+        <div th:insert="fragments::links (word)">
+            <th:block th:fragment="addons">
+                <div th:switch="${word.class.simpleName}">
+                    <div th:case="'Word'">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#word_save" th:attr="onclick=|fillSaveWordForm(${word.id},'${word.word}')|">Изменить слово</button>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#word_del" th:attr="onclick=|fillDelForm(${word.id},'${word.word}','Word')|">Удалить слово</button>
+                        <a th:href="@{/translation/add(wordId=${word.id})}" class="btn btn-info" role="button">Редактировать переводы</a>
+                    </div>
+                    <div th:case="'Noun'">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#word_save" th:attr="onclick=|fillSaveWordForm(${noun.id},'${noun.word}')|">Изменить слово</button>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#word_del" th:attr="onclick=|fillDelForm(${noun.id},'${noun.word}','Noun')|">Удалить слово</button>
+                        <a th:href="@{/translation/add(wordId=${noun.id})}" class="btn btn-info" role="button">Редактировать переводы</a>
+                    </div>
+                    <div th:case="'Verb'">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#word_save" th:attr="onclick=|fillSaveWordForm(${verb.id},'${verb.word}')|">Изменить слово</button>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#word_del" th:attr="onclick=|fillDelForm(${verb.id},'${verb.word}','Verb')|">Удалить слово</button>
+                        <a th:href="@{/translation/add(wordId=${verb.id})}" class="btn btn-info" role="button">Редактировать переводы</a>
+                    </div>
+                    <div th:case="'Adjective'">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#word_save" th:attr="onclick=|fillSaveWordForm(${adjective.id},'${adjective.word}')|">Изменить слово</button>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#word_del" th:attr="onclick=|fillDelForm(${adjective.id},'${adjective.word}','Adjective')|">Удалить слово</button>
+                        <a th:href="@{/translation/add(wordId=${adjective.id})}" class="btn btn-info" role="button">Редактировать переводы</a>
+                    </div>
+                    <div th:case="'Adverb'">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#word_save" th:attr="onclick=|fillSaveWordForm(${adverb.id},'${adverb.word}')|">Изменить слово</button>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#word_del" th:attr="onclick=|fillDelForm(${adverb.id},'${adverb.word}','Adverb')|">Удалить слово</button>
+                        <a th:href="@{/translation/add(wordId=${adjective.id})}" class="btn btn-info" role="button">Редактировать переводы</a>
+                    </div>
+                    <div th:case="'Participle'">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#word_save" th:attr="onclick=|fillSaveWordForm(${participle.id},'${participle.word}')|">Изменить слово</button>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#word_del" th:attr="onclick=|fillDelForm(${participle.id},'${participle.word}','Participle')|">Удалить слово</button>
+                        <a th:href="@{/translation/add(wordId=${participle.id})}" class="btn btn-info" role="button">Редактировать переводы</a>
+                    </div>
+                    <div th:case="'Phrase'">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#word_save" th:attr="onclick=|fillSaveWordForm(${phrase.id},'${phrase.word}')|">Изменить слово</button>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#word_del" th:attr="onclick=|fillDelForm(${phrase.id},'${phrase.word}','Phrase')|">Удалить слово</button>
+                        <a th:href="@{/translation/add(wordId=${participle.id})}" class="btn btn-info" role="button">Редактировать переводы</a>
+                    </div>
+                    <div th:case="*">
+                    </div>
+                </div>
+            </th:block>
+        </div>
     </header>
 
     <div class="container-fluid">

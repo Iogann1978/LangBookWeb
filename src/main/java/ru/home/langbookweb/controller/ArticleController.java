@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
 @Controller
-@RequestMapping(value = "/article")
+@RequestMapping(value = "/articles")
 @Slf4j
 public class ArticleController {
     private static final int rowsOnPage = 10;
@@ -76,7 +76,7 @@ public class ArticleController {
             return articleService.save(article);
         }).flatMap(id -> {
             response.setStatusCode(HttpStatus.SEE_OTHER);
-            response.getHeaders().setLocation(URI.create("/article"));
+            response.getHeaders().setLocation(URI.create("/articles"));
             return response.setComplete();
         });
     }
@@ -87,7 +87,7 @@ public class ArticleController {
         return articleService.del(article)
                 .flatMap(id -> {
                     response.setStatusCode(HttpStatus.SEE_OTHER);
-                    response.getHeaders().setLocation(URI.create("/article"));
+                    response.getHeaders().setLocation(URI.create("/articles"));
                     return response.setComplete();
                 });
     }
