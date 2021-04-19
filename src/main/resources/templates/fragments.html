@@ -99,12 +99,12 @@
                         <a class="page-link" th:href="@{/{link}(link=${link},page=${p})}" th:text="${p}">Страница</a>
                     </li>
                 </th:block>
-                <li class="page-item" th:classappend="${page == lastPage} ? 'disabled'">
+                <li class="page-item" th:classappend="${page == lastPage || lastPage == 0} ? 'disabled'">
                     <a class="page-link" th:href="@{/{link}(link=${link},page=${page + 1})}">
                         <i class="glyphicon glyphicon-forward"></i>
                     </a>
                 </li>
-                <li class="page-item" th:classappend="${page == lastPage} ? 'disabled'">
+                <li class="page-item" th:classappend="${page == lastPage || lastPage == 0} ? 'disabled'">
                     <a class="page-link" th:href="@{/{link}(link=${link},page=${lastPage})}">
                         <i class="glyphicon glyphicon-fast-forward"></i>
                     </a>
