@@ -5,7 +5,7 @@
 </head>
 <body>
     <header>
-        <div th:insert="fragments::links (translation_add)">
+        <div th:insert="fragments::links ('translation/add')">
             <th:block th:fragment="addons">
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#translation_save" onclick="fillSaveForm(null,'','')">Добавить перевод</button>
             </th:block>

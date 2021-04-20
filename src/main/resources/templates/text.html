@@ -5,7 +5,7 @@
 </head>
 <body>
     <header>
-        <div th:insert="fragments::links (text)">
+        <div th:insert="fragments::links ('text')">
             <th:block th:fragment="addons">
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#text_upload">Загрузить текст</button>
             </th:block>

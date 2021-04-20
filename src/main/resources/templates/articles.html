@@ -5,7 +5,7 @@
 </head>
 <body>
     <header>
-        <div th:insert="fragments::links (articles)">
+        <div th:insert="fragments::links ('articles')">
             <th:block th:fragment="addons">
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#article_save" onclick="fillSaveForm(null,'')">Добавить статью</button>
             </th:block>

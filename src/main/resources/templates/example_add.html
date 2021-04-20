@@ -5,7 +5,7 @@
 </head>
 <body>
     <header>
-        <div th:insert="fragments::links (example_add)">
+        <div th:insert="fragments::links ('example/add')">
             <th:block th:fragment="addons">
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#example_save" onclick="fillSaveForm(null,'','')">Добавить пример</button>
             </th:block>

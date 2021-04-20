@@ -20,53 +20,13 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <div th:if="${active_link == 'dictionary'}">
-                                <a class="nav-link active" aria-current="page" href="#">Словарь</a>
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0" th:with="links = ${ {{l:'dictionary',t:'Словарь',ref:'dictionary'}, {l:'word_add',t:'Добавить слово',ref:'word/add'}, {l:'roundrobin',t:'Карусель',ref:'roundrobin'}, {l:'phrases',t:'Фразы',ref:'phrases'}, {l:'articles',t:'Статьи',ref:'articles'}, {l:'text',t:'Текст',ref:'text'}} }">
+                        <li class="nav-item" th:each="link:${links}">
+                            <div th:if="${active_link == link.l}">
+                                <a class="nav-link active" aria-current="page" href="#" th:text="${link.t}">Текст</a>
                             </div>
-                            <div th:unless="${active_link == 'dictionary'}">
-                                <a class="nav-link" href="/dictionary">Словарь</a>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <div th:if="${active_link == 'word_add'}">
-                                <a class="nav-link active" aria-current="page" href="#">Добавить слово</a>
-                            </div>
-                            <div th:unless="${active_link == 'word_add'}">
-                                <a class="nav-link" href="/word/add">Добавить слово</a>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <div th:if="${active_link == 'roundrobin'}">
-                                <a class="nav-link active" aria-current="page" href="#">Карусель</a>
-                            </div>
-                            <div th:unless="${active_link == 'roundrobin'}">
-                                <a class="nav-link" href="/roundrobin">Карусель</a>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <div th:if="${active_link == 'phrases'}">
-                                <a class="nav-link active" aria-current="page" href="#">Фразы</a>
-                            </div>
-                            <div th:unless="${active_link == 'phrases'}">
-                                <a class="nav-link" href="/phrases">Фразы</a>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <div th:if="${active_link == 'articles'}">
-                                <a class="nav-link active" aria-current="page" href="#">Статьи</a>
-                            </div>
-                            <div th:unless="${active_link == 'articles'}">
-                                <a class="nav-link" href="/articles">Статьи</a>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <div th:if="${active_link == 'text'}">
-                                <a class="nav-link active" aria-current="page" href="#">Тексты</a>
-                            </div>
-                            <div th:unless="${active_link == 'text'}">
-                                <a class="nav-link" href="/text">Тексты</a>
+                            <div th:unless="${active_link == link.l}">
+                                <a class="nav-link" th:href="@{/{link}(link=${link.ref})}" th:text="${link.t}">Текст</a>
                             </div>
                         </li>
                     </ul>
