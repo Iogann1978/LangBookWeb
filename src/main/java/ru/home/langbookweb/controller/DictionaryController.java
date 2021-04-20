@@ -27,6 +27,7 @@ import java.util.stream.LongStream;
 @Slf4j
 public class DictionaryController {
     private static final int rowsOnPage = 10;
+    private static final int windowLeftRight = 3;
     private static final Sort sorting = Sort.by("word").and(Sort.by("id"));
     @Autowired
     private WordService wordService;
@@ -40,8 +41,20 @@ public class DictionaryController {
         Mono<String> user = userService.get().map(u -> u.getUsername());
         Flux<? super Word> words = wordService.getPage(findWord.orElse(""), pageable);
         Mono<Long> count = wordService.getCount();
-        Flux<Long> pages = count.map(c -> (int) Math.ceil((double) c / (double) rowsOnPage))
-                .flatMapIterable(lp -> LongStream.rangeClosed(1, lp).boxed().collect(Collectors.toList()));
+        Mono<Integer> lastPage = count.map(c -> (int) Math.ceil((double) c / (double) rowsOnPage));
+        Flux<Long> pages = lastPage.flatMapIterable(lp -> {
+                    int currentPage = page.orElse(1);
+                    int startPage = currentPage;
+                    int limit = windowLeftRight * 2 + 1;
+                    if (currentPage - windowLeftRight >= 1 && currentPage + windowLeftRight <= lp) {
+                        startPage = currentPage - windowLeftRight;
+                    } else if (currentPage - windowLeftRight < 1) {
+                        startPage = 1;
+                    } else if (currentPage + windowLeftRight > lp) {
+                        startPage = lp - limit + 1;
+                    }
+                    return LongStream.rangeClosed(startPage, lp).limit(limit).boxed().collect(Collectors.toList());
+                });
         IReactiveDataDriverContextVariable reactiveDataDrivenMode = new ReactiveDataDriverContextVariable(words);
         model.addAttribute("words", reactiveDataDrivenMode);
         model.addAttribute("word", new Word());
@@ -49,7 +62,7 @@ public class DictionaryController {
         model.addAttribute("pages", pages);
         model.addAttribute("count", count);
         model.addAttribute("page", page.orElse(1));
-        model.addAttribute("lastPage", pages.count());
+        model.addAttribute("lastPage", lastPage);
         return "dictionary";
     }
 

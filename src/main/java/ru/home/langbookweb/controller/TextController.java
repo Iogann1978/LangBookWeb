@@ -23,12 +23,15 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 
 @Controller
 @RequestMapping(value = "/text")
 @Slf4j
 public class TextController {
     private static final int rowsOnPage = 10;
+    private static final int windowLeftRight = 3;
     @Autowired
     private TextService textService;
     @Autowired
@@ -42,8 +45,22 @@ public class TextController {
         Flux<WordItem> pageWords = textService.getPage(pageable);
         Mono<Long> count = textService.getFlux().count();
         Mono<Integer> lastPage = count.map(c -> (int) Math.ceil((double) c / (double) rowsOnPage));
+        Flux<Long> pages = lastPage.flatMapIterable(lp -> {
+            int currentPage = page.orElse(1);
+            int startPage = currentPage;
+            int limit = windowLeftRight * 2 + 1;
+            if (currentPage - windowLeftRight >= 1 && currentPage + windowLeftRight <= lp) {
+                startPage = currentPage - windowLeftRight;
+            } else if (currentPage - windowLeftRight < 1) {
+                startPage = 1;
+            } else if (currentPage + windowLeftRight > lp) {
+                startPage = lp - limit + 1;
+            }
+            return LongStream.rangeClosed(startPage, lp).limit(limit).boxed().collect(Collectors.toList());
+        });
         model.addAttribute("pageWords", pageWords);
         model.addAttribute("page", pageable.getPageNumber() + 1);
+        model.addAttribute("pages", pages);
         model.addAttribute("user", user);
         model.addAttribute("count", count);
         model.addAttribute("lastPage", lastPage);

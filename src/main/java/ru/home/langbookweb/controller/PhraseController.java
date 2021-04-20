@@ -25,6 +25,7 @@ import java.util.stream.LongStream;
 @RequestMapping(value = "/phrases")
 public class PhraseController {
     private static final int rowsOnPage = 10;
+    private static final int windowLeftRight = 3;
     private static final Sort sorting = Sort.by("word");
     @Autowired
     private PhraseService phraseService;
@@ -37,12 +38,25 @@ public class PhraseController {
         Mono<String> user = userService.get().map(u -> u.getUsername());
         Pageable pageable = PageRequest.of(page.map(p -> p - 1).orElse(0), rowsOnPage, sorting);
         Mono<Page<Phrase>> pagePhrases = phraseService.getPage(pageable);
-        Flux<Long> pages = pagePhrases.flatMapIterable(p -> LongStream.rangeClosed(1, p.getTotalPages()).boxed().collect(Collectors.toList()));
+        Mono<Integer> lastPage = pagePhrases.map(p -> p.getTotalPages());
+        Flux<Long> pages = lastPage.flatMapIterable(lp -> {
+            int currentPage = page.orElse(1);
+            int startPage = currentPage;
+            int limit = windowLeftRight * 2 + 1;
+            if (currentPage - windowLeftRight >= 1 && currentPage + windowLeftRight <= lp) {
+                startPage = currentPage - windowLeftRight;
+            } else if (currentPage - windowLeftRight < 1) {
+                startPage = 1;
+            } else if (currentPage + windowLeftRight > lp) {
+                startPage = lp - limit + 1;
+            }
+            return LongStream.rangeClosed(startPage, lp).limit(limit).boxed().collect(Collectors.toList());
+        });
         model.addAttribute("user", user);
         model.addAttribute("pages", pages);
         model.addAttribute("pagePhrases", pagePhrases);
         model.addAttribute("page", page.orElse(1));
-        model.addAttribute("lastPage", pages.count());
+        model.addAttribute("lastPage", lastPage);
         return "phrases";
     }
 }

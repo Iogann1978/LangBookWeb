@@ -89,16 +89,9 @@
                         <i class="glyphicon glyphicon-backward"></i>
                     </a>
                 </li>
-                <th:block th:if="${link == 'text'}">
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#" th:text="${page}">Страница</a>
-                    </li>
-                </th:block>
-                <th:block th:unless="${link == 'text'}">
-                    <li class="page-item" th:classappend="${p == page} ? 'disabled'" th:each="p:${pages}">
-                        <a class="page-link" th:href="@{/{link}(link=${link},page=${p})}" th:text="${p}">Страница</a>
-                    </li>
-                </th:block>
+                <li class="page-item" th:classappend="${p == page} ? 'disabled'" th:each="p:${pages}">
+                    <a class="page-link" th:href="@{/{link}(link=${link},page=${p})}" th:text="${p}">Страница</a>
+                </li>
                 <li class="page-item" th:classappend="${page == lastPage || lastPage == 0} ? 'disabled'">
                     <a class="page-link" th:href="@{/{link}(link=${link},page=${page + 1})}">
                         <i class="glyphicon glyphicon-forward"></i>
