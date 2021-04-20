@@ -1,5 +1,6 @@
 package ru.home.langbookweb.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.CollectionUtils;
 import org.springframework.data.domain.Page;
@@ -12,6 +13,7 @@ import ru.home.langbookweb.model.User;
 import ru.home.langbookweb.repository.ArticleRepository;
 
 @Service
+@Slf4j
 public class ArticleService {
     @Autowired
     private ArticleRepository articleRepository;
