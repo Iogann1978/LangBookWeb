@@ -16,22 +16,29 @@ import java.util.Optional;
 @Service
 @Slf4j
 public class WordService {
-    @Autowired
     private WordRepository wordRepository;
-    @Autowired
     private NounRepository nounRepository;
-    @Autowired
     private VerbRepository verbRepository;
-    @Autowired
     private AdjectiveRepository adjectiveRepository;
-    @Autowired
     private AdverbRepository adverbRepository;
-    @Autowired
     private ParticipleRepository participleRepository;
-    @Autowired
     private PhraseRepository phraseRepository;
-    @Autowired
     private UserService userService;
+
+    @Autowired
+    public WordService(WordRepository wordRepository, NounRepository nounRepository,
+                       VerbRepository verbRepository, AdjectiveRepository adjectiveRepository,
+                       AdverbRepository adverbRepository, ParticipleRepository participleRepository,
+                       PhraseRepository phraseRepository, UserService userService) {
+        this.wordRepository = wordRepository;
+        this.nounRepository = nounRepository;
+        this.verbRepository = verbRepository;
+        this.adjectiveRepository = adjectiveRepository;
+        this.adverbRepository = adverbRepository;
+        this.participleRepository = participleRepository;
+        this.phraseRepository = phraseRepository;
+        this.userService = userService;
+    }
 
     @Transactional(readOnly = true)
     public Flux<? super Word> getPage(String findWord, Pageable pageable) {

@@ -15,10 +15,14 @@ import ru.home.langbookweb.repository.ArticleRepository;
 @Service
 @Slf4j
 public class ArticleService {
-    @Autowired
     private ArticleRepository articleRepository;
-    @Autowired
     private UserService userService;
+
+    @Autowired
+    public ArticleService(ArticleRepository articleRepository, UserService userService) {
+        this.articleRepository = articleRepository;
+        this.userService = userService;
+    }
 
     @Transactional(readOnly = true)
     public Mono<Page<Article>> getPage(Pageable pageable) {

@@ -13,10 +13,14 @@ import java.util.stream.Collectors;
 
 @Service
 public class RoundRobinService {
-    @Autowired
     private RoundRobinRepository roundRobinRepository;
-    @Autowired
     private UserService userService;
+
+    @Autowired
+    public RoundRobinService(RoundRobinRepository roundRobinRepository, UserService userService) {
+        this.roundRobinRepository = roundRobinRepository;
+        this.userService = userService;
+    }
 
     public Mono<RoundRobin> get() {
         Mono<User> user = userService.get();

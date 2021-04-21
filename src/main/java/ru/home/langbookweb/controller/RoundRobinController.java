@@ -24,9 +24,12 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping(value = "/roundrobin")
 public class RoundRobinController {
-    @Autowired
     private RoundRobinService roundRobinService;
 
+    @Autowired
+    public RoundRobinController(RoundRobinService roundRobinService) {
+        this.roundRobinService = roundRobinService;
+    }
 
     @RolesAllowed("USER,ADMIN")
     @GetMapping

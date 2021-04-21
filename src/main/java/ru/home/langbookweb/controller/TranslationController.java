@@ -21,10 +21,14 @@ import java.net.URI;
 @Controller
 @RequestMapping(value = "/translation")
 public class TranslationController {
-    @Autowired
     private WordService wordService;
-    @Autowired
     private TranslationService translationService;
+
+    @Autowired
+    public TranslationController(WordService wordService, TranslationService translationService) {
+        this.wordService = wordService;
+        this.translationService = translationService;
+    }
 
     @RolesAllowed("USER,ADMIN")
     @GetMapping("/add")

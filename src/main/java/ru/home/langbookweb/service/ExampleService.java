@@ -11,12 +11,16 @@ import ru.home.langbookweb.repository.ExampleRepository;
 
 @Service
 public class ExampleService {
-    @Autowired
     private ExampleRepository exampleRepository;
-    @Autowired
     private TranslationService translationService;
-    @Autowired
     private UserService userService;
+
+    @Autowired
+    public ExampleService(ExampleRepository exampleRepository, TranslationService translationService, UserService userService) {
+        this.exampleRepository = exampleRepository;
+        this.translationService = translationService;
+        this.userService = userService;
+    }
 
     @Transactional(readOnly = true)
     public Flux<Example> get(Long translationId) {

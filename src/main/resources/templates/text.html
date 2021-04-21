@@ -23,17 +23,18 @@
                 <table class="table table-hover">
                     <thead>
                     <tr>
-                        <th class="col-9" scope="col">Слово</th>
+                        <th class="col-8" scope="col">Слово</th>
                         <th class="col-1" scope="col">Частота</th>
-                        <th class="col-2" scope="col">Действия</th>
+                        <th class="col-3" scope="col">Действия</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="word:${pageWords}">
+                    <tr th:each="word:${pageWords.content}">
                         <td th:text="${word.word}">Слово</td>
                         <td th:text="${word.count}">Частота</td>
                         <td>
-                            <a th:href="@{/word/add(fill=${word.word})}">Добавить в словарь</a>
+                            <a href="#" data-toggle="modal" data-target="#worditem_save" th:attr="onclick=|fillSaveForm('${word.word}')|">Добавить в словарь</a>
+                            <a href="#" data-toggle="modal" data-target="#worditem_del" th:attr="onclick=|fillDelForm('${word.word}')|">Исключить слово</a>
                         </td>
                     </tr>
                     </tbody>
@@ -75,11 +76,61 @@
         </div>
     </div>
 
+    <!-- Сохранить слово -->
+    <div class="modal" id="worditem_save">
+        <div class="modal-dialog">
+            <form class="modal-content" action="#" th:action="@{/text/add}" th:object="${wordItem}" method="POST">
+                <div class="modal-header">
+                    <h4 class="modal-title">Добавить в словарь?</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" hidden="true" id="s_id" th:field="*{word}" />
+                    <p id="s_word">Слово</p>
+                </div>
+                <div class="modal-footer btn-group">
+                    <button type="submit" class="btn btn-primary">Удалить из текста и сохранить</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Закрыть</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Исключить слово -->
+    <div class="modal" id="worditem_del">
+        <div class="modal-dialog">
+            <form class="modal-content" action="#" th:action="@{/text/del(page=${page})}" th:object="${wordItem}" method="POST">
+                <div class="modal-header">
+                    <h4 class="modal-title">Исключить слово?</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" hidden="true" id="d_id" th:field="*{word}" />
+                    <p id="d_word">Слово</p>
+                </div>
+                <div class="modal-footer btn-group">
+                    <button type="submit" class="btn btn-primary">Удалить</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Закрыть</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script type="text/javascript">
         $("#upload").on("change",function(){
             var filename = $(this).prop("files")[0]["name"];
             $(this).next(".custom-file-label").html(filename);
         })
+
+        function fillSaveForm(word) {
+            $("#s_id").val(word);
+            $("#s_word").text(word);
+        }
+
+        function fillDelForm(word) {
+            $("#d_id").val(word);
+            $("#d_word").text(word);
+        }
     </script>
 </body>
 </html>

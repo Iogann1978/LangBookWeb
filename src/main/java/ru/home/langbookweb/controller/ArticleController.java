@@ -15,7 +15,6 @@ import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.home.langbookweb.model.Article;
 import ru.home.langbookweb.service.ArticleService;
@@ -27,20 +26,21 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.LongStream;
 
 @Controller
 @RequestMapping(value = "/articles")
 @Slf4j
-public class ArticleController {
+public class ArticleController extends AbstractPageController {
     private static final int rowsOnPage = 10;
-    private static final int windowLeftRight = 3;
     private static final Sort sorting = Sort.by("name").and(Sort.by("filename"));
-    @Autowired
     private ArticleService articleService;
-    @Autowired
     private UserService userService;
+
+    @Autowired
+    public ArticleController(ArticleService articleService, UserService userService) {
+        this.articleService = articleService;
+        this.userService = userService;
+    }
 
     @RolesAllowed("USER,ADMIN")
     @GetMapping
@@ -49,25 +49,11 @@ public class ArticleController {
         Pageable pageable = PageRequest.of(page.map(p -> p - 1).orElse(0), rowsOnPage, sorting);
         Mono<Page<Article>> pageArticles = articleService.getPage(pageable);
         Mono<Integer> lastPage = pageArticles.map(p -> p.getTotalPages());
-        Flux<Long> pages = lastPage.flatMapIterable(lp -> {
-            int currentPage = page.orElse(1);
-            int startPage = currentPage;
-            int limit = windowLeftRight * 2 + 1;
-            if (currentPage - windowLeftRight >= 1 && currentPage + windowLeftRight <= lp) {
-                startPage = currentPage - windowLeftRight;
-            } else if (currentPage - windowLeftRight < 1) {
-                startPage = 1;
-            } else if (currentPage + windowLeftRight > lp) {
-                startPage = lp - limit + 1;
-            }
-            return LongStream.rangeClosed(startPage, lp).limit(limit).boxed().collect(Collectors.toList());
-        });
+        addPaging(model, page.orElse(1), lastPage);
+
         model.addAttribute("user", user);
-        model.addAttribute("pages", pages);
         model.addAttribute("pageArticles", pageArticles);
         model.addAttribute("article", new Article());
-        model.addAttribute("page", page.orElse(1));
-        model.addAttribute("lastPage", lastPage);
         return "articles";
     }
 

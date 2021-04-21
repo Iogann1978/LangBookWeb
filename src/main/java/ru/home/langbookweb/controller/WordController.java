@@ -21,8 +21,12 @@ import java.util.Set;
 @RequestMapping(value = "/word")
 @Slf4j
 public class WordController {
-    @Autowired
     private WordService wordService;
+
+    @Autowired
+    public WordController(WordService wordService) {
+        this.wordService = wordService;
+    }
 
     @RolesAllowed("USER,ADMIN")
     @GetMapping

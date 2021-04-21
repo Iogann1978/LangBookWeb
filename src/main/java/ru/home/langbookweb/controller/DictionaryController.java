@@ -19,20 +19,21 @@ import ru.home.langbookweb.service.WordService;
 
 import javax.annotation.security.RolesAllowed;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.LongStream;
 
 @Controller
 @RequestMapping(value = "/dictionary")
 @Slf4j
-public class DictionaryController {
+public class DictionaryController extends AbstractPageController {
     private static final int rowsOnPage = 10;
-    private static final int windowLeftRight = 3;
     private static final Sort sorting = Sort.by("word").and(Sort.by("id"));
-    @Autowired
     private WordService wordService;
-    @Autowired
     private UserService userService;
+
+    @Autowired
+    public DictionaryController(WordService wordService, UserService userService) {
+        this.wordService = wordService;
+        this.userService = userService;
+    }
 
     @RolesAllowed("USER,ADMIN")
     @GetMapping
@@ -42,27 +43,13 @@ public class DictionaryController {
         Flux<? super Word> words = wordService.getPage(findWord.orElse(""), pageable);
         Mono<Long> count = wordService.getCount();
         Mono<Integer> lastPage = count.map(c -> (int) Math.ceil((double) c / (double) rowsOnPage));
-        Flux<Long> pages = lastPage.flatMapIterable(lp -> {
-                    int currentPage = page.orElse(1);
-                    int startPage = currentPage;
-                    int limit = windowLeftRight * 2 + 1;
-                    if (currentPage - windowLeftRight >= 1 && currentPage + windowLeftRight <= lp) {
-                        startPage = currentPage - windowLeftRight;
-                    } else if (currentPage - windowLeftRight < 1) {
-                        startPage = 1;
-                    } else if (currentPage + windowLeftRight > lp) {
-                        startPage = lp - limit + 1;
-                    }
-                    return LongStream.rangeClosed(startPage, lp).limit(limit).boxed().collect(Collectors.toList());
-                });
+        addPaging(model, page.orElse(1), lastPage);
+
         IReactiveDataDriverContextVariable reactiveDataDrivenMode = new ReactiveDataDriverContextVariable(words);
         model.addAttribute("words", reactiveDataDrivenMode);
         model.addAttribute("word", new Word());
         model.addAttribute("user", user);
-        model.addAttribute("pages", pages);
         model.addAttribute("count", count);
-        model.addAttribute("page", page.orElse(1));
-        model.addAttribute("lastPage", lastPage);
         return "dictionary";
     }
 

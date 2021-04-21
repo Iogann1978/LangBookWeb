@@ -11,7 +11,7 @@ import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
+import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 import ru.home.langbookweb.model.WordItem;
 import ru.home.langbookweb.service.TextService;
@@ -23,47 +23,36 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.LongStream;
 
 @Controller
 @RequestMapping(value = "/text")
 @Slf4j
-public class TextController {
+public class TextController extends AbstractPageController {
     private static final int rowsOnPage = 10;
-    private static final int windowLeftRight = 3;
-    @Autowired
+    private static final Sort sorting = Sort.by("count").descending().and(Sort.by("word"));
     private TextService textService;
-    @Autowired
     private UserService userService;
+
+    @Autowired
+    public TextController(TextService textService, UserService userService) {
+        this.textService = textService;
+        this.userService = userService;
+    }
 
     @RolesAllowed("USER,ADMIN")
     @GetMapping
     public String getTexts(@RequestParam Optional<Integer> page, Model model) {
         Mono<String> user = userService.get().map(u -> u.getUsername());
-        Pageable pageable = PageRequest.of(page.map(p -> p - 1).orElse(0), rowsOnPage);
-        Flux<WordItem> pageWords = textService.getPage(pageable);
-        Mono<Long> count = textService.getFlux().count();
+        Pageable pageable = PageRequest.of(page.map(p -> p - 1).orElse(0), rowsOnPage, sorting);
+        Mono<Page<WordItem>> pageWords = textService.getPage(pageable);
+        Mono<Long> count = textService.getCount();
         Mono<Integer> lastPage = count.map(c -> (int) Math.ceil((double) c / (double) rowsOnPage));
-        Flux<Long> pages = lastPage.flatMapIterable(lp -> {
-            int currentPage = page.orElse(1);
-            int startPage = currentPage;
-            int limit = windowLeftRight * 2 + 1;
-            if (currentPage - windowLeftRight >= 1 && currentPage + windowLeftRight <= lp) {
-                startPage = currentPage - windowLeftRight;
-            } else if (currentPage - windowLeftRight < 1) {
-                startPage = 1;
-            } else if (currentPage + windowLeftRight > lp) {
-                startPage = lp - limit + 1;
-            }
-            return LongStream.rangeClosed(startPage, lp).limit(limit).boxed().collect(Collectors.toList());
-        });
+        addPaging(model, page.orElse(1), lastPage);
+
+        model.addAttribute("wordItem", new WordItem());
         model.addAttribute("pageWords", pageWords);
-        model.addAttribute("page", pageable.getPageNumber() + 1);
-        model.addAttribute("pages", pages);
         model.addAttribute("user", user);
         model.addAttribute("count", count);
-        model.addAttribute("lastPage", lastPage);
         return "text";
     }
 
@@ -92,5 +81,28 @@ public class TextController {
             response.getHeaders().setLocation(URI.create("/text"));
             return response.setComplete();
         });
+    }
+
+    @RolesAllowed("USER,ADMIN")
+    @PostMapping("/del")
+    public Mono<Void> delWordItem(@RequestParam int page, @ModelAttribute("wordItem") WordItem wordItem, ServerHttpResponse response) {
+        log.info("resp: {}", response);
+        return textService.del(wordItem)
+                .flatMap(word -> {
+                    response.setStatusCode(HttpStatus.SEE_OTHER);
+                    response.getHeaders().setLocation(UriComponentsBuilder.fromPath("/text").query("page={page}").build(page));
+                    return response.setComplete();
+                });
+    }
+
+    @RolesAllowed("USER,ADMIN")
+    @PostMapping("/add")
+    public Mono<Void> addWord(@ModelAttribute("wordItem") WordItem wordItem, ServerHttpResponse response) {
+        return textService.del(wordItem)
+                .flatMap(word -> {
+                    response.setStatusCode(HttpStatus.SEE_OTHER);
+                    response.getHeaders().setLocation(UriComponentsBuilder.fromPath("/word/add").query("fill={word}").build(word));
+                    return response.setComplete();
+                });
     }
 }

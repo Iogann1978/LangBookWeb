@@ -24,10 +24,14 @@ import javax.annotation.security.RolesAllowed;
 @RequestMapping(value = "/example")
 @Slf4j
 public class ExampleController {
-    @Autowired
     private ExampleService exampleService;
-    @Autowired
     private TranslationService translationService;
+
+    @Autowired
+    public ExampleController(ExampleService exampleService, TranslationService translationService) {
+        this.exampleService = exampleService;
+        this.translationService = translationService;
+    }
 
     @RolesAllowed("USER,ADMIN")
     @GetMapping("/add")

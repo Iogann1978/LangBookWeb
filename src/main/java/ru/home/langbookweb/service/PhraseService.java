@@ -12,10 +12,14 @@ import ru.home.langbookweb.repository.PhraseRepository;
 
 @Service
 public class PhraseService {
-    @Autowired
     private PhraseRepository phraseRepository;
-    @Autowired
     private UserService userService;
+
+    @Autowired
+    public PhraseService(PhraseRepository phraseRepository, UserService userService) {
+        this.phraseRepository = phraseRepository;
+        this.userService = userService;
+    }
 
     @Transactional(readOnly = true)
     public Mono<Page<Phrase>> getPage(Pageable pageable) {

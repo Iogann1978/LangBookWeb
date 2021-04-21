@@ -12,12 +12,16 @@ import ru.home.langbookweb.repository.TranslationRepository;
 @Service
 @Slf4j
 public class TranslationService {
-    @Autowired
     private TranslationRepository translationRepository;
-    @Autowired
     private WordService wordService;
-    @Autowired
     private UserService userService;
+
+    @Autowired
+    public TranslationService(TranslationRepository translationRepository, WordService wordService, UserService userService) {
+        this.translationRepository = translationRepository;
+        this.wordService = wordService;
+        this.userService = userService;
+    }
 
     @Transactional
     public Mono<Long> save(Translation translation) {

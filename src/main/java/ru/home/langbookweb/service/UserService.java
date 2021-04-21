@@ -16,8 +16,12 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class UserService {
-    @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Transactional(readOnly = true)
     public Mono<User> get() {

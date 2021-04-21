@@ -17,8 +17,12 @@ import java.util.Map;
 @Slf4j
 public class GraphicService {
     private static final Integer WIDTH = 800, HEIGHT = 400;
-    @Autowired
     private Configuration freemarkerConfig;
+
+    @Autowired
+    public GraphicService(Configuration freemarkerConfig) {
+        this.freemarkerConfig = freemarkerConfig;
+    }
 
     public String getSrc(String text1, String text2) {
         String xmlSvg = getSvg(text1, text2);
