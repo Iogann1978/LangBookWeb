@@ -37,7 +37,7 @@ public class WebSecurityConfig {
     @Bean
     public MapReactiveUserDetailsService userDetailsRepository() {
         PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        UserDetails user = User.withUsername("user").password(encoder.encode("password")).roles("USER").build();
+        UserDetails user = User.withUsername("dicts").password(encoder.encode("password")).roles("USER").build();
         log.info("pass: {}", user.getPassword());
         return new MapReactiveUserDetailsService(userService.getAll());
     }
