@@ -86,7 +86,6 @@ public class TextController extends AbstractPageController {
     @RolesAllowed("USER,ADMIN")
     @PostMapping("/del")
     public Mono<Void> delWordItem(@RequestParam int page, @ModelAttribute("wordItem") WordItem wordItem, ServerHttpResponse response) {
-        log.info("resp: {}", response);
         return textService.del(wordItem)
                 .flatMap(word -> {
                     response.setStatusCode(HttpStatus.SEE_OTHER);
