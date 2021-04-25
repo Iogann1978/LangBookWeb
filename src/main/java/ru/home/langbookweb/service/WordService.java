@@ -41,7 +41,7 @@ public class WordService {
     }
 
     @Transactional(readOnly = true)
-    public Flux<? super Word> getPage(String findWord, Pageable pageable) {
+    public Flux<? extends Word> getPage(String findWord, Pageable pageable) {
         Mono<User> user = userService.get();
         Flux<Word> words = user.flatMapIterable(u -> StringUtil.isEmpty(findWord) ? wordRepository.findAllByUser(u, pageable) :
                             wordRepository.findAllByUserAndWord(u, findWord, pageable)
