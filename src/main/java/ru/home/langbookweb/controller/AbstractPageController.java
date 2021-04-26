@@ -18,9 +18,9 @@ public abstract class AbstractPageController {
             int limit = windowLeftRight * 2 + 1;
             if (currentPage - windowLeftRight >= 1 && currentPage + windowLeftRight <= lp) {
                 startPage = currentPage - windowLeftRight;
-            } else if (currentPage - windowLeftRight < 1) {
+            } else if (currentPage - windowLeftRight <= 1) {
                 startPage = 1;
-            } else if (currentPage + windowLeftRight > lp) {
+            } else if (currentPage + windowLeftRight >= lp) {
                 startPage = lp - limit + 1;
             }
             return LongStream.rangeClosed(startPage, lp).limit(limit).boxed().collect(Collectors.toList());
