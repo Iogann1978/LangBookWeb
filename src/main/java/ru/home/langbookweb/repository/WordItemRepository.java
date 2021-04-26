@@ -11,9 +11,9 @@ import ru.home.langbookweb.model.WordItem;
 @Repository
 public interface WordItemRepository extends JpaRepository<WordItem, String> {
     void deleteAllByUser(User user);
-    void deleteWordItemByUserAndWord(User user, String word);
     long countAllByUser(User user);
     @EntityGraph("wordItem")
     Page<WordItem> getAllByUser(User user, Pageable pageable);
+    @EntityGraph("wordItem")
     WordItem findWordItemByUserAndWord(User user, String word);
 }
