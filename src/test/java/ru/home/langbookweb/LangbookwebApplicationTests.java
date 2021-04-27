@@ -30,7 +30,7 @@ class LangbookwebApplicationTests {
         log.info("word: {}", AbstractLoadService.processWord("a \"the word\" "));
     }
 
-    @Test
+    //@Test
     public void recalcText() {
         User user = userRepository.findById("user").get();
         long count = wordItemRepository.countAllByUser(user);
