@@ -33,8 +33,8 @@
                         <td th:text="${word.word}">Слово</td>
                         <td th:text="${word.count}">Частота</td>
                         <td>
-                            <a href="#" data-toggle="modal" data-target="#worditem_save" th:attr="onclick=|fillSaveForm('${word.word}')|">Добавить в словарь</a>
-                            <a href="#" data-toggle="modal" data-target="#worditem_del" th:attr="onclick=|fillDelForm('${word.word}')|">Исключить слово</a>
+                            <a href="#" data-toggle="modal" data-target="#worditem_save" th:attr="onclick=|fillSaveForm(${word.id},'${word.word}')|">Добавить в словарь</a>
+                            <a href="#" data-toggle="modal" data-target="#worditem_del" th:attr="onclick=|fillDelForm(${word.id},'${word.word}')|">Исключить слово</a>
                         </td>
                     </tr>
                     </tbody>
@@ -85,7 +85,7 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <input type="text" hidden="true" id="s_id" th:field="*{word}" />
+                    <input type="text" hidden="true" id="s_id" th:field="*{id}" />
                     <p id="s_word">Слово</p>
                 </div>
                 <div class="modal-footer btn-group">
@@ -105,7 +105,7 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <input type="text" hidden="true" id="d_id" th:field="*{word}" />
+                    <input type="text" hidden="true" id="d_id" th:field="*{id}" />
                     <p id="d_word">Слово</p>
                 </div>
                 <div class="modal-footer btn-group">
@@ -122,13 +122,13 @@
             $(this).next(".custom-file-label").html(filename);
         })
 
-        function fillSaveForm(word) {
-            $("#s_id").val(word);
+        function fillSaveForm(id, word) {
+            $("#s_id").val(id);
             $("#s_word").text(word);
         }
 
-        function fillDelForm(word) {
-            $("#d_id").val(word);
+        function fillDelForm(id, word) {
+            $("#d_id").val(id);
             $("#d_word").text(word);
         }
     </script>

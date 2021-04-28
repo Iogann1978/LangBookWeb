@@ -1,5 +1,6 @@
 package ru.home.langbookweb.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.cos.COSDocument;
 import org.apache.pdfbox.io.RandomAccessBuffer;
 import org.apache.pdfbox.io.RandomAccessRead;
@@ -23,6 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
+@Slf4j
 public class TextService {
     private WordItemRepository wordItemRepository;
     private WordService wordService;
@@ -88,7 +90,7 @@ public class TextService {
     @Transactional
     public Mono<String> del(WordItem wordItem) {
         Mono<User> user = userService.get();
-        return user.map(u -> wordItemRepository.findWordItemByUserAndWord(u, wordItem.getWord()))
+        return user.map(u -> wordItemRepository.findWordItemByUserAndId(u, wordItem.getId()))
                 .map(wi -> {
                     wordItemRepository.delete(wi);
                     return wi.getWord();

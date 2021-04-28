@@ -14,7 +14,7 @@ databaseChangeLog:
             stripComments: true
             path: db/changelog/insert_user_2.sql
   - changeSet:
-      id: 4
+      id: 3
       author: iogann1978
       changes:
         - sqlFile:

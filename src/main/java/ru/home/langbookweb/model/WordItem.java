@@ -16,6 +16,8 @@ import javax.validation.constraints.NotNull;
 @NamedEntityGraph(name = "wordItem", attributeNodes = @NamedAttributeNode("user"))
 public class WordItem {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     private String word;
     private Integer count;
     @NotNull
