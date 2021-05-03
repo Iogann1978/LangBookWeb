@@ -50,8 +50,7 @@ public class TextService {
                     String S = s.toLowerCase();
                     Matcher m = p.matcher(S);
                     if (!m.find()) {
-                        mapWords.computeIfPresent(S, (k, v) -> ++v);
-                        mapWords.computeIfAbsent(S, k -> 1);
+                        mapWords.compute(S, (k, v) -> v == null ? 1 : ++v);
                     }
                 }
             }
