@@ -7,12 +7,14 @@ import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
+import org.springframework.http.codec.multipart.Part;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 import ru.home.langbookweb.model.WordItem;
 import ru.home.langbookweb.service.TextService;
 import ru.home.langbookweb.service.UserService;
@@ -58,8 +60,14 @@ public class TextController extends AbstractPageController {
 
     @RolesAllowed("USER,ADMIN")
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Mono<Void> textUpload(@RequestPart("upload") Mono<FilePart> part, ServerHttpResponse response) {
-        return part.flatMap(fp -> fp.content().collect(ByteArrayOutputStream::new, (baos, dataBuffer) -> {
+    public Mono<Void> textUpload(@RequestPart("options") Mono<Part> formPart, @RequestPart("upload") Mono<FilePart> filePart, ServerHttpResponse response) {
+        return formPart.flatMapMany(p -> p.content()).map(dataBuffer -> {
+            byte[] bytes = new byte[dataBuffer.readableByteCount()];
+            dataBuffer.read(bytes);
+            DataBufferUtils.release(dataBuffer);
+            return new String(bytes, StandardCharsets.UTF_8);
+        }).elementAt(0)
+        .flatMap(options -> filePart.flatMap(fp -> fp.content().collect(ByteArrayOutputStream::new, (baos, dataBuffer) -> {
             byte[] bytes = new byte[dataBuffer.readableByteCount()];
             dataBuffer.read(bytes);
             DataBufferUtils.release(dataBuffer);
@@ -75,8 +83,8 @@ public class TextController extends AbstractPageController {
                 log.error("error reading text(pdf) file: {}", e.getMessage());
                 e.printStackTrace();
             }
-            return textService.parse(content);
-        })).flatMap(count -> {
+            return options.equals("0") ? textService.parse(content) : textService.translate(content);
+        }))).flatMap(count -> {
             response.setStatusCode(HttpStatus.SEE_OTHER);
             response.getHeaders().setLocation(URI.create("/text"));
             return response.setComplete();

@@ -86,6 +86,21 @@ public class TextService {
         return result;
     }
 
+    public Mono<Long> translate(String text) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<!DOCTYPE html>");
+        sb.append("<html>");
+        Flux.fromIterable(Arrays.asList(text.split("\n\r"))).flatMap(p -> {
+            sb.append("<p>");
+            return Flux.fromIterable(Arrays.asList(p.split("\\s+")))
+                    .flatMap(w -> wordService.isPresent(w.toLowerCase())
+                            .map(flag -> flag ? w :
+                                    "<span class=\"d-inline-block\" tabindex=\"0\" data-toggle=\"tooltip\" title=\"Disabled tooltip\">" + w + "</span>"))
+                    .doOnNext(w -> sb.append(w)).doOnComplete(() -> sb.append("</p>"));
+                }).doOnComplete(() -> sb.append("</p>"));
+        return Mono.just(-1L);
+    }
+
     @Transactional
     public Mono<String> del(WordItem wordItem) {
         Mono<User> user = userService.get();
