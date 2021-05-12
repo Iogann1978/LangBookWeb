@@ -25,4 +25,10 @@ public interface WordRepository extends JpaRepository<Word, Long> {
             "left join Adjective a on w.id = a.id and w.user = a.user " +
             "where w.user = ?1 and ?2 in (w.word, n.plural, v.participle, v.past, getEndingS(v.word), a.comparative, a.superative)")
     boolean existsWordByUserAndWord(User user, String word);
+    @Query("select w from Word w " +
+            "left join Noun n on w.id = n.id and w.user = n.user " +
+            "left join Verb v on w.id = v.id and w.user = v.user " +
+            "left join Adjective a on w.id = a.id and w.user = a.user " +
+            "where w.user = ?1 and ?2 in (w.word, n.plural, v.participle, v.past, getEndingS(v.word), a.comparative, a.superative)")
+    List<Word> findWordFormByUserAndWord(User user, String word);
 }

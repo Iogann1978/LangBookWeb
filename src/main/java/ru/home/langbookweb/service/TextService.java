@@ -90,25 +90,36 @@ public class TextService {
     }
 
     public Mono<Long> translate(String text) {
+        List<String> lines = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
         sb.append("<!DOCTYPE html>\n");
         sb.append("<html>\n");
         sb.append("<body>\n");
-        sb.append(text);
+        Pattern pattern = Pattern.compile("^.+$", Pattern.MULTILINE);
+        Matcher matcher = pattern.matcher(text);
+        while (matcher.find()) {
+            sb.append("<p>\n");
+            String line = matcher.group()
+                    .replaceAll("<", "&lt;")
+                    .replaceAll(">", "&gt;");
+            sb.append(line);
+            sb.append("\n");
+            sb.append("</p>");
+            lines.add(line);
+        }
         sb.append("</body>\n");
         sb.append("</html>");
-        sb.replace(0, sb.length(), Pattern.compile("^(.+)$").matcher(sb).replaceAll("<p>$1</p>"));
-        Flux.fromIterable(Arrays.asList(text.split("\n\r")))
-                .flatMap(p -> Flux.fromIterable(Arrays.asList(p.split("\\s+")))
+        return Flux.fromIterable(lines)
+                .flatMap(p -> Flux.fromIterable(Arrays.asList(p.split("[\\W\\s]")))
+                    .filter(w -> !w.isBlank())
                     .flatMap(w -> wordService.isPresent(w.toLowerCase())
                             .flatMap(flag -> flag ? null : wordService.getPage(w, PageRequest.of(0, 1)).elementAt(0))
                             .filter(ww -> ww != null).map(ww -> Tuples.of(w, ww.getTooltip()))
                     ).doOnNext(tp -> {
-                            Pattern pattern = Pattern.compile("(\\s+)"+tp.getT1()+"(\\s+)");
-                        sb.replace(0, sb.length(), pattern.matcher(sb).replaceAll("$1<a href=\"#\" data-toggle=\"tooltip\" title=\""+tp.getT2()+"\">"+tp.getT1()+"</a>$2"));
+                            Pattern pattern1 = Pattern.compile("(\\s+)"+tp.getT1()+"(\\s+)");
+                        sb.replace(0, sb.length(), pattern1.matcher(sb).replaceAll("$1<a href=\"#\" data-toggle=\"tooltip\" title=\""+tp.getT2()+"\">"+tp.getT1()+"</a>$2"));
                     })
-                ).subscribeOn(Schedulers.immediate()).subscribe();
-        return Mono.just(-1L);
+                ).doOnComplete(() -> log.info(sb.toString())).count();
     }
 
     @Transactional
