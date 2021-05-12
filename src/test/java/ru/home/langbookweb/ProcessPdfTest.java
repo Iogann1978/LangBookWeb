@@ -51,7 +51,7 @@ public class ProcessPdfTest {
                sb.append(s1);
                String ww = w.trim().toLowerCase();
                 if (!w.isBlank() && wordRepository.existsWordByUserAndWord(user, ww)) {
-                    List<Word> words = wordRepository.findWordFormByUserAndWord(user, ww);
+                    List<Word> words = wordRepository.findWordFormByUserAndWord(user, ww, PageRequest.of(0, 10));
                     if (!CollectionUtils.isEmpty(words)) {
                         Word word = words.get(0);
                         sb.append(String.format("<a href=\"#\" data-toggle=\"tooltip\" title=\"%s\">%s</a>", w, word.getTooltip()));
