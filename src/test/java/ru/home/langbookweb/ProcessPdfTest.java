@@ -14,8 +14,7 @@ import ru.home.langbookweb.repository.WordRepository;
 import ru.home.langbookweb.service.TextService;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,10 +35,41 @@ public class ProcessPdfTest {
         User user = userRepository.findById("user").get();
         byte[] bytes = resourceLoader.getResource("classpath:Harry-potter-sorcerers-stone.pdf").getInputStream().readAllBytes();
         String text = textService.textFromPdf(bytes);
-        Pattern p1 = Pattern.compile("^.+$", Pattern.MULTILINE);
-        Pattern p2 = Pattern.compile("([\\W\\s])(\\w+)([\\W\\s])", Pattern.MULTILINE);
+        text = text.replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll("&", "&amp;");
+
+        Pattern p1 = Pattern.compile("^\t+(.+)$", Pattern.MULTILINE);
+        Pattern p2 = Pattern.compile("[\\W\\s](\\w+)[\\W\\s]");
+
+        Matcher m2 = p2.matcher(text);
+        Map<String, String> words = new HashMap<>();
+        while (m2.find()) {
+            String key = m2.group();
+            String ww = key.trim().toLowerCase();
+            if (!words.containsKey(key) && wordRepository.existsWordByUserAndWord(user, ww)) {
+                List<Word> list = wordRepository.findWordFormByUserAndWord(user, ww, PageRequest.of(0, 10));
+                if (!CollectionUtils.isEmpty(list)) {
+                    Word word = list.get(0);
+                    words.put(key, word.getTooltip());
+                }
+            }
+        }
+
+        for (Map.Entry<String, String> e : words.entrySet()) {
+            text = text.replaceAll(String.format("([\\W\\s])(%s)([\\W\\s])", e.getKey()), String.format("$1<a href=\"#\" data-toggle=\"tooltip\" title=\"%s\">$2</a>$3", e.getValue()));
+        }
+
         Matcher m1 = p1.matcher(text);
+        text = m1.replaceAll("<p>$1</p>");
+        text = text.replaceAll("\t", " ");
         StringBuilder sb = new StringBuilder();
+        sb.append("<html>\n");
+        sb.append("<body>\n");
+        sb.append(text);
+        sb.append("</body>\n");
+        sb.append("</html>\n");
+        /*
         while (m1.find()) {
             sb.append("<p>\n");
             String line = m1.group();
@@ -63,6 +93,7 @@ public class ProcessPdfTest {
             }
             sb.append("</p>\n");
         }
+         */
         log.info(sb.toString());
         //textService.translate(text).subscribeOn(Schedulers.immediate()).subscribe();
     }

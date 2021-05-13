@@ -13,11 +13,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
+import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
 import ru.home.langbookweb.model.User;
+import ru.home.langbookweb.model.Word;
 import ru.home.langbookweb.model.WordItem;
 import ru.home.langbookweb.repository.WordItemRepository;
 
@@ -90,36 +93,35 @@ public class TextService {
     }
 
     public Mono<Long> translate(String text) {
-        List<String> lines = new ArrayList<>();
-        StringBuilder sb = new StringBuilder();
-        sb.append("<!DOCTYPE html>\n");
-        sb.append("<html>\n");
-        sb.append("<body>\n");
-        Pattern pattern = Pattern.compile("^.+$", Pattern.MULTILINE);
-        Matcher matcher = pattern.matcher(text);
-        while (matcher.find()) {
-            sb.append("<p>\n");
-            String line = matcher.group()
-                    .replaceAll("<", "&lt;")
-                    .replaceAll(">", "&gt;");
-            sb.append(line);
-            sb.append("\n");
-            sb.append("</p>");
-            lines.add(line);
+        text = text.replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll("&", "&amp;");
+        Pattern p1 = Pattern.compile("^\t+(.+)$", Pattern.MULTILINE);
+        Pattern p2 = Pattern.compile("[\\W\\s](\\w+)[\\W\\s]");
+
+        Matcher m2 = p2.matcher(text);
+        Set<String> words = new HashSet<>();
+        while (m2.find()) {
+            words.add(m2.group());
         }
-        sb.append("</body>\n");
-        sb.append("</html>");
-        return Flux.fromIterable(lines)
-                .flatMap(p -> Flux.fromIterable(Arrays.asList(p.split("[\\W\\s]")))
-                    .filter(w -> !w.isBlank())
-                    .flatMap(w -> wordService.isPresent(w.toLowerCase())
-                            .flatMap(flag -> flag ? null : wordService.getPage(w, PageRequest.of(0, 1)).elementAt(0))
-                            .filter(ww -> ww != null).map(ww -> Tuples.of(w, ww.getTooltip()))
-                    ).doOnNext(tp -> {
-                            Pattern pattern1 = Pattern.compile("(\\s+)"+tp.getT1()+"(\\s+)");
-                        sb.replace(0, sb.length(), pattern1.matcher(sb).replaceAll("$1<a href=\"#\" data-toggle=\"tooltip\" title=\""+tp.getT2()+"\">"+tp.getT1()+"</a>$2"));
-                    })
-                ).doOnComplete(() -> log.info(sb.toString())).count();
+
+        String ntext = text;
+        return Flux.fromIterable(words)
+                .filter(w -> !w.isBlank())
+                .flatMap(w -> wordService.isPresent(w.trim().toLowerCase())
+                        .flatMap(flag -> flag ? null : wordService.getPage(w, PageRequest.of(0, 1)).elementAt(0))
+                        .filter(ww -> ww != null).map(ww -> Tuples.of(w, ww.getTooltip()))
+                ).map(tp -> ntext.replaceAll(String.format("([\\W\\s])(%s)([\\W\\s])", tp.getT1()), String.format("$1<a href=\"#\" data-toggle=\"tooltip\" title=\"%s\">$2</a>$3", tp.getT2())))
+                .doOnComplete(() -> {
+                    String nntext = ntext.replaceAll("\t", " ");
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("<html>\n");
+                    sb.append("<body>\n");
+                    Matcher m1 = p1.matcher(nntext);
+                    sb.append(m1.replaceAll("<p>$1</p>"));
+                    sb.append("</body>\n");
+                    sb.append("</html>\n");
+                }).count();
     }
 
     @Transactional
