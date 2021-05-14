@@ -14,7 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 import ru.home.langbookweb.model.WordItem;
 import ru.home.langbookweb.service.TextService;
 import ru.home.langbookweb.service.UserService;
