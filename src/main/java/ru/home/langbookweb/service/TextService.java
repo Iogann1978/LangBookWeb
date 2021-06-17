@@ -13,14 +13,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
-import reactor.util.function.Tuple2;
+
 import reactor.util.function.Tuples;
 import ru.home.langbookweb.model.User;
-import ru.home.langbookweb.model.Word;
 import ru.home.langbookweb.model.WordItem;
 import ru.home.langbookweb.repository.WordItemRepository;
 
