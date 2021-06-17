@@ -40,7 +40,7 @@ public class DictionaryController extends AbstractPageController {
     public String getDictionary(@RequestParam Optional<Integer> page, @RequestParam Optional<String> findWord, Model model) {
         Pageable pageable = PageRequest.of(page.map(p -> p - 1).orElse(0), rowsOnPage, sorting);
         Mono<String> user = userService.get().map(u -> u.getUsername());
-        Flux<? extends Word> words = wordService.getPage(findWord.orElse(""), pageable);
+        Flux<Word> words = wordService.getPage(findWord.orElse(""), pageable);
         Mono<Long> count = wordService.getCount();
         Mono<Integer> lastPage = count.map(c -> (int) Math.ceil((double) c / (double) rowsOnPage));
         addPaging(model, page.orElse(1), lastPage);

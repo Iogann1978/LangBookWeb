@@ -30,7 +30,7 @@ public class ProcessPdfTest {
     @Autowired
     private UserRepository userRepository;
 
-    @Test
+    //@Test
     public void pdfToHtmlTest() throws IOException {
         User user = userRepository.findById("user").get();
         byte[] bytes = resourceLoader.getResource("classpath:Harry-potter-sorcerers-stone.pdf").getInputStream().readAllBytes();

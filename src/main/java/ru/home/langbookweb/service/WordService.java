@@ -11,8 +11,6 @@ import reactor.core.publisher.Mono;
 import ru.home.langbookweb.model.*;
 import ru.home.langbookweb.repository.*;
 
-import java.util.Optional;
-
 @Service
 @Slf4j
 public class WordService {
@@ -41,37 +39,10 @@ public class WordService {
     }
 
     @Transactional(readOnly = true)
-    public Flux<? extends Word> getPage(String findWord, Pageable pageable) {
+    public Flux<Word> getPage(String findWord, Pageable pageable) {
         Mono<User> user = userService.get();
         Flux<Word> words = user.flatMapIterable(u -> StringUtil.isEmpty(findWord) ? wordRepository.findAllByUser(u, pageable) :
-                            wordRepository.findWordFormByUserAndWord(u, findWord, pageable)
-                ).map(word -> {
-                    Optional<Noun> noun = nounRepository.getNounById(word.getId());
-                    if (noun.isPresent()) {
-                        return noun.get();
-                    }
-                    Optional<Verb> verb = verbRepository.getVerbById(word.getId());
-                    if (verb.isPresent()) {
-                        return verb.get();
-                    }
-                    Optional<Adjective> adjective = adjectiveRepository.getAdjectiveById(word.getId());
-                    if (adjective.isPresent()) {
-                        return adjective.get();
-                    }
-                    Optional<Adverb> adverb = adverbRepository.getAdverbById(word.getId());
-                    if (adverb.isPresent()) {
-                        return adverb.get();
-                    }
-                    Optional<Participle> participle = participleRepository.findById(word.getId());
-                    if (participle.isPresent()) {
-                        return participle.get();
-                    }
-                    Optional<Phrase> phrase = phraseRepository.getPhraseById(word.getId());
-                    if (phrase.isPresent()) {
-                        return phrase.get();
-                    }
-                    return word;
-                });
+            wordRepository.findWordFormByUserAndWord(u, findWord, pageable));
         return words;
     }
 
@@ -86,31 +57,20 @@ public class WordService {
         Mono<User> user = userService.get();
         return user.map(u -> wordRepository.findWordByUserAndId(u, wordId))
             .map(word -> {
-                Optional<Noun> noun = nounRepository.getNounById(word.getId());
-                if (noun.isPresent()) {
-                    return noun.get();
-                }
-                Optional<Verb> verb = verbRepository.getVerbById(word.getId());
-                if (verb.isPresent()) {
-                    return verb.get();
-                }
-                Optional<Adjective> adjective = adjectiveRepository.getAdjectiveById(word.getId());
-                if (adjective.isPresent()) {
-                    return adjective.get();
-                }
-                Optional<Adverb> adverb = adverbRepository.getAdverbById(word.getId());
-                if (adverb.isPresent()) {
-                    return adverb.get();
-                }
-                Optional<Participle> participle = participleRepository.getParticipleById(word.getId());
-                if (participle.isPresent()) {
-                    return participle.get();
-                }
-                Optional<Phrase> phrase = phraseRepository.getPhraseById(word.getId());
-                if (phrase.isPresent()) {
-                    return phrase.get();
-                }
-                return word;
+                if (word instanceof Noun)
+                    return (Noun) word;
+                else if (word instanceof Verb)
+                    return (Verb) word;
+                else if (word instanceof Adjective)
+                    return (Adjective) word;
+                else if (word instanceof Adverb)
+                    return (Adverb) word;
+                else if (word instanceof Participle)
+                    return (Participle) word;
+                else if (word instanceof Phrase)
+                    return (Phrase) word;
+                else
+                    return word;
             });
     }
 
