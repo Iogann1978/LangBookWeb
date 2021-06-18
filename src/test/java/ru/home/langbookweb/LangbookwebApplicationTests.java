@@ -126,7 +126,7 @@ class LangbookwebApplicationTests {
         }
     }
 
-    //@Test
+    @Test
     void testDuplicates() {
         User user = userRepository.findById("user").get();
         long count = wordRepository.countAllByUser(user);
