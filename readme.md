@@ -23,6 +23,7 @@ keytool -export -alias server -file server.crt -keystore server.jks
 [Bootstrap icons](https://www.bootstrapicons.com) \
 [PDF to Text](https://www.baeldung.com/pdf-conversions-java) \
 [XDXF format](https://github.com/soshial/xdxf_makedict/blob/master/format_standard/xdxf_description.md)
+[ABBY Lingvo API](https://developers.lingvolive.com/ru-ru)
 
 ### Поведение клиентов при различных перенаправлениях описано в таблице:
 | Статус ответа | Кэширование | Если метод не GET или HEAD |
