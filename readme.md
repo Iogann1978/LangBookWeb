@@ -1,3 +1,7 @@
+### Запуск
+```shell
+java -Dfile.encoding=UTF-8 -jar target/langbookweb-0.0.1-SNAPSHOT.jar
+```
 ### Генерация хранилища ключей и сертификата
 ```shell
 keytool -genkey -keyalg RSA -alias server -keystore server.jks -storepass secret -validity 360 -keysize 2048
